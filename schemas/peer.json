@@ -1,0 +1,22 @@
+
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "The properties associated with an Optimal BPM peer",
+  "title": "A peer",
+  "type": "object",
+  "version": "0.1",
+  "properties": {
+    "address": {
+      "description": "The peer address.",
+      "type": "string",
+      "propertyId": "f8d3b4f5-e40c-438b-8088-8ccab7cae3c"
+    },
+    "peerType": {
+      "description": "The peer type",
+      "enum": ["agent", "broker", "admin", "application"],
+      "propertyId": "de5a8e20-5554-4746-a94b-7ab12c005b29"
+    }
+  },
+  "collection": "",
+  "schemaId": "28da7aa9-8918-4aca-8505-099d283ef558"
+}

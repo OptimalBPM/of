@@ -1,0 +1,38 @@
+
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "An admin ui",
+  "title": "Settings for an instance of the admin user interface",
+  "type": "object",
+  "version": "0.1",
+  "allOf": [
+    {
+      "properties": {
+        "$ref": "mbe://node.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "$ref": "of://peer.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "theme": {
+          "description": "The theme of the admin user interface",
+          "type": "string"
+        }
+      }
+    }
+  ],
+  "required": [
+    "name",
+    "createdWhen",
+    "schemaId",
+    "canRead",
+    "canWrite",
+    "address"
+  ],
+  "collection": "node",
+  "schemaId": "3fc3bc67-a26d-41c7-bc6e-02e9ad92c8bb"
+}

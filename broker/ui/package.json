@@ -1,0 +1,91 @@
+{
+  "name": "optimalframework-admin",
+  "version": "0.1.0",
+  "scripts": {
+    "test": "karma start"
+  },
+  "format": "esm",
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OptimalBPM/mbe-nodes.git"
+  },
+  "devDependencies": {
+     "angular-mocks": "",
+    "angular-translate": "",
+    "chai": "",
+    "coveralls": "",
+    "gulp": "",
+    "gulp-angular-templatecache": "",
+    "gulp-concat": "",
+    "gulp-file-insert": "",
+    "gulp-jscs": "",
+    "gulp-minify-html": "",
+    "gulp-tsc": "",
+    "gulp-uglify": "",
+    "gulp-webserver": "",
+    "jasmine-core": "",
+    "jspm": "",
+    "karma": "",
+    "karma-chai-sinon": "",
+    "karma-chrome-launcher": "",
+    "karma-cli": "",
+    "karma-coverage": "",
+    "karma-jasmine": "",
+    "karma-mocha": "",
+    "karma-ng-html2js-preprocessor": "",
+    "karma-phantomjs-launcher": "",
+    "karma-requirejs": "",
+    "karma-systemjs": "",
+    "lazy-cache": "",
+    "mocha": "",
+    "mocha-lcov-reporter": "",
+    "sinon": "",
+    "sinon-chai": "",
+    "streamqueue": "",
+    "tsd": "",
+    "typescript": ""
+  },
+  "engines": {
+    "node": ""
+  },
+  "jspm": {
+    "directories": {},
+    "configFile": "jspm_config.js",
+    "dependencies": {
+      "OptimalBPM/angular-schema-form-complex-ui": "github:OptimalBPM/angular-schema-form-complex-ui@master",
+      "ace": "github:ajaxorg/ace-builds@^1.2.0",
+      "ajaxorg/ace-builds": "github:ajaxorg/ace-builds@^1.2.0",
+      "angular": "github:angular/bower-angular@^1.4.4",
+      "angular-animate": "github:angular/bower-angular-animate@^1.4.4",
+      "angular-cookies": "github:angular/bower-angular-cookies@^1.4.7",
+      "angular-route": "github:angular/bower-angular-route@^1.4.4",
+      "angular-sanitize": "github:angular/bower-angular-sanitize@^1.4.4",
+      "angular-schema-form-dynamic-select": "npm:angular-schema-form-dynamic-select@^0.12.1",
+      "angular-strap": "github:mgcrea/angular-strap@^2.3.2",
+      "angular-touch": "github:angular/bower-angular-touch@^1.4.4",
+      "angular-ui-layout": "github:angular-ui/ui-layout@^1.2.0",
+      "angular-ui-select": "github:angular-ui/ui-select@^0.12.1",
+      "angular-ui-tree": "github:angular-ui-tree/angular-ui-tree@^2.10.0",
+      "angular-ui/ui-ace": "github:angular-ui/ui-ace@^0.2.3",
+      "bootstrap": "github:twbs/bootstrap@^3.3.5",
+      "bootstrap3-dialog": "github:nakupanda/bootstrap3-dialog@^1.34.5",
+      "css": "github:systemjs/plugin-css@^0.1.13",
+      "fatlinesofcode/ngDraggable": "github:fatlinesofcode/ngDraggable@^0.1.8",
+      "font-awesome": "npm:font-awesome@^4.4.0",
+      "jquery": "github:components/jquery@^2.1.4",
+      "networknt/angular-schema-form-ui-ace": "github:networknt/angular-schema-form-ui-ace@^0.1.2",
+      "typescript": "npm:typescript@^1.6.0-dev.20150818"
+    },
+    "devDependencies": {},
+    "overrides": {
+      "github:angular-ui/ui-layout@1.2.0": {
+        "format": "global",
+        "directories": {
+          "lib": "src"
+        },
+        "main": "ui-layout"
+      }
+    }
+  }
+}

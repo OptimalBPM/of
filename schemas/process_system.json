@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "System process instance",
+  "title": "System process instance",
+  "type": "object",
+  "version": "0.1",
+  "allOf": [
+    {
+      "properties": {
+        "$ref": "of://process_instance.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "systemPid": {
+          "type": "integer",
+          "description": "The pid(operating system process id) of the process",
+          "propertyId": "2fcfb498-daae-4b17-b283-dc4516c5faef",
+          "isObjectId": "true"
+        },
+        "spawnedBy": {
+          "type": "string",
+          "description": "The OS user that spawned the process.",
+          "propertyId": "f7efddae-81f8-40e2-9311-598217b159fc"
+        },
+        "name": {
+          "type": "string",
+          "description": "A name of the process",
+          "propertyId": "57e19341-162a-4117-a5ac-d72bab021ac3"
+        }
+      }
+    }
+  ],
+  "required": ["systemPid", "spawnedBy", "name"],
+
+  "collection": "process",
+  "schemaId": "9523e937-1efc-438d-b54c-fb9bb9843a87"
+}

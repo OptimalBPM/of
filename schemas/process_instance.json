@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Process instance schema",
+  "title": "Process Instance",
+  "type": "object",
+  "version": "0.1",
+  "properties": {
+    "_id": {
+      "$ref": "mbe://type.json#/properties/objectId",
+      "description": "The object _id of the process, an object id.",
+      "propertyId": "e9b714fa-9f9f-4bd0-9500-3638ba2154e2",
+      "objectId": "true"
+    },
+    "parent_id": {
+      "$ref": "mbe://type.json#/properties/objectId",
+      "description": "The object _id of the spawning parent process, an object id.",
+      "propertyId": "e9b714fa-9f9f-4bd0-9500-3638ba2154e2",
+      "objectId": "true"
+    },
+    "spawnedWhen": {
+      "description": "The time the process was spawned",
+      "type": "string",
+      "format": "date-time",
+      "propertyId": "f509249d-409a-4b7c-8120-f8baefc71cb3"
+    },
+    "schemaId": {
+      "description": "A reference to the schema to which this data adheres.",
+      "$ref": "mbe://type.json#/properties/uuid",
+      "propertyId": "b1b75292-10d4-42be-a438-cd4f9835cc0a"
+    }
+  },
+  "required": [
+    "spawnedBy",
+    "spawnedWhen",
+    "schemaId"
+  ],
+  "collection": "process",
+  "schemaId": "2eaba1b7-028f-4f32-af2e-e3b45e921ef7"
+}

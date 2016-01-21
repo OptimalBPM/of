@@ -1,0 +1,77 @@
+{
+  "description": "Optimal Framework",
+  "web": {
+    "server": [
+      {
+      "module": "node",
+      "path": "node",
+      "class": "CherryPyNode"
+      }
+    ],
+    "client": {
+      "mountpoint": "/node",
+      "controllers": [
+        {
+          "name": "ProcessController",
+          "module": "process/controllers/process",
+          "dependencies": [
+            "$scope",
+            "$http",
+            "$q",
+            "$timeout"
+          ]
+        },
+        {
+          "name": "ControlController",
+          "module": "process/controllers/control",
+          "dependencies": [
+            "$scope",
+            "$http",
+            "$cookies",
+            "$interval"
+          ]
+        }
+      ],
+      "directives": [
+        {
+          "name": "process",
+          "module": "process/directives/process"
+        },
+        {
+          "name": "control",
+          "module": "process/directives/control"
+        }
+      ],
+      "routes": [
+        {
+          "path": "/process",
+          "route": {
+            "templateUrl": "process/views/process.html"
+          }
+        },
+        {
+          "path": "/control",
+          "route": {
+            "templateUrl": "process/views/control.html"
+          }
+        }
+      ]
+      ,
+      "menus": [
+        {
+          "caption": "ADMIN",
+          "weight": 1,
+          "path": "/admin",
+          "items": [],
+          "right": "Administer"
+        },
+        {
+          "caption": "ABOUT",
+          "weight": 2,
+          "path": "/about",
+          "items": [],
+          "right": ""
+        }
+        ]
+    }
+  },

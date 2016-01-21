@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Process state log packet",
+  "title": "Process state",
+  "type": "object",
+  "version": "0.1",
+  "properties": {
+    "processId": {
+      "$ref": "mbe://type.json#/properties/objectId",
+      "description": "The object _id of the process, an object id.",
+      "propertyId": "e9b714fa-9f9f-4bd0-9500-3638ba2154e2",
+      "objectId": "true"
+    },
+    "state": {
+      "type": "string",
+      "enum": ["queued", "running", "paused", "stopped", "killed", "failed","finished"],
+      "description": "The state of the process",
+      "propertyId": "6238a22d-f834-41e3-99e3-b8d72bcf2666"
+    },
+    "reason": {
+      "description": "The reason for the state change.",
+      "type": "string",
+      "propertyId": "787d9699-84ad-49c7-9295-d76fca8ec7c6"
+    },
+    "changedWhen": {
+      "description": "The time the state changed",
+      "type": "string",
+      "format": "date-time",
+      "propertyId": "61e951e2-d2e7-424a-a0d0-debaccd21db9"
+    },
+    "changedBy": {
+      "$ref": "mbe://type.json#/properties/objectId",
+      "description": "The user that initiated the state change.",
+      "refSchemaId": "2fb3b2c9-a29c-4fc0-b29d-6eed738b6dab",
+      "propertyId": "55e937b7-9e58-49ad-9b42-c6557ca23d0a",
+      "isObjectId": "true"
+    },
+    "schemaId": {
+      "description": "A reference to the schema to which this data adheres.",
+      "$ref": "mbe://type.json#/properties/uuid",
+      "propertyId": "b1b75292-10d4-42be-a438-cd4f9835cc0a"
+    }
+  },
+  "required": [
+    "processId",
+    "state",
+    "changedWhen",
+    "changedBy",
+    "schemaId"
+  ],
+  "namespace": "bpm",
+  "collection": "log",
+  "schemaId": "edcfd97b-a292-4d9e-8436-0466900b1991"
+}

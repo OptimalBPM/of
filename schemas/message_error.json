@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Error message",
+  "title": "Error message",
+  "type": "object",
+  "version": "0.1",
+  "allOf": [
+    {
+      "properties": {
+        "$ref": "of://message.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "errorMessage": {
+          "description": "The error message",
+          "type": "string",
+          "propertyId": "8b32a20c-a58f-4fa8-8eae-852ddef2ccdb"
+        }
+      }
+    }
+  ],
+  "required": [
+    "errorMessage",
+    "destination",
+    "source",
+    "schemaId",
+    "messageId"],
+  "collection": "log",
+  "schemaId": "656d3644-3c05-4cd6-ba58-2a11953a43bf"
+}

@@ -1,0 +1,39 @@
+
+.angular-ui-tree-handle {
+    cursor: default;
+    text-decoration: none;
+    font-weight: 700;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    min-height: 20px;
+    line-height: 20px
+    transition-delay: 2s;
+}
+
+.node-top {
+    display: none;
+    cursor: pointer;
+}
+
+.node-bottom {
+    display: none;
+
+}
+
+.node-left {
+    display: none;
+
+}
+
+.node-indent {
+    padding-left: 10px !important;
+}
+
+.node-item {
+
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: #eeeeee;
+    cursor: pointer;
+}

@@ -1,0 +1,85 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <title>Optimal BPM - Administrator</title>
+    <meta name="description" content="Optimal BPM Administrator is the administrative interface of Optimal BPM">
+    <meta name="viewport" content="width=device-width">
+    <script src="jspm_packages/system.src.js"></script>
+    <script src="jspm_config.js"></script>
+    <script src="plugins/jspm_config.js"></script>
+    <script>
+        System.import('./scripts/autologin');
+        System.import('./plugins/init');
+        System.import('./scripts/index');
+    </script>
+    <!-- load plug-ins -->
+    <link rel="stylesheet" href="views/nodes/nodes.css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" media="screen" rel="stylesheet"/>
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/loader.css">
+    <!-- endbuild -->
+</head>
+<body ng-controller="MainController"class="container-fluid">
+<!--[if lt IE 7]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+    your browser</a> to improve your experience.</p>
+<![endif]-->
+
+
+<nav id="menuDiv" ng-cloak class="row">
+    <div class="hidden-phone col-md-1">&nbsp;</div>
+    <div class="col-xs-12 col-md-11">
+
+        <div class="navbar navbar-default" role="navigation">
+
+            <div class="hidden-xs navbar-header">
+                <img src="images/Admin.png" alt="Optimal BPM" style="margin-top: 5px;" width="254" height="68">
+            </div>
+
+            <div  class="bpm_menu">
+                <div style="min-width:50px;float: left">&nbsp;</div>
+                <ul class="nav navbar-nav ">
+                    <li ng-repeat-start="currMenu in controller.menus | orderBy : weight"><a ng-href="#{{currMenu['path']}}" ng-class="controller.menu_item_class(currMenu['path'])">
+                        <span ng-class="controller.menu_item_class_look(currMenu['path'])">{{currMenu["caption"]}}</span></a>
+                    </li>
+                    <li ng-repeat-end ng-hide="$last"><a><span class="hidden-xs bpm_menu_spacer">/</span></a></li>
+
+                    <li><a ng-href="#/admin" ng-class="controller.menu_item_class('/admin')">
+                        <span ng-class="controller.menu_item_class_look('/admin')">ADMINISTER</span></a></li>
+                    <li><a><span class="hidden-xs bpm_menu_spacer">/</span></a></li>
+                    <li><a ng-href="#/analyze" ng-class="controller.menu_item_class('/analyze')">
+                        <span ng-class="controller.menu_item_class_look('/analyze')">ANALYZE</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+<article ng-cloak class="content container-fluid">
+    <div ng-view=""></div>
+</article>
+
+<footer id="footerDiv" class="footer">
+    <a href="http://www.optimalbpm.se">Copyright Optimal BPM 2015</a> - <span class="status " ng-cloak>logging in..</span>
+    <span ng-cloak>{{controller.login_status || "logging in.."}} -</span>
+    <a ng-cloak ng-href="#/about">
+        <span ng-class="controller.button_controller_selected_look('AboutController', 'link_unselected', 'link_selected')">ABOUT</span>
+    </a>
+</footer>
+<div class="loading" ng-cloak>Loading application....<br/><br/><br/><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <div class="loader">
+        <div class="side"></div>
+        <div class="side"></div>
+        <div class="side"></div>
+        <div class="side"></div>
+        <div class="side"></div>
+        <div class="side"></div>
+        <div class="side"></div>
+        <div class="side"></div>
+    </div>
+</div>
+</body>
+</html>

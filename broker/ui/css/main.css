@@ -1,0 +1,365 @@
+/* app css stylesheet */
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+[ng-cloak].loading {
+    display: block !important;
+    position: absolute;
+    left: 45%;
+    top: 40%;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+}
+
+.loading {
+    display: none;
+}
+
+[ng-cloak].status {
+    display: inline !important;
+}
+
+
+@font-face {
+    font-family: optivetica_round_lt_std;
+    src: url("../images/optivetica_round_lt_std-Bd.otf") format("opentype");
+}
+@font-face {
+    font-family: optivetica_round_lt_std;
+    font-style: italic;
+    src: url("../images/optivetica_round_lt_std-BdO.otf") format("opentype");
+}
+@font-face {
+    font-family: optivetica_round_lt_std;
+    font-weight: bold;
+    src: url("../images/optivetica_round_lt_std-Black.otf") format("opentype");
+}
+@font-face {
+    font-family: optivetica_round_lt_std;
+    font-weight: bold;
+    font-style: italic;
+    src: url("../images/optivetica_round_lt_std-BlkO.otf") format("opentype");
+}
+
+.status {
+    display: none;
+}
+
+
+.footer {
+    position: fixed;
+    bottom: 20px;
+    left: 40%;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+}
+.menu {
+    list-style: none;
+    display: block;
+    border-bottom: 0.1em solid black;
+    margin-bottom: 2em;
+    padding: 0 0 0.5em;
+}
+
+.menu:before {
+    content: "[";
+}
+
+.menu:after {
+    content: "]";
+}
+
+.menu > li {
+    display: inline;
+}
+
+.menu > li:before {
+    content: "|";
+    padding-right: 0.3em;
+}
+
+.menu > li:nth-child(1):before {
+    content: "";
+    padding: 0;
+}
+
+.position-fixed {
+  position: fixed;
+  z-index: 999;
+}
+
+/* UI layout */
+.glyphicon-chevron-left,
+.glyphicon-chevron-right
+/*, TODO: Commenting out these until splitters can be hidden in angular-ui-layout
+.glyphicon-chevron-up,
+.glyphicon-chevron-down*/{
+  color: #aaa;
+}
+
+.details {
+    border-left-color: #AAAAAA;
+    border-left-style: solid;
+    border-left-width: 1px;
+    padding-left: 5px;
+}
+
+.tree {
+    border-right-color: #AAAAAA;
+    border-right-style: solid;
+    border-right-width: 1px;
+    padding-right: 5px;
+
+}
+
+.insert_node {
+    background-color: #b3d4fc;
+    background-position: center;
+    line-height: 1em;
+    cursor: pointer;
+    width: 100%
+    display: block;
+
+}
+.delete_node {
+
+    background-color: #FF9999;
+    height: 1.25em;
+    vertical-align: middle;
+    padding-top: 0.15em;
+    display: inline;
+    float: right;
+    cursor: pointer;
+    font-size: 1em;
+    margin-left: 2px;
+}
+
+.right_item {
+    float:right;
+    display: inline
+
+}
+.insert_node_text {
+    font-size: 100%;
+    display: inline-block
+}
+
+.local_margins {
+
+}
+
+
+.add-bar-show-hide {
+    -webkit-transition: max-height 0.3s linear 0.3s;
+    -moz-transition: max-height 0.3s linear 0.3s;
+    -ms-transition: max-height 0.3s linear 0.3s;
+    -o-transition: max-height 0.3s linear 0.3s;
+    transition: max-height 0.3s linear 0.3s;
+    max-height: 1em;
+    overflow: hidden;
+}
+
+.add-bar-show-hide.ng-hide {
+    -webkit-transition: max-height 0.3s linear 0.3s;
+    -moz-transition: max-height 0.3s linear 0.3s;
+    -ms-transition: max-height 0.3s linear 0.3s;
+    -o-transition: max-height 0.3s linear 0.3s;
+    transition: max-height 0.3s linear 0.3s;
+
+    max-height: 0;
+}
+.ace_editor {
+        position: absolute;
+        width: 100%;
+        height: 400px;
+    }
+
+.navbar-nav > li > a {
+  padding-left:2px !important;
+  padding-right:2px !important;
+}
+.navbar {
+    background-color: #ffffff !important;
+    border: none !important;
+}
+.content  {
+    background-color: #f9f9f9 !important;
+
+}
+.bpm_menu {
+    padding-top: 20px;
+
+}
+
+.bpm_menu_item {
+    transition: top 0.2s ease;
+}
+.bpm_menu_item_look {
+
+    transition: font-size 0.1s ease;
+    font-size: x-large;
+    font-family: "optivetica_round_lt_std";
+    color: #52c0e5;
+}
+.bpm_menu_spacer {
+    font-weight: 900;
+    font-size: larger;
+    font-family: "optivetica_round_lt_std";
+    color: #f87c00;
+}
+
+
+.bpm_menu_item_selected {
+    transition: font-size 0.2s ease;
+    top: -1px;
+
+}
+.bpm_menu_item_look_selected {
+    transition: font-size 0.2s ease;
+    font-size: xx-large !important;
+}
+
+.left_row_headings {
+    font-family: "optivetica_round_lt_std";
+    font-size: medium;
+
+}
+
+.nodes-headings {
+    font-family: "optivetica_round_lt_std";
+    font-size: medium;
+}
+.node-text {
+    font-weight: normal;
+    width: 100%
+}
+.row_top {
+    padding-top: 6px;
+}
+
+@font-face {
+    font-family: 'optivetica_round_lt_std';
+    src: url('../fonts/optiveticaroundltstd-bdo-webfont.eot');
+    src: url('../fonts/optiveticaroundltstd-bdo-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/optiveticaroundltstd-bdo-webfont.woff2') format('woff2'),
+         url('../fonts/optiveticaroundltstd-bdo-webfont.woff') format('woff'),
+         url('../fonts/optiveticaroundltstd-bdo-webfont.ttf') format('truetype'),
+         url('../fonts/optiveticaroundltstd-bdo-webfont.svg#optivetica_round_lt_stdBdOb') format('svg');
+    font-weight: normal;
+    font-style: italic;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'optivetica_round_lt_std';
+    src: url('../fonts/optiveticaroundltstd-blko-webfont.eot');
+    src: url('../fonts/optiveticaroundltstd-blko-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/optiveticaroundltstd-blko-webfont.woff2') format('woff2'),
+         url('../fonts/optiveticaroundltstd-blko-webfont.woff') format('woff'),
+         url('../fonts/optiveticaroundltstd-blko-webfont.ttf') format('truetype'),
+         url('../fonts/optiveticaroundltstd-blko-webfont.svg#optivetica_round_lt_stdBlkOb') format('svg');
+    font-weight: bold;
+    font-style: italic;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'optivetica_round_lt_std';
+    src: url('../fonts/optiveticaroundltstd-black-webfont.eot');
+    src: url('../fonts/optiveticaroundltstd-black-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/optiveticaroundltstd-black-webfont.woff2') format('woff2'),
+         url('../fonts/optiveticaroundltstd-black-webfont.woff') format('woff'),
+         url('../fonts/optiveticaroundltstd-black-webfont.ttf') format('truetype'),
+         url('../fonts/optiveticaroundltstd-black-webfont.svg#optivetica_round_lt_stdblack') format('svg');
+    font-weight: bold;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'optivetica_round_lt_std';
+    src: url('../fonts/optiveticaroundltstd-bd-webfont.eot');
+    src: url('../fonts/optiveticaroundltstd-bd-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/optiveticaroundltstd-bd-webfont.woff2') format('woff2'),
+         url('../fonts/optiveticaroundltstd-bd-webfont.woff') format('woff'),
+         url('../fonts/optiveticaroundltstd-bd-webfont.ttf') format('truetype'),
+         url('../fonts/optiveticaroundltstd-bd-webfont.svg#optivetica_round_lt_stdbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+.design_panel {
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border-width: 9px;
+    border-style: solid;
+    border-color: transparent;
+    border-radius: 17px;
+}
+
+.process-steps {
+    margin-top: 12px;
+    background-color: #f9f9f9 !important;
+    overflow: auto;
+}
+.process-info {
+    height:90px;
+    overflow: auto;
+}
+.layout_tree{
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border: 7px solid transparent;
+    border-color: transparent;
+    border-radius: 15px;
+    overflow: hidden;
+}
+.layout_edit{
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border: 7px solid transparent;
+    border-radius: 15px;
+    overflow: hidden;
+}
+.layout_history{
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border: 7px solid transparent;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+
+.link_selected {
+    transition: font-size 0.2s ease;
+    font-weight: bolder !important;
+    font-size: x-large !important;
+    font-family: "optivetica_round_lt_std";
+    color: #52c0e5;
+
+}
+
+.link_unselected {
+    transition: font-size 0.2s ease;
+    font-family: "optivetica_round_lt_std";
+    color: #52c0e5;
+}
+
+.popover {
+    width: 276px;
+}
+
+.popover-content {
+    white-space: normal;
+}

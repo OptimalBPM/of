@@ -1,0 +1,13 @@
+mbe
+dulwich
+requests
+decorator
+pip
+cherrypy
+bson
+pycrypto
+pytz
+oauthlib
+Babel
+six
+pywin32

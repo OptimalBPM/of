@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Process state log packet",
+  "title": "Process state",
+  "type": "object",
+  "version": "0.1",
+  "properties": {
+    "processId": {
+      "$ref": "mbe://type.json#/properties/objectId",
+      "description": "The object _id of the process, an object id.",
+      "propertyId": "e9b714fa-9f9f-4bd0-9500-3638ba2154e2",
+      "objectId": "true"
+    },
+    "progressionId": {
+      "$ref": "mbe://type.json#/properties/objectId",
+      "description": "The object _id of the process, an object id.",
+      "propertyId": "489aed92-d5a6-4884-b842-953dd836e27b",
+      "objectId": "true"
+    },
+    "absolute": {
+      "description": "A new absolute value for the progression.",
+      "type": "number",
+      "propertyId": "fcf2a503-a5aa-433b-9fd9-6087cfd43ca0"
+    },
+    "change": {
+      "description": "The value to change the progression with.",
+      "type": "number",
+      "propertyId": "b383bfe3-3a7c-4449-9322-ca0dbab710b9"
+    },
+    "userId": {
+      "$ref": "mbe://type.json#/properties/objectId",
+      "description": "The user that initiated the state change.",
+      "refSchemaId": "2fb3b2c9-a29c-4fc0-b29d-6eed738b6dab",
+      "propertyId": "55e937b7-9e58-49ad-9b42-c6557ca23d0a",
+      "isObjectId": "true"
+    },
+    "schemaId": {
+      "description": "A reference to the schema to which this data adheres.",
+      "$ref": "mbe://type.json#/properties/uuid",
+      "propertyId": "b1b75292-10d4-42be-a438-cd4f9835cc0a"
+    }
+  },
+  "required": [
+    "processId",
+    "progressionId",
+    "userId",
+    "schemaId"
+  ],
+  "collection": "log",
+  "schemaId": "88925f4c-5e2f-4e12-8606-586021ac5e53"
+}

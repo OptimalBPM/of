@@ -8,10 +8,11 @@ import time
 from urllib.parse import urlparse
 from uuid import UUID
 import sys
-import broker
+
 
 import cherrypy
 
+from common.internal import make_log_prefix
 from mbe.cherrypy import aop_check_session
 
 
@@ -41,13 +42,16 @@ class CherryPyPlugins(object):
     systemjs_init = None
     """A list of the available menus"""
     menus = None
-    """Plug-in web settings"""
-    menus = None
-    def __init__(self, _repository_parent_folder, _schema_tools):
+    """Reference to the definition"""
+    definitions = None
+
+    def __init__(self, _plugin_dir, _schema_tools, _definitions, _log_prefix):
 
         self.schema_tools = _schema_tools
         self.last_refresh_time = -31
-        self.refresh_plugins(_repository_parent_folder)
+        self.definitions = _definitions
+        self.refresh_plugins(_plugin_dir)
+        self.log_prefix = _log_prefix
 
     def validate_uuid(self, _value):
         try:
@@ -56,7 +60,29 @@ class CherryPyPlugins(object):
         except:
             return False
 
-    def refresh_static(self):
+
+    def call_hook(self, _hook_name, **kwargs):
+        print(self.log_prefix + "Running hook " + _hook_name)
+        for _curr_plugin in self.plugins.values():
+            if not("failed" in _curr_plugin and _curr_plugin["failed"]) and "hooks" in _curr_plugin:
+                if "hooks_instance" in _curr_plugin["hooks"]:
+                    _hooks_instance = _curr_plugin["hooks"]["hooks_instance"]
+                    if hasattr(_hooks_instance, _hook_name):
+                        try:
+                            print(self.log_prefix + "Calling " + _hook_name + " in " + _curr_plugin["description"])
+                            getattr(_hooks_instance, _hook_name)(**kwargs)
+                        except Exception as e:
+                            print(self.log_prefix + "An error occured "+ "Calling " + _hook_name + " in " + _curr_plugin["description"] + ":" + str(e))
+                            if "FailOnError" in _curr_plugin and _curr_plugin["FailOnError"]:
+                                print(self.log_prefix + "Setting as Failed. No more hooks will be called for this plugin.")
+                                _curr_plugin["failed"] = True
+                            else:
+                                print(self.log_prefix + "Ignores error, this plugin will continue to attempt initialization.")
+
+
+
+
+    def refresh_static(self, _web_config):
 
         def make_deps(_controller):
             _result = "[" + str(",").join(['"' + _curr_dep + '"' for _curr_dep in _controller["dependencies"]])
@@ -70,43 +96,42 @@ class CherryPyPlugins(object):
         _menus = []
         # has_right(object_id_right_admin_everything, kwargs["user"])
         for _curr_plugin_key, _curr_plugin_info in self.plugins.items():
-            if "web" in _curr_plugin_info:
-                if "client" in _curr_plugin_info["web"]:
-                    _curr_client = _curr_plugin_info["web"]["client"]
-                    # Mount the static libraries
-                    _curr_client[web_config.update({
-                        _curr_client["mountpoint"]: {
-                            "tools.staticdir.on": True,
-                            "tools.staticdir.dir": os.path.join(_curr_plugin_info["baseDirectoryName"], "web",
-                                                                "client"),
-                            "tools.trailing_slash.on": True
-                        }
-                    })
-                    if _curr_client["mountpoint"][0] == "/":
-                        _systemjs += "System.config({\"packages\": {\"" + _curr_client["mountpoint"][1:] + "\": {\"defaultExtension\": \"ts\"}}});\n"
-                    else:
-                        _systemjs += "System.config({\"packages\": {\"" + _curr_client["mountpoint"] + "\": {\"defaultExtension\": \"ts\"}}});\n"
+            if "admin-ui" in _curr_plugin_info:
+                _curr_client = _curr_plugin_info["admin-ui"]
+                # Mount the static libraries
+                _web_config.update({
+                    _curr_client["mountpoint"]: {
+                        "tools.staticdir.on": True,
+                        "tools.staticdir.dir": os.path.join(_curr_plugin_info["baseDirectoryName"], "web",
+                                                            "client"),
+                        "tools.trailing_slash.on": True
+                    }
+                })
+                if _curr_client["mountpoint"][0] == "/":
+                    _systemjs += "System.config({\"packages\": {\"" + _curr_client["mountpoint"][1:] + "\": {\"defaultExtension\": \"ts\"}}});\n"
+                else:
+                    _systemjs += "System.config({\"packages\": {\"" + _curr_client["mountpoint"] + "\": {\"defaultExtension\": \"ts\"}}});\n"
 
-                    if "controllers" in _curr_client:
-                        for _curr_controller in _curr_client["controllers"]:
-                            _imports += "import {" + _curr_controller["name"] + "} from \"" + _curr_controller[
-                                "module"] + "\"\n";
-                            _controllers += '    app.controller("' + _curr_controller["name"] + '", ' + make_deps(
-                                _curr_controller) + ");\n"
-                    if "directives" in _curr_client:
-                        for _curr_directive in _curr_client["directives"]:
-                            _imports += "import {" + _curr_directive["name"] + "} from \"" + _curr_directive[
-                                "module"] + "\"\n";
-                            _directives += '    app.directive("' + _curr_directive["name"] + '", ' + _curr_directive[
-                                "name"] + ");\n"
-                    if "routes" in _curr_client:
-                        for _curr_route in _curr_client["routes"]:
-                            _routes += "    .when(\"" + _curr_route["path"] + "\", " + json.dumps(
-                                _curr_route["route"]) + ")\n"
+                if "controllers" in _curr_client:
+                    for _curr_controller in _curr_client["controllers"]:
+                        _imports += "import {" + _curr_controller["name"] + "} from \"" + _curr_controller[
+                            "module"] + "\"\n";
+                        _controllers += '    app.controller("' + _curr_controller["name"] + '", ' + make_deps(
+                            _curr_controller) + ");\n"
+                if "directives" in _curr_client:
+                    for _curr_directive in _curr_client["directives"]:
+                        _imports += "import {" + _curr_directive["name"] + "} from \"" + _curr_directive[
+                            "module"] + "\"\n";
+                        _directives += '    app.directive("' + _curr_directive["name"] + '", ' + _curr_directive[
+                            "name"] + ");\n"
+                if "routes" in _curr_client:
+                    for _curr_route in _curr_client["routes"]:
+                        _routes += "    .when(\"" + _curr_route["path"] + "\", " + json.dumps(
+                            _curr_route["route"]) + ")\n"
 
 
-                    if "menus" in _curr_client:
-                        _menus += _curr_client["menus"]
+                if "menus" in _curr_client:
+                    _menus += _curr_client["menus"]
 
         _result = _imports + "\nexport function initPlugins(app){\n" + _controllers + "\n" + _directives + "\n};\n" + \
                   "export function initRoutes($routeProvider) {\n$routeProvider" + _routes + "return $routeProvider }"
@@ -134,12 +159,6 @@ class CherryPyPlugins(object):
         _definitions["baseDirectoryName"] = _dirname
         print("Loading plugin in " + _definitions["description"])
 
-        # init relevant namespaces
-        for _curr_namespace in _definitions["namespaces"].keys():
-            self.broker.definitions[_curr_namespace]
-
-            # Load schemas from /schema
-        _schema_dir = os.path.join(_dirname, "schemas")
 
         def set_unresolved(_name, _schema):
             _namespace = _schema["namespace"]
@@ -148,7 +167,11 @@ class CherryPyPlugins(object):
             else:
                 self._unresolved_schemas[_namespace][_name] = _schema
 
+
+        # Load schemas from /schema
+        _schema_dir = os.path.join(_dirname, "schemas")
         if os.path.exists(_schema_dir):
+
             self.schema_tools.load_schemas_from_directory(_schema_dir)
             _schema_dir_list = os.listdir(_schema_dir)
 
@@ -157,30 +180,40 @@ class CherryPyPlugins(object):
                     print("Loading schema " + _curr_file)
                     with open(os.path.join(_schema_dir, _curr_file)) as _f_def:
                         _curr_schema = json.load(_f_def)
-                    set_unresolved(_curr_file, _curr_schema)
+                    if "namespace" in _curr_schema:
+                        self.definitions[_curr_schema["namespace"]]
+                        set_unresolved(_curr_file, _curr_schema)
+                    else:
+                        print(make_log_prefix() + "No namespace defined in " + _curr_file + ", ignoring.")
         else:
-            print("No schema folder, not loading schemas.")
+            print(make_log_prefix() + "No schema folder, not loading schemas.")
 
-
-            # Load check for /web
 
         # Add server side stuff
 
-        if "broker" in _definitions:
-            _broker_definition = _definitions["broker"]
-            _hooks_filename = _broker_definition["hooks_module"]
+        if "hooks" in _definitions:
+            _broker_definition = _definitions["hooks"]
+            hooks_modulename = _broker_definition["hooks_module"]
             sys.path.append(_dirname)
-            _module = importlib.import_module(_hooks_filename)
+            try:
+                _module = importlib.import_module(hooks_modulename)
+            except Exception as e:
+                print(self.log_prefix + "An error occured importing " + hooks_modulename + " in " + _definitions["description"] + ":" + str(e))
+                if "FailOnError" in _definitions and _definitions["FailOnError"]:
+                    print(self.log_prefix + "Setting as Failed. No more hooks will be called for this plugin.")
+                    _definitions["failed"] = True
+                else:
+                    print(self.log_prefix + "Ignores error, this plugin will continue to attempt initialization.")
+
             _broker_definition["hooks_instance"] = _module
 
 
-
         # Add definitions
-        self.broker.definitions.add_cumulatively(_definitions["namespaces"])
+        self.definitions.add_cumulatively(_definitions["namespaces"])
 
         return _definitions
 
-    def refresh_plugins(self, _repository_parent_folder):
+    def refresh_plugins(self, _plugin_dir):
         # If < 30 seconds since last refresh (or some other principle)
         _curr_time = time.time()
         if self.last_refresh_time - _curr_time > 30:
@@ -190,7 +223,7 @@ class CherryPyPlugins(object):
         self._unresolved_schemas = {}
 
         # Find plugins directory
-        _plugin_dir = os.path.join(os.path.expanduser(_repository_parent_folder), "plugins")
+
         if not os.path.exists(_plugin_dir):
             raise Exception("Plugin initialisation failed, no plugin directory where expected(" + _plugin_dir + ")")
 
@@ -210,15 +243,14 @@ class CherryPyPlugins(object):
         # Resolve all schemas
         for _curr_namespace_key, _curr_namespace in self._unresolved_schemas.items():
             for _curr_schema_key, _curr_schema in _curr_namespace.items():
-                self.broker.definitions[_curr_namespace_key]["schemas"][
+                self.definitions[_curr_namespace_key]["schemas"][
                     _curr_schema_key] = self.schema_tools.resolveSchema(
                     _curr_schema)
             print("Schemas in " + _curr_namespace_key + " loaded and resolved:  " +
                   str.join(", ",
                            ["\"" + _curr_schema["title"] + "\"" for _curr_schema in
-                            self.broker.definitions[_curr_namespace_key]["schemas"].values()]))
+                            self.definitions[_curr_namespace_key]["schemas"].values()]))
 
-        self.refresh_static()
 
         # Remember refresh
         self.last_refresh_time = _curr_time
@@ -250,7 +282,7 @@ class CherryPyPlugins(object):
         _scheme = urlparse(uri).scheme
         _netloc = urlparse(uri).netloc
 
-        if _scheme in self.broker.definitions and _netloc in self.broker.definitions[_scheme]:
-            return self.broker.definitions[_scheme][_netloc]
+        if _scheme in self.definitions and _netloc in self.definitions[_scheme]:
+            return self.definitions[_scheme][_netloc]
         else:
             return self._unresolved_schemas[_scheme][_netloc]

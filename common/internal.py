@@ -53,16 +53,16 @@ def load_settings():
     # TODO: Write settings documentation.(OB1-149)
     if platform.system().lower() in ["linux", "darwin"]:
         # Linux/OSX
-        _default_settings_folder = os.path.join(os.path.expanduser("~"), "optimalframework", "main.cfg")
+        _default_settings_folder = os.path.join(os.path.expanduser("~"), "optimalframework")
     elif platform.system().lower() == "windows":
         # Windows
-        _default_settings_folder = os.path.join(os.getenv("APPDATA"), "optimalframework", "main.cfg")
+        _default_settings_folder = os.path.join(os.getenv("APPDATA"), "optimalframework")
     else:
         raise Exception("Unsupported platform: " + platform.system().lower())
 
-    _cfg_path = os.path.expanduser(os.getenv("OPTIMAL_FW_CFG", _default_settings_folder))
-    print("Config path set to: " + _cfg_path)
-    return INISettings(_cfg_path)
+    _cfg_filename = os.path.expanduser(os.getenv("OPTIMAL_FW_CFG", os.path.join(_default_settings_folder, "main.cfg")))
+    print("Config path set to: " + _cfg_filename)
+    return INISettings(_cfg_filename)
 
 
 def signal_handler_unix(_signal, _frame):
@@ -114,3 +114,10 @@ def register_signals(_stop_handler):
         signal.signal(signal.SIGTERM, signal_handler_unix)
         signal.signal(signal.SIGQUIT, signal_handler_unix)
         signal.signal(signal.SIGHUP, signal_handler_unix)
+
+
+def make_log_prefix(_address):
+    """
+    Create the log prefix for a broker, used in log texts.
+    """
+    return str(os.getpid()) + "-" + _address + ":"

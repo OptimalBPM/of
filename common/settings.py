@@ -6,6 +6,7 @@ Contains functionality for reading settings from ini-files
 """
 
 import configparser
+import os
 
 
 class INISettings(object):
@@ -13,11 +14,20 @@ class INISettings(object):
 
     parser = None
     filename = None
-
+    dirname = None
     def reload(self, _filename):
         """Reload all information"""
         self.parser.read(_filename)
         self.filename = _filename
+        self.dirname = os.path.dirname(_filename)
+
+    def handle_path(self, _path):
+        if os.path.isabs(_path):
+            return _path
+        elif _path[0] == "~":
+            return os.path.expanduser(_path)
+        else:
+            return os.path.join(self.dirname, _path)
 
     def get(self, _section, _option, _default=None):
         """Get a certain option"""
@@ -28,6 +38,10 @@ class INISettings(object):
                 return self.parser.get(_section, _option)
         else:
             return _default
+
+
+    def get_path(self, _section, _option, _default=None):
+        return self.handle_path(self.get(_section, _option, _default))
 
     def __init__(self, _filename = None):
         """Constructor"""

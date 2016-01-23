@@ -11,8 +11,6 @@ from multiprocessing import Queue
 import cherrypy
 from mbe.constants import object_id_right_admin_everything
 from mbe.groups import has_right
-from of.broker.cherrypy_api.plugins import CherryPyPlugins
-from of.broker.lib.definitions import Definitions
 
 import of.broker.lib.messaging.websocket
 from mbe.authentication import init_authentication
@@ -47,10 +45,6 @@ class CherryPyBroker(object):
     #: Plugin management
     plugins = None
 
-    #: All definitions, schemas, and so on
-    definitions = None
-
-
     #: A reference to the stop broker function in the main thread
     stop_broker = None
 
@@ -58,8 +52,7 @@ class CherryPyBroker(object):
     database_access = None
 
 
-    def __init__(self, _database_access, _process_id, _address, _log_prefix, _stop_broker, _repository_parent_folder,
-                 _web_config):
+    def __init__(self, _database_access, _process_id, _address, _log_prefix, _stop_broker, _plugins, _definitions):
         """
         Initializes the broker web service and includes and initiates the other parts of the API as well
         :param _database_access: A DatabaseAccess instance for database connectivity
@@ -72,8 +65,6 @@ class CherryPyBroker(object):
         print(self.log_prefix + "Initializing broker class.")
 
         self.peers = {}
-
-        self.definitions = Definitions()
 
         self.stop_broker = _stop_broker
         self.process_id = _process_id
@@ -90,13 +81,8 @@ class CherryPyBroker(object):
 
         self.node = CherryPyNode(_database_access=_database_access)
 
-        self.plugins = CherryPyPlugins(_repository_parent_folder=_repository_parent_folder,
-                                       _database_access=_database_access,
-                                       _broker_object=self)
-
-
-        # TODO: Break out definitions and definition handling in separate class/module definitions["qal"], definition.load_definition
-
+        self.plugins = _plugins
+        _plugins.call_hook("init_webserver", _root_object=self, _definitions=_definitions)
         print(self.log_prefix + "Initializing broker class done.")
 
 

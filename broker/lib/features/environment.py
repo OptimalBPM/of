@@ -16,7 +16,7 @@ from of.common.queue.monitor import Monitor
 import of.common.messaging.websocket
 
 from of.broker.lib.messaging.websocket import MockupWebSocket
-from optimalbpm.testing.init_env import init_env
+from of.common.testing.init_env import init_env
 
 __author__ = 'nibo'
 

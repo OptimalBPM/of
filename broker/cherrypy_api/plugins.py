@@ -12,7 +12,7 @@ import sys
 
 import cherrypy
 
-from common.internal import make_log_prefix
+from of.common.internal import make_log_prefix
 from mbe.cherrypy import aop_check_session
 
 

@@ -16,7 +16,7 @@ from requests.cookies import RequestsCookieJar
 
 from of.common.messaging.factory import get_current_login
 
-from qal.common.discover import get_python_versions
+
 # TODO: get_python_versions should be duplicated into of.common.* (PROD-94)
 
 __author__ = 'Nicklas Borjesson'

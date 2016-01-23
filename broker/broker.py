@@ -10,7 +10,7 @@ from bson.objectid import ObjectId
 
 from pymongo.mongo_client import MongoClient
 
-from common.internal import make_log_prefix
+from of.common.internal import make_log_prefix
 from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
 
 from mbe.access import DatabaseAccess

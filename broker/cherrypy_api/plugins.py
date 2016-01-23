@@ -8,6 +8,7 @@ import time
 from urllib.parse import urlparse
 from uuid import UUID
 import sys
+import broker
 
 import cherrypy
 
@@ -40,12 +41,11 @@ class CherryPyPlugins(object):
     systemjs_init = None
     """A list of the available menus"""
     menus = None
+    """Plug-in web settings"""
+    menus = None
+    def __init__(self, _repository_parent_folder, _schema_tools):
 
-    def __init__(self, _repository_parent_folder, _database_access, _broker_object):
-        self.broker = _broker_object
-
-
-        self.schema_tools = _database_access.schema_tools
+        self.schema_tools = _schema_tools
         self.last_refresh_time = -31
         self.refresh_plugins(_repository_parent_folder)
 
@@ -74,7 +74,7 @@ class CherryPyPlugins(object):
                 if "client" in _curr_plugin_info["web"]:
                     _curr_client = _curr_plugin_info["web"]["client"]
                     # Mount the static libraries
-                    self.broker.web_config.update({
+                    _curr_client[web_config.update({
                         _curr_client["mountpoint"]: {
                             "tools.staticdir.on": True,
                             "tools.staticdir.dir": os.path.join(_curr_plugin_info["baseDirectoryName"], "web",
@@ -164,18 +164,15 @@ class CherryPyPlugins(object):
 
             # Load check for /web
 
-        if "web" in _definitions:
-            # Add server side stuff
+        # Add server side stuff
 
-            if "server" in _definitions["web"]:
-                _server_defs = _definitions["web"]["server"]
-                for _curr_def in _server_defs:
-                    sys.path.append(os.path.join(_dirname, "web"))
-                    _module = importlib.import_module("server." + _curr_def["module"])
-                    _class_name = _curr_def["class"]
-                    _class = getattr(_module, _class_name)
-                    self.broker.__dict__[_curr_def["path"]] = _class(self.broker)
-                    print("Added " + _class_name + " at " + _curr_def["path"])
+        if "broker" in _definitions:
+            _broker_definition = _definitions["broker"]
+            _hooks_filename = _broker_definition["hooks_module"]
+            sys.path.append(_dirname)
+            _module = importlib.import_module(_hooks_filename)
+            _broker_definition["hooks_instance"] = _module
+
 
 
         # Add definitions

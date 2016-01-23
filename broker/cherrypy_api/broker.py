@@ -50,8 +50,6 @@ class CherryPyBroker(object):
     #: All definitions, schemas, and so on
     definitions = None
 
-    #: A storage of the web server web config, used during initialization
-    web_config = None
 
     #: A reference to the stop broker function in the main thread
     stop_broker = None
@@ -74,7 +72,7 @@ class CherryPyBroker(object):
         print(self.log_prefix + "Initializing broker class.")
 
         self.peers = {}
-        self.web_config = _web_config
+
         self.definitions = Definitions()
 
         self.stop_broker = _stop_broker

@@ -7,6 +7,7 @@ from multiprocessing import Process
 from time import sleep
 
 # The directory of the current file
+from broker.cherrypy_api.plugins import CherryPyPlugins
 
 script_dir = os.path.dirname(__file__)
 
@@ -47,6 +48,8 @@ Global variables
 
 #: The peer address of the broker
 _address = ""
+#: A SchemaTools instance, used across the broker TODO: Is this thread/process safe?(OB1-149)
+_schema_tools = None
 #: A DatabaseAccess instance, used across the broker TODO: Is this thread/process safe?(OB1-149)
 _database_access = None
 #: The repository root
@@ -57,8 +60,10 @@ _process_id = None
 _root = None
 #: The WebSocketPlugin instance
 _web_socket_plugin = None
-# The web configuration
-_web_config = None
+# The web server configuration
+web_config = None
+# The plugins instance
+_plugins = None
 
 def make_log_prefix():
     """
@@ -74,7 +79,9 @@ def start_broker():
     Starts the broker; Loads settings, connects to database, registers process and starts the web server.
     """
 
-    global _process_id, _database_access, _address, _web_socket_plugin, _repository_parent_folder, _web_config
+    global _process_id, _database_access, _address, _web_socket_plugin, _repository_parent_folder, \
+        web_config, _schema_tools
+
     _process_id = str(ObjectId())
 
     print("=====start_broker===============================")
@@ -86,6 +93,15 @@ def start_broker():
         print("Error loading settings:" + str(e))
         return
 
+    _repository_parent_folder = _settings.get("broker", "repository_folder", _default="broker_repositories")
+
+    if not _repository_parent_folder or _repository_parent_folder == "":
+            print("Fatal error: Broker cannot start, missing [broker] address setting in configuration file.")
+            raise Exception("Broker cannot start, missing address.")
+    print("Load plugin data")
+    # Load all plugin data
+    _plugins = CherryPyPlugins(_repository_parent_folder=_repository_parent_folder, _database_access=_database_access)
+    _plugins.callhook("before_reading")
     print("===register signal handlers===")
     register_signals(stop_broker)
 
@@ -116,7 +132,8 @@ def start_broker():
                                                         _name="Broker instance(" + _address + ")"),
                           _user=None,
                           _allow_save_id=True)
-    _repository_parent_folder = _settings.get("broker", "repository_folder", _default=None)
+
+    # TODO: It is possible that one would like to initialize, or at least read the plugins *before* trying to connect to the database
 
     # Must have a valid CherryPy version
     if hasattr(cherrypy.engine, "subscribe"):  # CherryPy >= 3.1
@@ -147,10 +164,9 @@ def start_broker():
         "server.ssl_certificate": os.path.join(ssl_path(), "optimalframework_test_cert.pem"),
         "server.ssl_private_key": os.path.join(ssl_path(), "optimalframework_test_privkey.pem")
     })
-
     print(make_log_prefix() + "Starting CherryPy, ssl at " + os.path.join(ssl_path(), "optimalframework_test_privkey.pem"))
 
-    _web_config = {
+    web_config = {
         # The UI root
         "/": {
             "tools.staticdir.on": True,
@@ -166,17 +182,20 @@ def start_broker():
     }
 
     global _root
-    _root = CherryPyBroker(_database_access=_database_access, _process_id=_process_id, _address=_address,
-                           _log_prefix=make_log_prefix(), _stop_broker=stop_broker,
-                           _repository_parent_folder=_repository_parent_folder, _web_config = _web_config)
 
-    cherrypy._global_conf_alias.update(_web_config)
+
+    cherrypy._global_conf_alias.update(web_config)
     _web_socket_plugin = WebSocketPlugin(cherrypy.engine)
     _web_socket_plugin.subscribe()
     cherrypy.tools.websocket = WebSocketTool()
-    print(make_log_prefix() + "Starting web server.")
+
     cherrypy.engine.signals.bus.signal_handler.handlers = {'SIGUSR1': cherrypy.engine.signals.bus.graceful}
-    cherrypy.quickstart(_root, "/", _web_config)
+    _root = CherryPyBroker(_database_access=_database_access, _process_id=_process_id, _address=_address,
+                           _log_prefix=make_log_prefix(), _stop_broker=stop_broker,
+                           _repository_parent_folder=_repository_parent_folder, _plugins=_plugins)
+    print(make_log_prefix() + "Starting web server.")
+    _plugins.call_hook("pre_webserver_start", web_config = web_config, globals = globals())
+    cherrypy.quickstart(_root, "/", web_config)
 
 
 def stop_broker(_reason, _restart=None):

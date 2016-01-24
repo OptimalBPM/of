@@ -177,6 +177,9 @@ class CherryPyPlugins(object):
                 self.plugins[_curr_file] = self.load_plugin(os.path.join(_plugin_dir, _curr_file))
                 print("Loaded plugin " + _curr_file)
 
+        # Manually add the optimal framework ("of") namespace
+        self.definitions["of"]["schemas"] = self.schema_tools.json_schema_objects
+        self.schema_tools.resolver.handlers = {"of": self.uri_handler}
 
         # Add same resolver for all the rest of the namespaces (these resolvers will persist throughout the system)
         self.schema_tools.resolver.handlers.update(
@@ -185,9 +188,10 @@ class CherryPyPlugins(object):
         # Resolve all schemas
         for _curr_namespace_key, _curr_namespace in self._unresolved_schemas.items():
             for _curr_schema_key, _curr_schema in _curr_namespace.items():
-                self.definitions[_curr_namespace_key]["schemas"][
-                    _curr_schema_key] = self.schema_tools.resolveSchema(
-                    _curr_schema)
+                _resolved_schema =  self.schema_tools.resolveSchema(_curr_schema)
+                self.definitions[_curr_namespace_key]["schemas"][_curr_schema_key] = _resolved_schema
+                self.schema_tools.json_schema_objects[_resolved_schema["schemaId"]] = _resolved_schema
+
             print("Schemas in " + _curr_namespace_key + " loaded and resolved:  " +
                   str.join(", ",
                            ["\"" + _curr_schema["title"] + "\"" for _curr_schema in

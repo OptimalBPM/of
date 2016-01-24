@@ -102,7 +102,7 @@ def start_broker():
 
     # TODO: Reorganize. It is likely that almost everything but external database credentials should be stored in the db PROD-105
 
-    # Initialize schema tools
+    # Initialize schema tools (of_uri_handler is later replaced by the general one)
     _schema_tools = SchemaTools(_json_schema_folders=[os.path.join(script_dir, "../schemas/")],
                                 _uri_handlers={"of": of_uri_handler})
 

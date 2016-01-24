@@ -1,24 +1,20 @@
 """
 This module exposes the Optimal BPM Broker API as a web service through a CherryPy module
+Note that most of its initialisation is performed in the startup ../broker.py
 """
 
 import copy
-import json
-import threading
 import time
 from multiprocessing import Queue
 
 import cherrypy
-from mbe.constants import object_id_right_admin_everything
-from mbe.groups import has_right
 
 import of.broker.lib.messaging.websocket
-from mbe.authentication import init_authentication
-from mbe.cherrypy import CherryPyNode, aop_login_json, aop_check_session
+from mbe.cherrypy import aop_login_json, aop_check_session
+from mbe.constants import object_id_right_admin_everything
+from mbe.groups import has_right
 from mbe.node import sanitize_node
-from of.broker.lib.messaging.handler import BrokerWebSocketHandler
 from of.common.messaging.utils import get_environment_data
-from of.common.queue.monitor import Monitor
 from of.schemas.constants import peer_type_to_schema_id
 
 __author__ = 'Nicklas Borjesson'
@@ -32,27 +28,17 @@ class CherryPyBroker(object):
     """
     #: The log prefix of the broker
     log_prefix = None
+
     #: A sessionId-indexed dictionary of logged in peers
     peers = None
 
-    #: The monitor monitors the message queue.
-    monitor = None
-
     #: Administrative web service
     admin = None
-    #: Node management web service(MBE)
-    node = None
+
     #: Plugin management
     plugins = None
 
-    #: A reference to the stop broker function in the main thread
-    stop_broker = None
-
-    #: A database access instance
-    database_access = None
-
-
-    def __init__(self, _database_access, _process_id, _address, _log_prefix, _stop_broker, _plugins, _definitions):
+    def __init__(self, _process_id, _address, _log_prefix):
         """
         Initializes the broker web service and includes and initiates the other parts of the API as well
         :param _database_access: A DatabaseAccess instance for database connectivity
@@ -63,30 +49,11 @@ class CherryPyBroker(object):
         """
         self.log_prefix = _log_prefix
         print(self.log_prefix + "Initializing broker class.")
-
         self.peers = {}
-
-        self.stop_broker = _stop_broker
         self.process_id = _process_id
         self.address = _address
-        self.database_access = _database_access
 
-        init_authentication(_database_access)
-        self.monitor = Monitor(_handler=BrokerWebSocketHandler(_process_id, _peers=self.peers,
-                                                               _database_access=_database_access,
-                                                               _schema_tools=_database_access.schema_tools,
-                                                               _address=_address), _logging_function=None)
-
-        of.common.messaging.websocket.monitor = self.monitor
-
-        self.node = CherryPyNode(_database_access=_database_access)
-
-        self.plugins = _plugins
-        _plugins.call_hook("init_webserver", _root_object=self, _definitions=_definitions)
         print(self.log_prefix + "Initializing broker class done.")
-
-
-
 
     @cherrypy.expose
     @cherrypy.tools.json_out(content_type='application/json')
@@ -112,7 +79,7 @@ class CherryPyBroker(object):
             _peer_type = _data["peerType"]
         except KeyError as e:
             print(self.log_prefix + "Register: A peer at " + str(
-                cherrypy.request.remote.ip) + " tried logging without the " + str(e) + " key in the dict.")
+                    cherrypy.request.remote.ip) + " tried logging without the " + str(e) + " key in the dict.")
             return None
 
         try:
@@ -144,14 +111,15 @@ class CherryPyBroker(object):
             }
 
             print(self.log_prefix + "Register: A peer at " + str(
-                cherrypy.request.remote.ip) + " registered with this data:" + str(_data))
+                    cherrypy.request.remote.ip) + " registered with this data:" + str(_data))
             return {"session_id": _session_id, "settings": _settings}
 
         except Exception as e:
             time.sleep(3)
             # report invalid login attempt
             print(self.log_prefix + "Register: A peer at " + str(
-                cherrypy.request.remote.ip) + " failed logging in with this data:" + str(_data) + "\nError:" + str(e))
+                    cherrypy.request.remote.ip) + " failed logging in with this data:" + str(_data) + "\nError:" + str(
+                    e))
 
             return None
 
@@ -160,7 +128,7 @@ class CherryPyBroker(object):
         """
         Called when a client wants to upgrade to a websocket. Currently only implemented for logging purposes.
         """
-        print("Broker: Got an /agent request.")
+        print(self.log_prefix + "Broker: Got an /ws upgrade web socket request.")
 
     @cherrypy.expose
     def status(self):
@@ -181,7 +149,7 @@ class CherryPyBroker(object):
         :return: A list of all logged in peers
         """
 
-        # TODO: Should be governed by a admin peers right (PROD-20)
+        # TODO: Should be governed by a admin peers right and perhaps moved to /admin (PROD-20)
         _result = []
         # Filter out the unserializable web socket
         for _session in self.peers.values():
@@ -192,37 +160,3 @@ class CherryPyBroker(object):
 
         print("Returning a list of peers:" + str(_result))
         return _result
-
-
-    def broker_ctrl(self, _command, _reason, _user):
-        """
-        Controls the broker's running state
-
-        :param _command: Can be "stop" or "restart".
-        :param _user: A user instance
-        """
-        print("broker.broker_control: Got the command " + str(_command))
-        # TODO: There should be a log item written with reason and userid.(OB1-132)
-        # TODO: UserId should also be appended to reason below.(OB1-132)
-
-        def _command_local(_local_command):
-
-            if _local_command == "restart":
-                self.stop_broker(_reason=_reason, _restart=True)
-            if _local_command == "stop":
-                self.stop_broker(_reason=_reason, _restart=False)
-
-        _restart_thread = threading.Thread(target=_command_local, args=[_command])
-        _restart_thread.start()
-
-        return {}
-
-
-    @cherrypy.expose
-    @cherrypy.tools.json_in()
-    @cherrypy.tools.json_out(content_type='application/json')
-    @aop_check_session
-    def broker_control(self, **kwargs):
-        return self.broker_ctrl(cherrypy.request.json["command"],
-                                                   cherrypy.request.json["reason"],
-                                                   kwargs["user"])

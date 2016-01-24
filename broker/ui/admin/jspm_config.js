@@ -7,19 +7,19 @@ System.config({
   },
 
   packages: {
-    "scripts": {
+    "/admin/scripts": {
       "defaultExtension": "ts"
     },
-    "controllers": {
+    "/admin/controllers": {
       "defaultExtension": "ts"
     },
-    "directives": {
+    "/admin/directives": {
       "defaultExtension": "ts"
     },
-    "plugins": {
+    "/plugins": {
       "defaultExtension": "ts"
     },
-    "types": {
+    "/admin/types": {
       "defaultExtension": "ts"
     }
   },

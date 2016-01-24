@@ -5,16 +5,14 @@ from multiprocessing import Process
 from time import sleep
 
 import cherrypy
-
 from bson.objectid import ObjectId
-
 from pymongo.mongo_client import MongoClient
 
-from of.common.internal import make_log_prefix
-from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
-
+from common.queue.monitor import Monitor
 from mbe.access import DatabaseAccess
+from mbe.authentication import init_authentication
 from mbe.schema import SchemaTools
+from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
 
 __author__ = "Nicklas Borjesson"
 
@@ -24,7 +22,9 @@ script_dir = os.path.dirname(__file__)
 # Add relative optimal bpm path to be able to load the modules of this repository properly
 sys.path.append(os.path.join(script_dir, "../../"))
 
+# IMPORTANT: ALL OPTIMAL FRAMEWORK IMPORTS MUST BE AFTER ADDING THE PATH
 from of.broker import run_broker
+from of.common.internal import make_log_prefix
 from of.common.internal import load_settings, register_signals
 from of.common.messaging.factory import store_system_process_document, log_process_state_message
 from of.broker.lib.messaging.websocket import BrokerWebSocket
@@ -33,8 +33,9 @@ from of.schemas.validation import of_uri_handler
 from of.broker.cherrypy_api.broker import CherryPyBroker
 from of.broker.cherrypy_api.plugins import CherryPyPlugins
 from of.broker.lib.definitions import Definitions
-
-
+from of.broker.cherrypy_api.admin import CherryPyAdmin
+from of.broker.lib.messaging.handler import BrokerWebSocketHandler
+import of.common.messaging.websocket
 
 if os.name == "nt":
     from of.common.win32svc import write_to_event_log
@@ -69,6 +70,7 @@ _definitions = None
 # The prefix to all logging messages
 _log_prefix = None
 
+
 def start_broker():
     """
     Starts the broker; Loads settings, connects to database, registers process and starts the web server.
@@ -88,7 +90,7 @@ def start_broker():
         print("Error loading settings:" + str(e))
 
         return
-    
+
     # An address is completely neccessary.
     _address = _settings.get("broker", "address", _default=None)
     if not _address or _address == "":
@@ -96,12 +98,12 @@ def start_broker():
         raise Exception("Broker cannot start, missing address.")
 
     _log_prefix = make_log_prefix(_address)
- 
+
     # TODO: Reorganize. It is likely that almost everything but external database credentials should be stored in the db PROD-105
 
     # Initialize schema tools
-    _schema_tools = SchemaTools(_json_schema_folders = [os.path.join(script_dir, "../schemas/")],
-                                      _uri_handlers={"of": of_uri_handler})
+    _schema_tools = SchemaTools(_json_schema_folders=[os.path.join(script_dir, "../schemas/")],
+                                _uri_handlers={"of": of_uri_handler})
 
     _definitions = Definitions()
 
@@ -111,13 +113,11 @@ def start_broker():
 
     # Load all plugin data
     _plugins = CherryPyPlugins(_plugin_dir=_plugin_dir, _schema_tools=_schema_tools, _definitions=_definitions,
-                               _log_prefix = _log_prefix)
+                               _log_prefix=_log_prefix)
 
     _plugins.call_hook("before_reading", _globals=globals())
     print("===register signal handlers===")
     register_signals(stop_broker)
-
-
 
     # Connect to the database
     _host = _settings.get("database", "host", _default="127.0.0.1")
@@ -151,7 +151,6 @@ def start_broker():
         # Figure out the path to the ssl-certificates
         # TODO: Load from database instead. Or not? (OB1-133)
         return os.path.join(os.path.expanduser("~"), "optimalframework")
-
 
     # Initialize CherryPy:s global configuration; note that this could be moved into a configuration file
     cherrypy.config.update({
@@ -188,20 +187,43 @@ def start_broker():
 
     global _root
 
-
     cherrypy._global_conf_alias.update(_web_config)
     _web_socket_plugin = WebSocketPlugin(cherrypy.engine)
     _web_socket_plugin.subscribe()
     cherrypy.tools.websocket = WebSocketTool()
 
     cherrypy.engine.signals.bus.signal_handler.handlers = {'SIGUSR1': cherrypy.engine.signals.bus.graceful}
-    _root = CherryPyBroker(_database_access=_database_access, _process_id=_process_id, _address=_address,
-                           _log_prefix=_log_prefix, _stop_broker=stop_broker, _plugins=_plugins,
-                           _definitions=_definitions)
-    # Refres the
+
+    # Initialize the decorator-based authentication framework
+    init_authentication(_database_access)
+
+    # Initialize root UI
+    _root = CherryPyBroker(_process_id=_process_id, _address=_address,
+                           _log_prefix=_log_prefix)
+    # Initialize messaging
+    of.common.messaging.websocket.monitor = Monitor(_handler=BrokerWebSocketHandler(_process_id, _peers=_root.peers,
+                                                                                    _database_access=_database_access,
+                                                                                    _schema_tools=_database_access.schema_tools,
+                                                                                    _address=_address),
+                                                    _logging_function=None)
+
+    _root.plugins = _plugins
+    _plugins.call_hook("init_ui", _root_object=_root, _definitions=_definitions)
+
+    # Initialize admin user interface /admin
+    _admin = CherryPyAdmin(_database_access=_database_access, _process_id=_process_id,
+                           _address=_address, _log_prefix=_log_prefix, _stop_broker=stop_broker,
+                           _definitions=_definitions, _monitor=of.common.messaging.websocket.monitor)
+    _admin.plugins = _plugins
+
+    _root.admin = _admin
+    _plugins.call_hook("init_admin_ui", _root_object=_admin, _definitions=_definitions)
+
+    # Generate the static content, initialisation
     _plugins.refresh_static(_web_config)
+
     print(_log_prefix + "Starting web server.")
-    _plugins.call_hook("pre_webserver_start", web_config=_web_config, globals = globals())
+    _plugins.call_hook("pre_webserver_start", web_config=_web_config, globals=globals())
     cherrypy.quickstart(_root, "/", _web_config)
 
 
@@ -254,7 +276,6 @@ def stop_broker(_reason, _restart=None):
 
     try:
 
-
         print(_log_prefix + "Unsubscribing the web socket plugin...")
         _web_socket_plugin.unsubscribe()
 
@@ -287,7 +308,7 @@ def stop_broker(_reason, _restart=None):
     else:
         cherrypy.engine.exit()
         return _exit_status
-    # TODO: Add monitoring of processes and killing those not responding, log states to broker. (OB1-149)
+        # TODO: Add monitoring of processes and killing those not responding, log states to broker. (OB1-149)
 
 
 if __name__ == "__main__":

@@ -37,11 +37,11 @@ class CherryPyPlugins(object):
     broker = None
 
     """A init string for the client"""
-    client_init = None
+    admin_ui_init = None
     """A init string for SystemJS"""
-    systemjs_init = None
+    admin_systemjs_init = None
     """A list of the available menus"""
-    menus = None
+    admin_menus = None
     """Reference to the definition"""
     definitions = None
 
@@ -81,64 +81,6 @@ class CherryPyPlugins(object):
 
 
 
-
-    def refresh_static(self, _web_config):
-
-        def make_deps(_controller):
-            _result = "[" + str(",").join(['"' + _curr_dep + '"' for _curr_dep in _controller["dependencies"]])
-            return _result + ", " + _curr_controller["name"] + "]"
-
-        _imports = ""
-        _controllers = ""
-        _directives = ""
-        _routes = ""
-        _systemjs = ""
-        _menus = []
-        # has_right(object_id_right_admin_everything, kwargs["user"])
-        for _curr_plugin_key, _curr_plugin_info in self.plugins.items():
-            if "admin-ui" in _curr_plugin_info:
-                _curr_client = _curr_plugin_info["admin-ui"]
-                # Mount the static libraries
-                _web_config.update({
-                    _curr_client["mountpoint"]: {
-                        "tools.staticdir.on": True,
-                        "tools.staticdir.dir": os.path.join(_curr_plugin_info["baseDirectoryName"], "web",
-                                                            "client"),
-                        "tools.trailing_slash.on": True
-                    }
-                })
-                if _curr_client["mountpoint"][0] == "/":
-                    _systemjs += "System.config({\"packages\": {\"" + _curr_client["mountpoint"][1:] + "\": {\"defaultExtension\": \"ts\"}}});\n"
-                else:
-                    _systemjs += "System.config({\"packages\": {\"" + _curr_client["mountpoint"] + "\": {\"defaultExtension\": \"ts\"}}});\n"
-
-                if "controllers" in _curr_client:
-                    for _curr_controller in _curr_client["controllers"]:
-                        _imports += "import {" + _curr_controller["name"] + "} from \"" + _curr_controller[
-                            "module"] + "\"\n";
-                        _controllers += '    app.controller("' + _curr_controller["name"] + '", ' + make_deps(
-                            _curr_controller) + ");\n"
-                if "directives" in _curr_client:
-                    for _curr_directive in _curr_client["directives"]:
-                        _imports += "import {" + _curr_directive["name"] + "} from \"" + _curr_directive[
-                            "module"] + "\"\n";
-                        _directives += '    app.directive("' + _curr_directive["name"] + '", ' + _curr_directive[
-                            "name"] + ");\n"
-                if "routes" in _curr_client:
-                    for _curr_route in _curr_client["routes"]:
-                        _routes += "    .when(\"" + _curr_route["path"] + "\", " + json.dumps(
-                            _curr_route["route"]) + ")\n"
-
-
-                if "menus" in _curr_client:
-                    _menus += _curr_client["menus"]
-
-        _result = _imports + "\nexport function initPlugins(app){\n" + _controllers + "\n" + _directives + "\n};\n" + \
-                  "export function initRoutes($routeProvider) {\n$routeProvider" + _routes + "return $routeProvider }"
-
-        self.client_init = _result
-        self.systemjs_init = _systemjs
-        self.menus = _menus
 
     def load_plugin(self, _dirname):
         # Load definitions.json
@@ -255,21 +197,84 @@ class CherryPyPlugins(object):
         # Remember refresh
         self.last_refresh_time = _curr_time
 
-    @cherrypy.expose(alias="init.ts")
-    @aop_check_session
-    def initialize_plugins(self, **kwargs):
-        return self.client_init
+    def refresh_static(self, _web_config):
+        """
+        This function regenerates all the static content that is used to initialize the user interface parts of the
+        plugins.
+        :param _web_config: An instance of the CherryPy web configuration
+        """
 
-    @cherrypy.expose(alias="menus.json")
+        def make_deps(_controller):
+            _result = "[" + str(",").join(['"' + _curr_dep + '"' for _curr_dep in _controller["dependencies"]])
+            return _result + ", " + _curr_controller["name"] + "]"
+
+        _imports = ""
+        _controllers = ""
+        _directives = ""
+        _routes = ""
+        _systemjs = ""
+        _admin_menus = []
+        # has_right(object_id_right_admin_everything, kwargs["user"])
+        for _curr_plugin_key, _curr_plugin_info in self.plugins.items():
+            if "admin-ui" in _curr_plugin_info:
+                _curr_client = _curr_plugin_info["admin-ui"]
+                # Mount the static libraries
+                _web_config.update({
+                    _curr_client["mountpoint"]: {
+                        "tools.staticdir.on": True,
+                        "tools.staticdir.dir": os.path.join(_curr_plugin_info["baseDirectoryName"], "web",
+                                                            "client"),
+                        "tools.trailing_slash.on": True
+                    }
+                })
+                if _curr_client["mountpoint"][0] == "/":
+                    _systemjs += "System.config({\"packages\": {\"" + _curr_client["mountpoint"][1:] + "\": {\"defaultExtension\": \"ts\"}}});\n"
+                else:
+                    _systemjs += "System.config({\"packages\": {\"" + _curr_client["mountpoint"] + "\": {\"defaultExtension\": \"ts\"}}});\n"
+
+                if "controllers" in _curr_client:
+                    for _curr_controller in _curr_client["controllers"]:
+                        _imports += "import {" + _curr_controller["name"] + "} from \"" + _curr_controller[
+                            "module"] + "\"\n";
+                        _controllers += '    app.controller("' + _curr_controller["name"] + '", ' + make_deps(
+                            _curr_controller) + ");\n"
+                if "directives" in _curr_client:
+                    for _curr_directive in _curr_client["directives"]:
+                        _imports += "import {" + _curr_directive["name"] + "} from \"" + _curr_directive[
+                            "module"] + "\"\n";
+                        _directives += '    app.directive("' + _curr_directive["name"] + '", ' + _curr_directive[
+                            "name"] + ");\n"
+                if "routes" in _curr_client:
+                    for _curr_route in _curr_client["routes"]:
+                        _routes += "    .when(\"" + _curr_route["path"] + "\", " + json.dumps(
+                            _curr_route["route"]) + ")\n"
+
+
+                if "admin_menus" in _curr_client:
+                    _admin_menus += _curr_client["menus"]
+
+        _result = _imports + "\nexport function initPlugins(app){\n" + _controllers + "\n" + _directives + "\n};\n" + \
+                  "export function initRoutes($routeProvider) {\n$routeProvider" + _routes + "return $routeProvider }"
+
+        self.admin_ui_init = _result
+        self.admin_systemjs_init = _systemjs
+        self.admin_menus = _admin_menus
+
+    @cherrypy.expose(alias="admin_init.ts")
+    @aop_check_session
+    def initialize_admin_plugins(self, **kwargs):
+        return self.admin_ui_init
+
+    @cherrypy.expose(alias="admin_menus.json")
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
-    def initialize_menu(self, **kwargs):
+    def initialize_admin_menu(self, **kwargs):
         # TODO: Mirror rights here?
-        return self.menus
+        return self.admin_menus
 
-    @cherrypy.expose(alias="jspm_config.js")
-    def initialize_systemjs(self, **kwargs):
-        return self.systemjs_init
+    @cherrypy.expose(alias="admin_jspm_config.js")
+    def initialize_admin_systemjs(self, **kwargs):
+        return self.admin_systemjs_init
 
     def uri_handler(self, uri):
         """

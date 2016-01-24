@@ -244,10 +244,15 @@ def stop_broker(_reason, _restart=None):
     print(_log_prefix + "Process Id: " + str(_process_id))
     print(_log_prefix + "Reason:" + str(_reason))
 
-    print(_log_prefix + "Stop the monitor")
-    _root.monitor.stop()
-    time.sleep(1)
     _exit_status = 0
+    print(_log_prefix + "Stop the monitor")
+    try:
+        of.common.messaging.websocket.monitor.stop()
+    except Exception as e:
+        print(_log_prefix + "Exception trying to stop monitor:" + str(e))
+        _exit_status += 1
+    time.sleep(1)
+
 
     # TODO: Terminate all child processes.(OB1-149)
 
@@ -262,24 +267,6 @@ def stop_broker(_reason, _restart=None):
     except Exception as e:
         print(_log_prefix + "Exception trying to write log item to Mongo DB backend:" + str(e))
         _exit_status += 1
-    #
-    # try:
-    #     print(_log_prefix + "Closing sockets...")
-    #     # Manually closing sockets
-    #     for _curr_thread in cherrypy.server.httpserver.requests._threads:
-    #         if _curr_thread.conn is not None:
-    #             c = _curr_thread.conn
-    #             if c and not c.rfile.closed:
-    #                 try:
-    #                     c.socket.shutdown(socket.SHUT_RD)
-    #                 except TypeError:
-    #                     # pyOpenSSL sockets don't take an arg
-    #                     c.socket.shutdown()
-    #                 cherrypy.server.httpserver.requests._threads.remove(_curr_thread)
-    #     print(_log_prefix + "Sockets closed...")
-    # except Exception as e:
-    #     print(_log_prefix + "Exception trying to manually closing sockets:" + str(e))
-    #     _exit_status = 2
 
     try:
 

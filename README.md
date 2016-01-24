@@ -49,7 +49,7 @@ It is not primarily thought of as something to build a web site, but rather for 
 # Source
 
 The structure of the Optimal Framework source:
-/broker - The Optimal Framework broker
-/broker/ui - The ui:s of the broker
-/common - Libraries used by the broker and those interacting with it
-/schemas - The JSON schemas, and functionality to resolve the of:// scheme
+* /broker - The Optimal Framework broker
+* /broker/ui - The ui:s of the broker
+* /common - Libraries used by the broker and those interacting with it
+* /schemas - The JSON schemas, and functionality to resolve the of:// scheme

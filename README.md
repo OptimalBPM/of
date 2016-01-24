@@ -27,7 +27,7 @@ More features, commercial and non-commercial, ranging from  to actual commercial
 
 # Support
 
-Outside github issues, there will be commercial support o
+Outside github issues, there will be commercial support available.
 
 # History
 
@@ -40,7 +40,7 @@ b. that one would have in some way treat parts of Optimal BPM as plug-ins,
  
 ..there was no reason to not write Optimal BPM itself as a plug-in.
 
-And as answer to the question "a plug-in to what?", the Optimal Framework was born.
+And as an answer to the question "a plug-in to what?", the Optimal Framework was born.
 
 It is not primarily thought of as something to build a web site, but rather for creating applicatoin systems, like a  
 
@@ -50,5 +50,6 @@ It is not primarily thought of as something to build a web site, but rather for 
 
 The structure of the Optimal Framework source:
 /broker - The Optimal Framework broker
+/broker/ui - The ui:s of the broker
 /common - Libraries used by the broker and those interacting with it
-/schema - The JSON schemas, and functionality to resolve the of:// scheme
+/schemas - The JSON schemas, and functionality to resolve the of:// scheme

@@ -110,7 +110,7 @@ export class NodesController extends NodeManager implements NodeManagement {
                 this.tree.data[strId] = saveData;
                 _curr_child.id = saveData["_id"];
                 _curr_child.title = saveData["name"];
-                _curr_child.type = saveData["schemaId"];
+                _curr_child.type = saveData["schemaRef"];
                 _curr_child.allowedChildTypes = saveData["allowedChildTypes"];
                 console.log("Data saved, _id: " + strId)
             })
@@ -174,26 +174,26 @@ export class NodesController extends NodeManager implements NodeManagement {
 
         return this.$http.get('views/nodes/node_forms.js')
             .success((data: any) => {
-                var _nodeSchemaId = 'a9ca8030-6ea4-11e4-9803-0800200c9a66';
+                var _nodeschemaRef = 'a9ca8030-6ea4-11e4-9803-0800200c9a66';
                 this.forms = {};
                 // Import the data, pass the tree scope to the function
                 var _data = new Function("scope", data.toString()).call(this, this.tree);
-                var _nodeForm = _data[_nodeSchemaId];
+                var _nodeForm = _data[_nodeschemaRef];
 
                 Object.keys(_data).forEach(
-                    (_currSchemaId) => {
+                    (_currschemaRef) => {
 
-                        if (_currSchemaId == _nodeSchemaId) {
+                        if (_currschemaRef == _nodeschemaRef) {
                             // Do not concatenate with itself
                             var _newForm = _nodeForm.slice(0)
                         }
                         else {
                             // Insert form after nodename and description in base node form
                             var _newForm = _nodeForm.slice(0);
-                            _newForm.splice.apply(_newForm, [2, 0].concat(_data[_currSchemaId]))
+                            _newForm.splice.apply(_newForm, [2, 0].concat(_data[_currschemaRef]))
                         }
                         // Add submit and store the finished form.
-                        this.forms[_currSchemaId] = _newForm.concat(
+                        this.forms[_currschemaRef] = _newForm.concat(
                             [
                                 {
                                     type: "submit",
@@ -218,17 +218,17 @@ export class NodesController extends NodeManager implements NodeManagement {
      * @param node
      */
     set_details = (node):void => {
-        var schemaId = "";
+        var schemaRef = "";
         this.nodeScope.selected_schema = null;
-        if ("schemaId" in node) {
-            schemaId = node["schemaId"];
-            this.nodeScope.selected_schema = this.tree.schemas[schemaId];
+        if ("schemaRef" in node) {
+            schemaRef = node["schemaRef"];
+            this.nodeScope.selected_schema = this.tree.schemas[schemaRef];
             // Set form and add save/submit button
-            this.nodeScope.selected_form = this.forms[schemaId];
+            this.nodeScope.selected_form = this.forms[schemaRef];
         }
 
         this.nodeScope.selected_data = node;
-        console.log("SchemaId: " + schemaId);
+        console.log("schemaRef: " + schemaRef);
 
     };
 

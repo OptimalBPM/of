@@ -90,7 +90,7 @@ var a = {
                                     readonly: true
                                 },
                                 {
-                                    key: "schemaId",
+                                    key: "schemaRef",
                                     type: "text",
                                     title: "Schema Id",
                                     description: "The Id of the schema. A <a href=\"http://http://en.wikipedia.org/wiki/Universally_unique_identifier/\" target='_blank'>UUID(GUID)</a>.",

@@ -11,7 +11,7 @@ if os.name != "nt":
 
 import socket
 
-from of.schemas.constants import schema_id_message_error, schema_id_system_process, schema_id_log_process_state
+
 
 __author__ = 'Nicklas Borjesson'
 
@@ -35,7 +35,7 @@ def reply_with_error_message(_runtime_instance, _message, _error_message):
         "sourceProcessId": _runtime_instance.process_id,
         "messageId": _message["messageId"],
         "errorMessage": _error_message,
-        "schemaId": schema_id_message_error
+        "schemaRef": "of://message_error.json"
     }
 
     if "source" in _message or _message["source"] == "":
@@ -60,7 +60,7 @@ def store_system_process_document(_process_id, _name, _parent_id=None):
         "name": _name,
         "host": socket.getfqdn(),
         "spawnedWhen": str(datetime.datetime.utcnow()),
-        "schemaId": schema_id_system_process
+        "schemaRef": "of://system_process.json"
     }
     if _parent_id:
         _struct["parent_id"] = _parent_id,
@@ -78,6 +78,6 @@ def log_process_state_message(_changed_by, _state, _process_id, _reason):
         "state": _state,
         "reason": _reason,
         "processId": _process_id,
-        "schemaId": schema_id_log_process_state
+        "schemaRef": "of://log_process_state.json"
     }
 

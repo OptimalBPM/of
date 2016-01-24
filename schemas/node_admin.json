@@ -28,11 +28,11 @@
   "required": [
     "name",
     "createdWhen",
-    "schemaId",
+    "schemaRef",
     "canRead",
     "canWrite",
     "address"
   ],
   "collection": "node",
-  "schemaId": "3fc3bc67-a26d-41c7-bc6e-02e9ad92c8bb"
+  "namespace": "of"
 }

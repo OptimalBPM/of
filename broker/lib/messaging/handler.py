@@ -4,7 +4,7 @@ This module holds the BrokerWebSocketHandler class
 
 from of.common.messaging.constants import UNACCEPTABLE_DATA, BROKER_SHUTTING_DOWN
 from of.common.messaging.handler import WebSocketHandler
-from of.schemas.constants import intercept_schema_ids, schema_id_log_process_state
+from of.schemas.constants import intercept_schema_ids
 from of.broker.globals import states, states_lookup
 
 __author__ = 'Nicklas Borjesson'
@@ -52,7 +52,7 @@ class BrokerWebSocketHandler(WebSocketHandler):
             self.schema_tools.validate(_message_data)
 
         # Special case: A process result message should be intercepted and saved to the log.
-        if _message_data["schemaId"] in intercept_schema_ids:
+        if _message_data["schemaRef"] in intercept_schema_ids:
             self.handle_logging(_source_web_socket, _message_data)
 
         _destination = _message_data["destination"]
@@ -105,7 +105,7 @@ class BrokerWebSocketHandler(WebSocketHandler):
         self.database_access.logging.write_log(_log_data)
         print("handle_logging succeeded\n")
         # Store states
-        if _log_data["schemaId"] == schema_id_log_process_state:
+        if _log_data["schemaRef"] == "of://log_process_state.json":
             # Handle the objectIds
             _log_data["_id"] = str(_log_data["_id"])
             _log_data["processId"] = str(_log_data["processId"])

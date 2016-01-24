@@ -9,7 +9,7 @@ import cherrypy
 from bson.objectid import ObjectId
 from pymongo.mongo_client import MongoClient
 
-from common.queue.monitor import Monitor
+
 from mbe.access import DatabaseAccess
 from mbe.authentication import init_authentication
 from mbe.schema import SchemaTools
@@ -36,6 +36,7 @@ from of.broker.cherrypy_api.plugins import CherryPyPlugins
 from of.broker.lib.definitions import Definitions
 from of.broker.cherrypy_api.admin import CherryPyAdmin
 from of.broker.lib.messaging.handler import BrokerWebSocketHandler
+from of.common.queue.monitor import Monitor
 import of.common.messaging.websocket
 
 if os.name == "nt":

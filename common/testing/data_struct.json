@@ -5,7 +5,7 @@
     "name": "Administer nodes",
     "description": "The Administer nodes right",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaId": "4288fc06-d615-4f1c-ac10-8328153f2c54",
+    "schemaRef": "mbe://right.json",
     "canRead": [
       "000000010000010001e64c28",
       "000000010000010001e64d02"
@@ -21,7 +21,7 @@
     "parent_id": "000000010000010001e64c24",
     "name": "Node administrators group",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaId": "5d3b8e21-adf3-4005-b73c-1fb63a46f399",
+    "schemaRef": "mbe://group.json",
     "rights": ["000000010000010001e64d01"],
     "canRead": [
       "000000010000010001e64c28",
@@ -44,7 +44,7 @@
       }
     },
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaId": "2fb3b2c9-a29c-4fc0-b29d-6eed738b6dab",
+    "schemaRef": "mbe://user.json",
     "groups": [
       "000000010000010001e64d02", "000000010000010001e64c28"
     ],
@@ -63,7 +63,7 @@
     "parent_id": "000000010000010001e64c24",
     "name": "The Guests group",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaId": "5d3b8e21-adf3-4005-b73c-1fb63a46f399",
+    "schemaRef": "mbe://group.json",
     "rights": ["000000010000010001e64d01"],
     "canRead": [
       "000000010000010001e64c28",
@@ -86,7 +86,7 @@
       }
     },
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaId": "2fb3b2c9-a29c-4fc0-b29d-6eed738b6dab",
+    "schemaRef": "mbe://user.json",
     "groups": ["000000010000010001e64d12"],
     "canRead": [
       "000000010000010001e64c28",
@@ -109,7 +109,7 @@
       }
     },
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaId": "2fb3b2c9-a29c-4fc0-b29d-6eed738b6dab",
+    "schemaRef": "mbe://user.json",
     "groups": [],
     "canRead": [
       "000000010000010001e64c28",
@@ -127,14 +127,14 @@
     "name": "Peers",
     "description": "The peers in the Optimal BPM system",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaId":  "a9ca8030-6ea4-11e4-9803-0800200c9a66",
+    "schemaRef":  "mbe://node.json",
     "canRead": ["000000010000010001e64c28", "000000010000010001e64d02"],
     "canWrite": [
       "000000010000010001e64c28",
       "000000010000010001e64d02"
     ],
     "allowedChildTypes": [
-      "7b27a7bf-a686-4415-9a35-0ec3d3189d82", "daf49a9d-b6e7-43f5-81c7-e5a76a2f1bb9", "3fc3bc67-a26d-41c7-bc6e-02e9ad92c8bb"
+      "of://node_broker.json", "of://node_admin.json", "of://peer.json", "bpm://node_agent.json"
     ]
   },
   {
@@ -143,7 +143,7 @@
     "name": "admin_root",
     "description": "The settings of the web admin interface for the user root",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaId":  "3fc3bc67-a26d-41c7-bc6e-02e9ad92c8bb",
+    "schemaRef":  "of://node_admin.json",
     "address": "admin_root",
     "canRead": ["000000010000010001e64c28", "000000010000010001e64d02"],
     "canWrite": [
@@ -158,7 +158,7 @@
     "name": "broker01",
     "description": "Broker number 1",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaId":  "7b27a7bf-a686-4415-9a35-0ec3d3189d82",
+    "schemaRef":  "of://node_broker.json",
     "address": "broker01",
     "repositoriesLocation": "~/optimalframework/broker_repositories",
     "canRead": ["000000010000010001e64c28", "000000010000010001e64d02"],

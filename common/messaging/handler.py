@@ -77,7 +77,7 @@ class WebSocketHandler(Handler):
     def handle(self, _item):
         """
         The handle function is called when a monitor finds an unhandled item on its queue.
-        The WebSocketHandler uses the schemaId and schema categories to find the correct handler for the item.
+        The WebSocketHandler uses the schemaRef and schema categories to find the correct handler for the item.
         :param _item: The message
         """
 
@@ -90,7 +90,7 @@ class WebSocketHandler(Handler):
             print(self.log_prefix + "Handling outgoing message : " + str(_message_data))
 
         try:
-            _schema_id = _message_data["schemaId"]
+            _schema_id = _message_data["schemaRef"]
         except KeyError:
             self.handle_error(_web_socket, self.log_prefix + "No schema id found in message.")
             return

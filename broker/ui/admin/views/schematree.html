@@ -59,18 +59,18 @@
             <div ng-mouseleave="item.ui.downAddChildAfter=false"
                  ng-show="item.ui.downAddChildAfter"
                  role="menu">
-                <a ng-repeat='currSchemaId in item.allowedChildTypes'
-                   ng-click="tree.addNode(this, item, true, currSchemaId);" class="list-group-item" style="text-align: right">
-                     {{tree.schemas[currSchemaId].title}} <span class="glyphicon glyphicon-triangle-right"></span>
+                <a ng-repeat='currschemaRef in item.allowedChildTypes'
+                   ng-click="tree.addNode(this, item, true, currschemaRef);" class="list-group-item" style="text-align: right">
+                     {{tree.schemas[currschemaRef].title}} <span class="glyphicon glyphicon-triangle-right"></span>
                 </a>
             </div>
 
             <div ng-mouseleave="item.ui.downAddSiblingAfter=false"
                  ng-show="item.ui.downAddSiblingAfter"
                  class="list-group" role="menu">
-                <a ng-repeat='currSchemaId in item.parentItem.allowedChildTypes'
-                   ng-click="tree.addNode(this, item, false, currSchemaId);" class="list-group-item" style="text-align: left">
-                   <span class="glyphicon glyphicon-triangle-bottom"></span> {{tree.schemas[currSchemaId].title}}
+                <a ng-repeat='currschemaRef in item.parentItem.allowedChildTypes'
+                   ng-click="tree.addNode(this, item, false, currschemaRef);" class="list-group-item" style="text-align: left">
+                   <span class="glyphicon glyphicon-triangle-bottom"></span> {{tree.schemas[currschemaRef].title}}
                 </a>
             </div>
 

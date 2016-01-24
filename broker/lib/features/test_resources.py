@@ -12,7 +12,7 @@ test_user_data = {
     "name": "TestUser",
     "credentials": test_credential,
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaId": "2fb3b2c9-a29c-4fc0-b29d-6eed738b6dab",
+    "schemaRef": "2fb3b2c9-a29c-4fc0-b29d-6eed738b6dab",
     "canRead": ["5492cfb0a5cb641288b66c28"],
     "canWrite": ["5492cfb0a5cb641288b66c28"],
     "groups": ["5492cfb0a5cb641288b66c29"]
@@ -24,7 +24,7 @@ test_hashed_user_data = {
     "name": "TestUser",
     "credentials": test_hashed_credential,
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaId": "2fb3b2c9-a29c-4fc0-b29d-6eed738b6dab",
+    "schemaRef": "2fb3b2c9-a29c-4fc0-b29d-6eed738b6dab",
     "canRead": ["5492cfb0a5cb641288b66c28"],
     "canWrite": ["5492cfb0a5cb641288b66c28"],
     "groups": ["5492cfb0a5cb641288b66c29"]

@@ -190,7 +190,7 @@ class CherryPyPlugins(object):
             for _curr_schema_key, _curr_schema in _curr_namespace.items():
                 _resolved_schema =  self.schema_tools.resolveSchema(_curr_schema)
                 self.definitions[_curr_namespace_key]["schemas"][_curr_schema_key] = _resolved_schema
-                self.schema_tools.json_schema_objects[_resolved_schema["schemaId"]] = _resolved_schema
+                self.schema_tools.json_schema_objects[_resolved_schema["schemaRef"]] = _resolved_schema
 
             print("Schemas in " + _curr_namespace_key + " loaded and resolved:  " +
                   str.join(", ",

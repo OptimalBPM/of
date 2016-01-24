@@ -6,8 +6,7 @@ from behave import *
 from bson.objectid import ObjectId
 from nose.tools.trivial import ok_
 
-from of.schemas.constants import schema_id_message, \
-    schema_id_log_process_state, schema_id_system_process
+
 
 use_step_matcher("re")
 
@@ -17,7 +16,7 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    context.message = {"destination": "destination_peer", "schemaId": schema_id_message, "sourceProcessId": str(ObjectId()), "source": "source_peer", "messageId": 1}
+    context.message = {"destination": "destination_peer", "schemaRef": "of://message.json", "sourceProcessId": str(ObjectId()), "source": "source_peer", "messageId": 1}
 
     context.sender.received_message(json.dumps(context.message))
 
@@ -46,7 +45,7 @@ def step_impl(context):
         "spawnedWhen": str(datetime.datetime.utcnow()),
         "name": "Test_process_name",
         "systemPid": 10000,
-        "schemaId": schema_id_system_process
+        "schemaRef": "of://process_system.json"
     }
 
     context.sender.received_message(json.dumps(context.message))
@@ -79,7 +78,7 @@ def step_impl(context):
         "name": "Test_process_name",
         "state": "running",
         "processId": str(context.process_instance["_id"]),
-        "schemaId": schema_id_log_process_state
+        "schemaRef": "of://log_process_state.json"
     }
     context.sender.received_message(json.dumps(context.message))
 

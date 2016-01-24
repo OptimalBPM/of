@@ -35,18 +35,19 @@
       "$ref": "mbe://type.json#/properties/objectId",
       "propertyId": "5579b996-db01-4425-9479-b49a23a0306e"
     },
-    "schemaId": {
+    "schemaRef": {
       "description": "A reference to the schema to which this data adheres.",
-      "$ref": "mbe://type.json#/properties/uuid",
+      "type": "string",
+      "format": "uri",
       "propertyId": "b1b75292-10d4-42be-a438-cd4f9835cc0a"
     }
   },
   "required": [
     "destination",
     "source",
-    "schemaId",
+    "schemaRef",
     "messageId"
   ],
   "collection": "log",
-  "schemaId": "a31426b4-8b42-4d98-b7b8-05e8bc8f6869"
+  "namespace": "of"
 }

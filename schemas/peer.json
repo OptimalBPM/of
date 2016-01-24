@@ -15,8 +15,19 @@
       "description": "The peer type",
       "enum": ["agent", "broker", "admin", "application"],
       "propertyId": "de5a8e20-5554-4746-a94b-7ab12c005b29"
+    },
+    "schemaRef": {
+      "description": "A reference to the schema to which this data adheres.",
+      "type": "string",
+      "format": "uri",
+      "propertyId": "b1b75292-10d4-42be-a438-cd4f9835cc0a"
     }
   },
+  "required": [
+    "address",
+    "peerType",
+    "schemaRef"
+  ],
   "collection": "",
-  "schemaId": "28da7aa9-8918-4aca-8505-099d283ef558"
+  "namespace": "of"
 }

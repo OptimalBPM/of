@@ -31,8 +31,8 @@
       }
     }
   ],
-  "required": ["systemPid", "spawnedBy", "name"],
+  "required": ["systemPid", "spawnedBy", "name", "schemaRef"],
 
   "collection": "process",
-  "schemaId": "9523e937-1efc-438d-b54c-fb9bb9843a87"
+  "namespace": "of"
 }

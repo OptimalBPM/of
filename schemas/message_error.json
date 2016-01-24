@@ -24,8 +24,8 @@
     "errorMessage",
     "destination",
     "source",
-    "schemaId",
+    "schemaRef",
     "messageId"],
   "collection": "log",
-  "schemaId": "656d3644-3c05-4cd6-ba58-2a11953a43bf"
+  "namespace": "of"
 }

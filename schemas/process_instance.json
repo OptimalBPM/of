@@ -23,17 +23,18 @@
       "format": "date-time",
       "propertyId": "f509249d-409a-4b7c-8120-f8baefc71cb3"
     },
-    "schemaId": {
+    "schemaRef": {
       "description": "A reference to the schema to which this data adheres.",
-      "$ref": "mbe://type.json#/properties/uuid",
+      "type": "string",
+      "format": "uri",
       "propertyId": "b1b75292-10d4-42be-a438-cd4f9835cc0a"
     }
   },
   "required": [
     "spawnedBy",
     "spawnedWhen",
-    "schemaId"
+    "schemaRef"
   ],
   "collection": "process",
-  "schemaId": "2eaba1b7-028f-4f32-af2e-e3b45e921ef7"
+  "namespace": "of"
 }

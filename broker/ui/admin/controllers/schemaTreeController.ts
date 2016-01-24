@@ -188,10 +188,10 @@ export class SchemaTreeController {
     lookupChildNodeTypes = () => {
 
         var items = [];
-        Object.keys(this.schemas).forEach((schemaId) => {
-            var item = this.schemas[schemaId];
+        Object.keys(this.schemas).forEach((schemaRef) => {
+            var item = this.schemas[schemaRef];
             if (item.collection = "node") {
-                items.push({value: schemaId, name: item.title});
+                items.push({value: schemaRef, name: item.title});
 
             }
         });
@@ -226,7 +226,7 @@ export class SchemaTreeController {
             var _curr_item:TreeNode = new TreeNode();
             _curr_item.id = entry["_id"];
             _curr_item.title = entry["name"];
-            _curr_item.type = entry["schemaId"];
+            _curr_item.type = entry["schemaRef"];
             _curr_item.allowedChildTypes = entry["allowedChildTypes"];
             _curr_item.parentItem = parent;
             this.data[entry["_id"]] = entry;
@@ -248,7 +248,7 @@ export class SchemaTreeController {
 
     // TODO: Document this
 
-    addNode = (scope:NodeViewScope, item:TreeNode, isParent:boolean, schemaId:string) => {
+    addNode = (scope:NodeViewScope, item:TreeNode, isParent:boolean, schemaRef:string) => {
 
         var _add = (scope, item) => {
 
@@ -265,8 +265,8 @@ export class SchemaTreeController {
             // Create a new child, use a temporary
             var _newChild:TreeNode = new TreeNode();
             _newChild.id = this.treeScope.newNodeObjectId;
-            _newChild.title = "New " + this.schemas[schemaId].title;
-            _newChild.type = schemaId;
+            _newChild.title = "New " + this.schemas[schemaRef].title;
+            _newChild.type = schemaRef;
 
             if (isParent) {
                 item.children.unshift(_newChild);
@@ -282,7 +282,7 @@ export class SchemaTreeController {
                 parent_id: isParent ? item.id : item.parentItem.id,
                 name: _newChild.title,
                 createdWhen: curr_datetime.toISOString(),
-                schemaId: schemaId
+                schemaRef: schemaRef
             };
             if (this.treeScope.nodeManager.onSelectNode) {
                 this.treeScope.nodeManager.onSelectNode(_newChild);

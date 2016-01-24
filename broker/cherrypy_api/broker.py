@@ -99,7 +99,7 @@ class CherryPyBroker(object):
             # TODO: Implement a "defaults" node so that we can return a default empty node here. (OB1-44)
 
             # Load the matching node for the address
-            _condition = {"schemaId": peer_type_to_schema_id(_peer_type), "address": _address}
+            _condition = {"schemaRef": peer_type_to_schema_id(_peer_type), "address": _address}
             _settings = sanitize_node(self.admin.node._node.find(_condition, kwargs["user"]))
             _session_id = kwargs["session_id"]
 

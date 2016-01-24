@@ -216,42 +216,55 @@ class CherryPyPlugins(object):
         _admin_menus = []
         # has_right(object_id_right_admin_everything, kwargs["user"])
         for _curr_plugin_key, _curr_plugin_info in self.plugins.items():
+            # Add any plugin configuration for the Admin user interface
             if "admin-ui" in _curr_plugin_info:
-                _curr_client = _curr_plugin_info["admin-ui"]
-                # Mount the static libraries
+
+                _curr_ui_def = _curr_plugin_info["admin-ui"]
+                if "mountpoint" not in _curr_ui_def:
+                    print(self.log_prefix + "Error loading admin-ui for " + _curr_plugin_key + " no mount point.")
+                    continue
+                _mount_point = _curr_ui_def["mountpoint"]
+
+                if _mount_point[0] == "/":
+                    print("Not mounting " + _mount_point + ", cannot mount admin-specific ui under root(root can "
+                                                           "never depend on admin), use root-ui instead.")
+                    continue
+                # Mount the static content at a mount point somewhere under /admin
                 _web_config.update({
-                    _curr_client["mountpoint"]: {
+                    "/admin/"+ _mount_point: {
                         "tools.staticdir.on": True,
-                        "tools.staticdir.dir": os.path.join(_curr_plugin_info["baseDirectoryName"], "web",
-                                                            "client"),
+                        "tools.staticdir.dir": os.path.join(_curr_plugin_info["baseDirectoryName"], "admin-ui"),
                         "tools.trailing_slash.on": True
                     }
                 })
-                if _curr_client["mountpoint"][0] == "/":
-                    _systemjs += "System.config({\"packages\": {\"" + _curr_client["mountpoint"][1:] + "\": {\"defaultExtension\": \"ts\"}}});\n"
-                else:
-                    _systemjs += "System.config({\"packages\": {\"" + _curr_client["mountpoint"] + "\": {\"defaultExtension\": \"ts\"}}});\n"
 
-                if "controllers" in _curr_client:
-                    for _curr_controller in _curr_client["controllers"]:
+                _systemjs += "System.config({\"packages\": {\"" + _mount_point + "\": {\"defaultExtension\": \"ts\"}}});\n"
+
+                # Create imports and declarations for controllers and their dependencies
+                if "controllers" in _curr_ui_def:
+                    for _curr_controller in _curr_ui_def["controllers"]:
                         _imports += "import {" + _curr_controller["name"] + "} from \"" + _curr_controller[
-                            "module"] + "\"\n";
+                            "module"] + "\"\n"
                         _controllers += '    app.controller("' + _curr_controller["name"] + '", ' + make_deps(
                             _curr_controller) + ");\n"
-                if "directives" in _curr_client:
-                    for _curr_directive in _curr_client["directives"]:
+
+                # Create imports and declarations for directives
+                if "directives" in _curr_ui_def:
+                    for _curr_directive in _curr_ui_def["directives"]:
                         _imports += "import {" + _curr_directive["name"] + "} from \"" + _curr_directive[
-                            "module"] + "\"\n";
+                            "module"] + "\"\n"
                         _directives += '    app.directive("' + _curr_directive["name"] + '", ' + _curr_directive[
                             "name"] + ");\n"
-                if "routes" in _curr_client:
-                    for _curr_route in _curr_client["routes"]:
+
+                # Add any angular routes
+                if "routes" in _curr_ui_def:
+                    for _curr_route in _curr_ui_def["routes"]:
                         _routes += "    .when(\"" + _curr_route["path"] + "\", " + json.dumps(
                             _curr_route["route"]) + ")\n"
 
-
-                if "admin_menus" in _curr_client:
-                    _admin_menus += _curr_client["menus"]
+                # Add menus
+                if "menus" in _curr_ui_def:
+                    _admin_menus += _curr_ui_def["menus"]
 
         _result = _imports + "\nexport function initPlugins(app){\n" + _controllers + "\n" + _directives + "\n};\n" + \
                   "export function initRoutes($routeProvider) {\n$routeProvider" + _routes + "return $routeProvider }"

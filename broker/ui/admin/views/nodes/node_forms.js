@@ -32,7 +32,7 @@ var a = {
                                     options: {
                                         multiple: "true",
                                         httpPost: {
-                                            url: "/node/lookup",
+                                            url: "node/lookup",
                                             parameter: {
                                                 "conditions": {"parent_id": "ObjectId(000000010000010001e64c24)"},
                                                 "collection": "node"
@@ -50,7 +50,7 @@ var a = {
                                     options: {
                                         multiple: "true",
                                         httpPost: {
-                                            url: "/node/lookup",
+                                            url: "node/lookup",
                                             parameter: {
                                                 "conditions": {"parent_id": "ObjectId(000000010000010001e64c24)"},
                                                 "collection": "node"
@@ -122,7 +122,7 @@ var a = {
             options: {
                 multiple: "true",
                 httpPost: {
-                    url: "/node/lookup",
+                    url: "node/lookup",
                     parameter: {"conditions": {"parent_id": "ObjectId(000000010000010001e64c26)"}, "collection": "node"}
                 }
             }
@@ -170,7 +170,7 @@ var a = {
             type: "strapselect",
             options: {
                 httpPost: {
-                    url: "/node/lookup",
+                    url: "node/lookup",
                     parameter: {"conditions": {"parent_id": "ObjectId(000000010000010001e64c24)"}, "collection": "node"}
                 }
             }
@@ -233,7 +233,7 @@ var a = {
             options: {
                 multiple: "true",
                 httpPost: {
-                    url: "/node/lookup",
+                    url: "node/lookup",
                     parameter: {
                         "conditions": {"parent_id": "ObjectId(000000010000010001e64c24)"},
                         "collection": "node"
@@ -251,7 +251,7 @@ var a = {
             options: {
                 multiple: "true",
                 httpPost: {
-                    url: "/node/lookup",
+                    url: "node/lookup",
                     parameter: {
                         "conditions": {"parent_id": "ObjectId(000000010000010001e64c24)"},
                         "collection": "node"
@@ -269,7 +269,7 @@ var a = {
             options: {
                 multiple: "false",
                 httpPost: {
-                    url: "/node/lookup",
+                    url: "node/lookup",
                     parameter: {
                         "conditions": {"parent_id": "ObjectId(000000010000010001e64c25)"},
                         "collection": "node"

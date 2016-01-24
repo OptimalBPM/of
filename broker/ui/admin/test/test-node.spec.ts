@@ -35,7 +35,7 @@ function initNodesDirective($rootScope, $httpBackend, $compile) {
     $httpBackend.whenPOST("node/find", {parent_id: null}).respond(200, get_top());
     $httpBackend.whenPOST("node/find", {parent_id: "ObjectId(000000010000010001e64c00)"}).respond(200, get_administration());
     $httpBackend.whenGET("views/nodes/node_renderer.html").respond(200, get_node_renderer());
-    $httpBackend.whenPOST("/node/lookup", {conditions: {parent_id: "ObjectId(000000010000010001e64c24)"}, collection: "node"}).respond(200, get_groups_lookup());
+    $httpBackend.whenPOST("node/lookup", {conditions: {parent_id: "ObjectId(000000010000010001e64c24)"}, collection: "node"}).respond(200, get_groups_lookup());
     $httpBackend.whenPOST("node/history", {_id: "000000010000010001e64c23"}).respond(200, get_administration_history());
     $httpBackend.whenGET("views/nodes.html").respond(200, get_views_nodes());
     $httpBackend.whenGET("views/schematree.html").respond(200, get_views_schematree());

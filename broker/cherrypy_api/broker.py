@@ -24,7 +24,7 @@ class CherryPyBroker(object):
     """
     The root web server class of the Optimal BPM Broker.
     It exposes the web services of the broker.
-    Note: The web application UI is served statically from the optimal/admin folder.
+    Note: The web application admin UI is served statically from the /admin folder.
     """
     #: The log prefix of the broker
     log_prefix = None
@@ -37,6 +37,9 @@ class CherryPyBroker(object):
 
     #: Plugin management
     plugins = None
+
+    #: An reference to an MBE nodes instance
+    node = None
 
     def __init__(self, _process_id, _address, _log_prefix):
         """
@@ -97,7 +100,7 @@ class CherryPyBroker(object):
 
             # Load the matching node for the address
             _condition = {"schemaId": peer_type_to_schema_id(_peer_type), "address": _address}
-            _settings = sanitize_node(self.node._node.find(_condition, kwargs["user"]))
+            _settings = sanitize_node(self.admin.node._node.find(_condition, kwargs["user"]))
             _session_id = kwargs["session_id"]
 
             # Should one allow re-registering? Probably. It should be like logging in again, nothing more.

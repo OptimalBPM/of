@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import time
@@ -222,7 +223,13 @@ def start_broker():
     # Generate the static content, initialisation
     _plugins.refresh_static(_web_config)
 
-    print(_log_prefix + "Starting web server.")
+    print(_log_prefix + "Starting web server. Web config:\n" )
+    for _curr_key, _curr_config in _web_config.items():
+        if "tools.staticdir.dir" in _curr_config:
+            print("Path: " + _curr_key + " directory: " +_curr_config["tools.staticdir.dir"])
+        else:
+            print("Path: " + _curr_key + " - no static dir")
+
     _plugins.call_hook("pre_webserver_start", web_config=_web_config, globals=globals())
     cherrypy.quickstart(_root, "/", _web_config)
 

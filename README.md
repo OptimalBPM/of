@@ -33,7 +33,9 @@ Outside github issues, there will be commercial support o
 
 It was first built as a base for the [Optimal BPM process management system](http://www.optimalbpm.se). 
 However, as development moved on, it became clear that:
+
 a. as that system needed to have a plug-in structure, and 
+
 b. that one would have in some way treat parts of Optimal BPM as plug-ins, 
 ..there was no reason to not write Optimal BPM itself as a plug-in.
 

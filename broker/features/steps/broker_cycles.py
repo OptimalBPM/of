@@ -66,7 +66,7 @@ def step_impl(context):
     :type context behave.runner.Context
     """
     print(_log_prefix + "Telling Broker to restart using a call to broker_control...")
-    call_api(_url="https://127.0.0.1:8080/broker_control",
+    call_api(_url="https://127.0.0.1:8080/admin/broker_control",
              _session_id=context.session["session_id"],
              _data={"command": "restart", "reason": "Testing restarting the broker"}
              )
@@ -81,7 +81,7 @@ def step_impl(context):
     :type context behave.runner.Context
     """
     print(_log_prefix + "Telling Broker to stop using a call to stop_broker...")
-    call_api(_url="https://127.0.0.1:8080/broker_control",
+    call_api(_url="https://127.0.0.1:8080/admin/broker_control",
              _session_id=context.session["session_id"],
              _data={"command": "stop", "reason": "Testing stopping the broker"}
              )

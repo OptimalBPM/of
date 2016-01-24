@@ -44,7 +44,7 @@ class Definitions:
     def __getitem__(self, item):
         if item not in self._definitions:
             self._definitions[item] = {
-                "schemas": {}
+                "schemas": []
             }
         return self._definitions[item]
 

@@ -102,19 +102,13 @@ class CherryPyPlugins(object):
         print("Loading plugin in " + _definitions["description"])
 
 
-        def set_unresolved(_name, _schema):
-            _namespace = _schema["namespace"]
-            if not _namespace in self._unresolved_schemas:
-                self._unresolved_schemas[_namespace] = {_name: _schema}
-            else:
-                self._unresolved_schemas[_namespace][_name] = _schema
+
 
 
         # Load schemas from /schema
         _schema_dir = os.path.join(_dirname, "schemas")
         if os.path.exists(_schema_dir):
 
-            self.schema_tools.load_schemas_from_directory(_schema_dir)
             _schema_dir_list = os.listdir(_schema_dir)
 
             for _curr_file in _schema_dir_list:
@@ -124,7 +118,7 @@ class CherryPyPlugins(object):
                         _curr_schema = json.load(_f_def)
                     if "namespace" in _curr_schema:
                         self.definitions[_curr_schema["namespace"]]
-                        set_unresolved(_curr_file, _curr_schema)
+                        self._unresolved_schemas[_curr_schema["namespace"] + "://" +_curr_file] = _curr_schema
                     else:
                         print(make_log_prefix() + "No namespace defined in " + _curr_file + ", ignoring.")
         else:
@@ -178,24 +172,24 @@ class CherryPyPlugins(object):
                 print("Loaded plugin " + _curr_file)
 
         # Manually add the optimal framework ("of") namespace
-        self.definitions["of"]["schemas"] = self.schema_tools.json_schema_objects
+        self.definitions["of"]["schemas"] = [_curr_ref  for _curr_ref in self.schema_tools.json_schema_objects.keys()]
         self.schema_tools.resolver.handlers = {"of": self.uri_handler}
 
         # Add same resolver for all the rest of the namespaces (these resolvers will persist throughout the system)
         self.schema_tools.resolver.handlers.update(
-            {_curr_namespace: self.uri_handler for _curr_namespace in self._unresolved_schemas.keys()})
+            {_curr_namespace: self.uri_handler for _curr_namespace in self.definitions})
 
         # Resolve all schemas
-        for _curr_namespace_key, _curr_namespace in self._unresolved_schemas.items():
-            for _curr_schema_key, _curr_schema in _curr_namespace.items():
-                _resolved_schema =  self.schema_tools.resolveSchema(_curr_schema)
-                self.definitions[_curr_namespace_key]["schemas"][_curr_schema_key] = _resolved_schema
-                self.schema_tools.json_schema_objects[_resolved_schema["schemaRef"]] = _resolved_schema
 
-            print("Schemas in " + _curr_namespace_key + " loaded and resolved:  " +
-                  str.join(", ",
-                           ["\"" + _curr_schema["title"] + "\"" for _curr_schema in
-                            self.definitions[_curr_namespace_key]["schemas"].values()]))
+        for _curr_schema_key, _curr_schema in self._unresolved_schemas.items():
+            _resolved_schema = self.schema_tools.resolveSchema(_curr_schema)
+            self.definitions[_resolved_schema["namespace"]]["schemas"].append(_curr_schema_key)
+            self.schema_tools.json_schema_objects[_curr_schema_key] = _resolved_schema
+
+        print("Schemas in " + str(", ").join([_curr_plugin["description"] for _curr_plugin in self.plugins.values()]) + " loaded and resolved:  " +
+              str.join(", ",
+                       ["\"" + _curr_schema["title"] + "\"" for _curr_schema in
+                        self._unresolved_schemas.values()]))
 
 
         # Remember refresh
@@ -296,15 +290,12 @@ class CherryPyPlugins(object):
     def uri_handler(self, uri):
         """
 
-        Handle all namespace references for unresolved schemas
+        Handle all schema references, also for unresolved schemas
 
         :param uri: The uri to handle
         :return: The schema
         """
-        _scheme = urlparse(uri).scheme
-        _netloc = urlparse(uri).netloc
-
-        if _scheme in self.definitions and _netloc in self.definitions[_scheme]:
-            return self.definitions[_scheme][_netloc]
+        if uri in self.schema_tools.json_schema_objects:
+            return self.schema_tools.json_schema_objects[uri]
         else:
-            return self._unresolved_schemas[_scheme][_netloc]
+            return self._unresolved_schemas[uri]

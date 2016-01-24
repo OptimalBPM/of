@@ -27,7 +27,7 @@ sys.path.append(os.path.join(script_dir, "../../"))
 from of.broker import run_broker
 from of.common.internal import make_log_prefix
 from of.common.internal import load_settings, register_signals
-from of.common.messaging.factory import store_system_process_document, log_process_state_message
+from of.common.messaging.factory import store_process_system_document, log_process_state_message
 from of.broker.lib.messaging.websocket import BrokerWebSocket
 from of.schemas.constants import zero_object_id
 from of.schemas.validation import of_uri_handler
@@ -135,7 +135,7 @@ def start_broker():
     _database = _client[_database_name]
     _database_access = DatabaseAccess(_database=_database, _schema_tools=_schema_tools)
 
-    _database_access.save(store_system_process_document(_process_id=_process_id,
+    _database_access.save(store_process_system_document(_process_id=_process_id,
                                                         _name="Broker instance(" + _address + ")"),
                           _user=None,
                           _allow_save_id=True)

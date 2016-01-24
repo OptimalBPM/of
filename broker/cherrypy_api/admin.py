@@ -6,7 +6,7 @@ import threading
 
 import cherrypy
 
-from mbe.authentication import aop_check_session
+from mbe.cherrypy import aop_check_session
 from mbe.cherrypy import CherryPyNode
 
 

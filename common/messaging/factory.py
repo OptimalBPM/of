@@ -49,7 +49,7 @@ def reply_with_error_message(_runtime_instance, _message, _error_message):
     return _struct
 
 
-def store_system_process_document(_process_id, _name, _parent_id=None):
+def store_process_system_document(_process_id, _name, _parent_id=None):
     """
     Creates a process instance structure, automatically sets systemPid, spawnedBy, host and spawnedWhen
     """
@@ -60,7 +60,7 @@ def store_system_process_document(_process_id, _name, _parent_id=None):
         "name": _name,
         "host": socket.getfqdn(),
         "spawnedWhen": str(datetime.datetime.utcnow()),
-        "schemaRef": "of://system_process.json"
+        "schemaRef": "of://process_system.json"
     }
     if _parent_id:
         _struct["parent_id"] = _parent_id,

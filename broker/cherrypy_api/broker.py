@@ -131,7 +131,7 @@ class CherryPyBroker(object):
         """
         Called when a client wants to upgrade to a websocket. Currently only implemented for logging purposes.
         """
-        print(self.log_prefix + "Broker: Got an /ws upgrade web socket request.")
+        print(self.log_prefix + "Broker: Got a /socket upgrade web socket request.")
 
     @cherrypy.expose
     def status(self):

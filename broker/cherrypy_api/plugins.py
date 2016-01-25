@@ -44,14 +44,15 @@ class CherryPyPlugins(object):
     admin_menus = None
     """Reference to the definition"""
     definitions = None
+    log_prefix = None
 
     def __init__(self, _plugin_dir, _schema_tools, _definitions, _log_prefix):
 
         self.schema_tools = _schema_tools
         self.last_refresh_time = -31
         self.definitions = _definitions
-        self.refresh_plugins(_plugin_dir)
         self.log_prefix = _log_prefix
+        self.refresh_plugins(_plugin_dir)
 
     def validate_uuid(self, _value):
         try:
@@ -120,9 +121,9 @@ class CherryPyPlugins(object):
                         self.definitions[_curr_schema["namespace"]]
                         self._unresolved_schemas[_curr_schema["namespace"] + "://" +_curr_file] = _curr_schema
                     else:
-                        print(make_log_prefix() + "No namespace defined in " + _curr_file + ", ignoring.")
+                        print(self.log_prefix+ "No namespace defined in " + _curr_file + ", ignoring.")
         else:
-            print(make_log_prefix() + "No schema folder, not loading schemas.")
+            print(self.log_prefix + "No schema folder, not loading schemas.")
 
 
         # Add server side stuff

@@ -66,7 +66,7 @@ def register_at_broker(_address, _type, _server, _username, _password, _log_pref
         "address": _address
     }
     # TODO: Credentials should not be outputted here in production.(OB1-149)
-    print(_log_prefix + "[" + str(datetime.datetime.utcnow()) + "] Registering at broker API, data: " + str(_data))
+    print(_log_prefix + "[" + str(datetime.datetime.utcnow()) + "] Registering at broker API.")
 
     _headers = {'content-type': 'application/json'}
     _response = requests.post(_server + "/register", data=json.dumps(_data), auth=('user', 'pass'), headers=_headers,
@@ -74,6 +74,10 @@ def register_at_broker(_address, _type, _server, _username, _password, _log_pref
     if _response.status_code == 500:
         print(_log_prefix + "Broker login failed with internal server error! Exiting.")
         return False
+    if _response.status_code != 200:
+        print(_log_prefix + "Broker login failed with error + "+ str(_response.status_code) + "! Exiting.")
+        return False
+
     _response_dict = _response.json()
     if _response_dict is not None:
         _data = _response_dict

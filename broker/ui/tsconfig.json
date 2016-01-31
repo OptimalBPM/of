@@ -1,0 +1,9 @@
+{
+  "files": [
+    "./types/nodeManager.ts",
+    "./types/schemaTreeTypes.ts",
+    "./controllers/schemaTreeController.ts",
+    "./typings/tsd.d.ts"
+  ]
+
+}

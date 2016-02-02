@@ -99,7 +99,7 @@ class Monitor(object):
             print(self.log_prefix + "Told to stop, ceasing monitoring.")
             self.monitor_thread.terminated = True
 
-        # TODO: Handle any residual items on the queue.(OB1-139)
+        # TODO: Handle any residual items on the queue.(PROD-28)
         # There should be a general framework for unhandled queue items
 
         print(self.log_prefix + "Shutting down handler(" + str(self.handler.__class__.__name__) + ").")

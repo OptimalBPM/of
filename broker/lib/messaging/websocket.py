@@ -18,7 +18,7 @@ class BrokerWebSocket(BPMWebSocket, WebSocket):
     def __init__(self,  sock, protocols=None, extensions=None, environ=None, heartbeat_freq=None):
         print("BrokerWebSocket: Peer connected:" + str(cherrypy.request.remote.ip))
         super(BrokerWebSocket, self).__init__(sock, protocols, extensions, environ, heartbeat_freq)
-        # TODO: Will fail with many requests? It is claimed to be safe, but not very nice to rely on scope.(OB1-143)
+        # TODO: Will fail with many requests? It is claimed to be safe, but not very nice to rely on scope.(PROD-42)
 
         print("BrokerWebSocket: New peer session, init " + str(cherrypy.request.cookie['session_id'].value))
         self.init(_session_id=cherrypy.request.cookie['session_id'].value)

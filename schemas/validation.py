@@ -16,7 +16,7 @@ def general_uri_handler(_uri, _folder):
     :param _uri: The _uri to handle
     :return: The schema
     """
-    # TODO: If there ever was a typical function to memoize, this would be it.(OB1-149)
+    # TODO: If there ever was a typical function to memoize, this would be it.(ORG-112)
 
     # Use urlparse to parse the file location from the URI
     _file_location = os.path.abspath(os.path.join(_folder, urlparse(_uri).netloc))

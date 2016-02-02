@@ -40,7 +40,7 @@ class Handler(object):
         :param _message: The message
         :param _severity: The severity of the log information, a constant defined in the built-in logging module
         """
-        # TODO: Make it so that logging is harmonized, currently it is mostly prints. (OB1-132)
+        # TODO: Make it so that logging is harmonized, currently it is mostly prints. (PROD-32)
 
         print(self.log_prefix + "Unhandled: " + str(_message) + "\nSeverity: " + str(_severity))
 

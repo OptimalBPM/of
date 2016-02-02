@@ -96,7 +96,7 @@ class CherryPyBroker(object):
             else:
                 _address = _data["address"]
 
-            # TODO: Implement a "defaults" node so that we can return a default empty node here. (OB1-44)
+            # TODO: Implement a "defaults" node so that we can return a default empty node here. (PROD-41)
 
             # Load the matching node for the address
             _condition = {"schemaRef": peer_type_to_schema_id(_peer_type), "address": _address}
@@ -139,7 +139,7 @@ class CherryPyBroker(object):
         Method for checking if the broker is up. No session id required and no checks performed.
         :return: The string "up" if the broker is up
         """
-        # TODO: Define what "up" means, this should be a thorough analysis. Should queue monitors be running? (OB1-143)
+        # TODO: Define what "up" means, this should be a thorough analysis. Should queue monitors be running? (PROD-42)
         return "up"
 
     @cherrypy.expose

@@ -50,9 +50,9 @@ Global variables
 
 #: The peer address of the broker
 _address = ""
-#: A SchemaTools instance, used across the broker TODO: Is this thread/process safe?(OB1-149)
+#: A SchemaTools instance, used across the broker TODO: Is this thread/process safe?(ORG-112)
 _schema_tools = None
-#: A DatabaseAccess instance, used across the broker TODO: Is this thread/process safe?(OB1-149)
+#: A DatabaseAccess instance, used across the broker TODO: Is this thread/process safe?(ORG-112)
 _database_access = None
 
 #: The processId of the broker
@@ -255,7 +255,7 @@ def stop_broker(_reason, _restart=None):
     time.sleep(1)
 
 
-    # TODO: Terminate all child processes.(OB1-149)
+    # TODO: Terminate all child processes.(ORG-112)
 
     try:
         _database_access.save(log_process_state_message(_changed_by=zero_object_id,
@@ -303,7 +303,7 @@ def stop_broker(_reason, _restart=None):
     else:
         cherrypy.engine.exit()
         return _exit_status
-        # TODO: Add monitoring of processes and killing those not responding, log states to broker. (OB1-149)
+        # TODO: Add monitoring of processes and killing those not responding, log states to broker. (ORG-112)
 
 
 if __name__ == "__main__":

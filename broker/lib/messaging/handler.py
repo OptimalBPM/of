@@ -57,7 +57,7 @@ class BrokerWebSocketHandler(WebSocketHandler):
 
         _destination = _message_data["destination"]
         if _destination == self.address:
-            # TODO: Figure out what should be done when the broker itself is the addressee.(OB1-143)
+            # TODO: Figure out what should be done when the broker itself is the addressee.(PROD-42)
             # The reason for this is likely that something was instigated by the web client.
             print(
                 self.log_prefix + "Broker was the addressee, doing nothing, likely something started by the web client."
@@ -99,7 +99,7 @@ class BrokerWebSocketHandler(WebSocketHandler):
 
         self.database_access.schema_tools.apply(_log_data)
         if _web_socket:
-            # TODO: Should writtenBy be in some base log schema? (OB1-132)
+            # TODO: Should writtenBy be in some base log schema? (PROD-32)
             _log_data["writtenBy"] = self.peers[_web_socket.session_id]["user"]["_id"]
 
         self.database_access.logging.write_log(_log_data)

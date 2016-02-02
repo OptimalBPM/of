@@ -50,8 +50,8 @@ class CherryPyAdmin(object):
         :param _user: A user instance
         """
         print(self.log_prefix + "broker.broker_control: Got the command " + str(_command))
-        # TODO: There should be a log item written with reason and userid.(OB1-132)
-        # TODO: UserId should also be appended to reason below.(OB1-132)
+        # TODO: There should be a log item written with reason and userid.(PROD-32)
+        # TODO: UserId should also be appended to reason below.(PROD-32)
 
         def _command_local(_local_command):
 

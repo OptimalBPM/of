@@ -236,7 +236,6 @@ export class SchemaTreeController {
     };
 
 
-    // TODO: Is this used anywhere? Consider deprecation
 
     dataToLookups = (lookupData:any):any[] => {
         var items = [];

@@ -174,26 +174,26 @@ export class NodesController extends NodeManager implements NodeManagement {
 
         return this.$http.get('views/nodes/node_forms.js')
             .success((data: any) => {
-                var _nodeschemaRef = 'a9ca8030-6ea4-11e4-9803-0800200c9a66';
+                var _nodeSchemaRef = 'mbe://node.json';
                 this.forms = {};
                 // Import the data, pass the tree scope to the function
                 var _data = new Function("scope", data.toString()).call(this, this.tree);
-                var _nodeForm = _data[_nodeschemaRef];
+                var _nodeForm = _data[_nodeSchemaRef];
 
                 Object.keys(_data).forEach(
-                    (_currschemaRef) => {
+                    (_currSchemaRef) => {
 
-                        if (_currschemaRef == _nodeschemaRef) {
+                        if (_currSchemaRef == _nodeSchemaRef) {
                             // Do not concatenate with itself
                             var _newForm = _nodeForm.slice(0)
                         }
                         else {
                             // Insert form after nodename and description in base node form
                             var _newForm = _nodeForm.slice(0);
-                            _newForm.splice.apply(_newForm, [2, 0].concat(_data[_currschemaRef]))
+                            _newForm.splice.apply(_newForm, [2, 0].concat(_data[_currSchemaRef]))
                         }
                         // Add submit and store the finished form.
-                        this.forms[_currschemaRef] = _newForm.concat(
+                        this.forms[_currSchemaRef] = _newForm.concat(
                             [
                                 {
                                     type: "submit",

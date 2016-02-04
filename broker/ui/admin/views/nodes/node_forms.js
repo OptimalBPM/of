@@ -1,5 +1,5 @@
 var a = {
-    "a9ca8030-6ea4-11e4-9803-0800200c9a66": [
+    "mbe://node.json": [
         {
             key: "name",
             type: "text",
@@ -111,7 +111,7 @@ var a = {
             ]
         }
     ],
-    "5d3b8e21-adf3-4005-b73c-1fb63a46f399": [
+    "mbe://group.json": [
         {
             key: "rights",
             title: "Rights",
@@ -129,8 +129,8 @@ var a = {
         }
 
     ],
-    "4288fc06-d615-4f1c-ac10-8328153f2c54": [],
-    "2fb3b2c9-a29c-4fc0-b29d-6eed738b6dab": [
+    "mbe://right.json": [],
+    "mbe://user.json": [
         {
             title: "Credentials",
             type: "fieldset",
@@ -176,10 +176,7 @@ var a = {
             }
         }
     ],
-    "688a51b8-c8e7-465f-8ec9-9ad132245143": [
-    ],
-
-    "b8f7b679-bb6c-4ef9-af30-c50962dd8a54": [
+    "bpm://node_process.json": [
         {
             key: "pipPackages",
             type: "array",
@@ -276,33 +273,9 @@ var a = {
                     }
                 }
             }
-        },
-
-        {
-            key: "globals",
-            type: "ace",
-            aceOptions: {
-                mode: 'json'
-            },
-            validationMessage: {
-              'noGlobals': 'Globals contains invalid JSON'
-            },
-            $validators: {
-              noGlobals: function(value) {
-                  try {
-                      value = JSON.parse(value);
-                      return true;
-                  }
-                  catch (err) {
-                      return false;
-                  }
-              }
-            },
-            title:"Global variables",
-            description: "The global variables that is provided as input to the process"
-        },
+        }
     ],
-    "27b27a7bf-a686-4415-9a35-0ec3d3189d82": [
+    "bpm://node_processes.json": [
         {
             key: "repositoriesLocation",
             type: "text",
@@ -311,7 +284,7 @@ var a = {
             readonly: false
         }
     ],
-    "daf49a9d-b6e7-43f5-81c7-e5a76a2f1bb9": [
+    "bpm://node_agent.json": [
         {
             key: "repositoriesLocation",
             type: "text",
@@ -327,7 +300,7 @@ var a = {
             readonly: false
         }
     ],
-    "3fc3bc67-a26d-41c7-bc6e-02e9ad92c8bb": [
+    "of://node_admin.json": [
         {
             key: "theme",
             type: "text",
@@ -339,4 +312,3 @@ var a = {
 };
 
 return a;
-

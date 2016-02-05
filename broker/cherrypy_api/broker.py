@@ -77,6 +77,7 @@ class CherryPyBroker(object):
         :return: A structure containing the sessionId and settings of the peer.
         """
         # TODO: Should this get its own schema? (PROD-20)
+        print(self.log_prefix + "Register called")
         try:
             _data = kwargs["message"]
             _peer_type = _data["peerType"]
@@ -102,8 +103,21 @@ class CherryPyBroker(object):
             _condition = {"schemaRef": peer_type_to_schema_id(_peer_type), "address": _address}
             _settings = sanitize_node(self.admin.node._node.find(_condition, kwargs["user"]))
             _session_id = kwargs["session_id"]
+            print("New _session_id : " + str(_session_id))
+            # Log out any old sessions
 
-            # Should one allow re-registering? Probably. It should be like logging in again, nothing more.
+            for _curr_session_id, _curr_peer in self.peers.items():
+                if _curr_peer["address"] == _address and _curr_session_id != _session_id:
+                    print("Removing old registration for the peer at " +_address +  ": " +_curr_session_id)
+                    if "websocket" in _curr_peer:
+                        try:
+                            print("Shutdown websocket: " +_address +  ": " +_curr_session_id)
+                            _curr_peer["websocket"].shutdown(_user_id = kwargs["user"])
+                        except Exception as e:
+                            print("Exception doing so, ignoring error: " + str(e))
+                    del self.peers[_curr_session_id]
+
+
             self.peers[_session_id] = {
                 "user": kwargs["user"],
                 "ip": str(cherrypy.request.remote.ip),

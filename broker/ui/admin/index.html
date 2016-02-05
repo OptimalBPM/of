@@ -7,11 +7,14 @@
     <meta name="viewport" content="width=device-width">
     <script src="jspm_packages/system.src.js"></script>
     <script src="jspm_config.js"></script>
-    <script src="/plugins/admin_jspm_config.js"></script>
     <script>
-        System.import('./scripts/autologin');
-        System.import('/plugins/admin_init');
-        System.import('./scripts/admin');
+        System.import('./scripts/autologin').then(function (al) {
+            al.auto_login(function() {
+
+                System.import('./scripts/admin');
+            });
+        })
+
     </script>
     <!-- load plug-ins -->
     <link rel="stylesheet" href="views/nodes/nodes.css">

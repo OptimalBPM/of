@@ -9,9 +9,14 @@
     <script src="jspm_config.js"></script>
     <script src="plugins/jspm_config.js"></script>
     <script>
-        System.import('./scripts/autologin');
-        System.import('./plugins/init');
-        System.import('./scripts/index');
+        System.import('./scripts/autologin').then(function () {
+            auto_login(function() {
+                System.import('./plugins/init');
+                System.import('./scripts/admin');
+            });
+        })
+
+
     </script>
     <!-- load plug-ins -->
     <link rel="stylesheet" href="views/nodes/nodes.css">

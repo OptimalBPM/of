@@ -34,9 +34,7 @@ import "font-awesome"
 import "bootstrap3-dialog";
 
 import {initNodes} from "./nodes";
-import {initPlugins, initRoutes} from "/plugins/admin_init";
-
-
+import {initPlugins, initRoutes} from "../plugins/admin_init";
 
 import {AboutController} from "../controllers/about";
 import {AdminController} from "../controllers/admin";

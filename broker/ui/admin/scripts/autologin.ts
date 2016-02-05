@@ -44,7 +44,7 @@ function postJSON(url, data, callback) {
     return jQuery.ajax(settings);
 };
 
-function auto_login(){
+export function auto_login(_callback){
 
 
     var data: any = {
@@ -59,10 +59,7 @@ function auto_login(){
         "address": null
     };
 
-    postJSON('/register', data, function (response) {
-
-    });
+    postJSON('/register', data, _callback());
 
 };
 
-auto_login();

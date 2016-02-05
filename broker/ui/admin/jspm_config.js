@@ -16,10 +16,13 @@ System.config({
     "/admin/directives": {
       "defaultExtension": "ts"
     },
-    "/plugins": {
+    "/admin/plugins": {
       "defaultExtension": "ts"
     },
     "/admin/types": {
+      "defaultExtension": "ts"
+    },
+    "/admin/process": {
       "defaultExtension": "ts"
     }
   },

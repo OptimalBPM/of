@@ -10,6 +10,7 @@ TODO: These are only constant for this instance of the database (perhaps XOR-the
 
 # The users node
 id_users = "000000010000010001e64c25"
+id_peers = "000000010000010002e64d03"
 
 # Shorthand for a valid 24-digit zero object id
 zero_object_id = "000000000000000000000000"

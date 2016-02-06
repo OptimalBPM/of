@@ -142,12 +142,10 @@ class WebSocketHandler(Handler):
             if _web_socket.address in self.address__session:
                 print(
                     self.log_prefix + "Register_web_socket: The " + "\"" + _web_socket.address +
-                    "\" peer was already registered. Earlier failure to unregister/disconnect?")
-                # TODO: Should this be a problem?
-                pass
-            else:
-                self.address__session[_web_socket.address] = _web_socket.session_id
-                print(self.log_prefix + str(_web_socket.address) + " registered, session data: " + str(_session))
+                    "\" peer was already registered. Earlier failure to unregister/disconnect? Overwriting the registration.")
+
+            self.address__session[_web_socket.address] = _web_socket.session_id
+            print(self.log_prefix + str(_web_socket.address) + " registered, session data: " + str(_session))
 
         finally:
             # Unlock

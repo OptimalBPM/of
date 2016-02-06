@@ -10,6 +10,7 @@ from multiprocessing import Queue
 import cherrypy
 
 import of.broker.lib.messaging.websocket
+from common.messaging.constants import UNEXPECTED_CONDITION
 from mbe.cherrypy import aop_login_json, aop_check_session
 from mbe.constants import object_id_right_admin_everything
 from mbe.groups import has_right
@@ -111,8 +112,8 @@ class CherryPyBroker(object):
                     print("Removing old registration for the peer at " +_address +  ": " +_curr_session_id)
                     if "websocket" in _curr_peer:
                         try:
-                            print("Shutdown websocket: " +_address +  ": " +_curr_session_id)
-                            _curr_peer["websocket"].shutdown(_user_id = kwargs["user"])
+                            print("Close remaining websocket: " +_address +  ": " +_curr_session_id)
+                            _curr_peer["websocket"].close(code=UNEXPECTED_CONDITION, reason='Peer logging in again')
                         except Exception as e:
                             print("Exception doing so, ignoring error: " + str(e))
                     del self.peers[_curr_session_id]

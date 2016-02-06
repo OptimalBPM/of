@@ -104,9 +104,9 @@ class CherryPyBroker(object):
             _settings = sanitize_node(self.admin.node._node.find(_condition, kwargs["user"]))
             _session_id = kwargs["session_id"]
             print("New _session_id : " + str(_session_id))
-            # Log out any old sessions
 
-            for _curr_session_id, _curr_peer in self.peers.items():
+            # Log out any old sessions
+            for _curr_session_id, _curr_peer in dict(self.peers).items():
                 if _curr_peer["address"] == _address and _curr_session_id != _session_id:
                     print("Removing old registration for the peer at " +_address +  ": " +_curr_session_id)
                     if "websocket" in _curr_peer:

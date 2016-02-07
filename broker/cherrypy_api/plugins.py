@@ -52,6 +52,9 @@ class CherryPyPlugins(object):
         self.last_refresh_time = -31
         self.definitions = _definitions
         self.log_prefix = _log_prefix
+
+        # Add the parent of plugins to sys path
+        sys.path.append(os.path.join(_plugin_dir,".."))
         self.refresh_plugins(_plugin_dir)
 
     def validate_uuid(self, _value):
@@ -83,10 +86,10 @@ class CherryPyPlugins(object):
 
 
 
-    def load_plugin(self, _dirname):
+    def load_plugin(self, _plugins_dir, _plugin_name):
         # Load definitions.json
 
-
+        _dirname = os.path.join(_plugins_dir, _plugin_name)
         # TODO: Here any check for licensing should be made to define if a plugin should be loaded.
 
         print("Loading plugin: " + _dirname)
@@ -130,12 +133,12 @@ class CherryPyPlugins(object):
 
         if "hooks" in _definitions:
             _broker_definition = _definitions["hooks"]
-            hooks_modulename = _broker_definition["hooks_module"]
-            sys.path.append(_dirname)
+            _hooks_modulename = _broker_definition["hooks_module"]
+
             try:
-                _module = importlib.import_module(hooks_modulename)
+                _module = importlib.import_module("plugins." + _plugin_name + "." + _hooks_modulename)
             except Exception as e:
-                print(self.log_prefix + "An error occured importing " + hooks_modulename + " in " + _definitions["description"] + ":" + str(e))
+                print(self.log_prefix + "An error occured importing " + _hooks_modulename + " in " + _definitions["description"] + ":" + str(e))
                 if "FailOnError" in _definitions and _definitions["FailOnError"]:
                     print(self.log_prefix + "Setting as Failed. No more hooks will be called for this plugin.")
                     _definitions["failed"] = True
@@ -150,7 +153,7 @@ class CherryPyPlugins(object):
 
         return _definitions
 
-    def refresh_plugins(self, _plugin_dir):
+    def refresh_plugins(self, _plugins_dir):
         # If < 30 seconds since last refresh (or some other principle)
         _curr_time = time.time()
         if self.last_refresh_time - _curr_time > 30:
@@ -161,16 +164,16 @@ class CherryPyPlugins(object):
 
         # Find plugins directory
 
-        if not os.path.exists(_plugin_dir):
-            raise Exception("Plugin initialisation failed, no plugin directory where expected(" + _plugin_dir + ")")
+        if not os.path.exists(_plugins_dir):
+            raise Exception("Plugin initialisation failed, no plugin directory where expected(" + _plugins_dir + ")")
 
         # Loop plugins
-        _dir_list = os.listdir(_plugin_dir)
+        _plugin_names = os.listdir(_plugins_dir)
         self.plugins = {}
-        for _curr_file in _dir_list:
-            if os.path.isdir(os.path.join(_plugin_dir, _curr_file)):
-                self.plugins[_curr_file] = self.load_plugin(os.path.join(_plugin_dir, _curr_file))
-                print("Loaded plugin " + _curr_file)
+        for _plugin_name in _plugin_names:
+            if os.path.isdir(os.path.join(_plugins_dir, _plugin_name)):
+                self.plugins[_plugin_name] = self.load_plugin(_plugins_dir, _plugin_name)
+                print("Loaded plugin " + _plugin_name)
 
         # Manually add the optimal framework ("of") namespace
         self.definitions["of"]["schemas"] = [_curr_ref  for _curr_ref in self.schema_tools.json_schema_objects.keys()]

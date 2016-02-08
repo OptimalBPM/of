@@ -109,7 +109,7 @@ class CherryPyBroker(object):
             # Log out any old sessions
             for _curr_session_id, _curr_peer in dict(self.peers).items():
                 if _curr_peer["address"] == _address and _curr_session_id != _session_id:
-                    print("Removing old registration for the peer at " +_address +  ": " +_curr_session_id)
+                    print("Removing old registration for the peer at " + _address + ": " +_curr_session_id)
                     if "websocket" in _curr_peer:
                         try:
                             print("Close remaining websocket: " +_address +  ": " +_curr_session_id)

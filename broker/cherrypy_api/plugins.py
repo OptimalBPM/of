@@ -137,6 +137,7 @@ class CherryPyPlugins(object):
 
             try:
                 _module = importlib.import_module("plugins." + _plugin_name + "." + _hooks_modulename)
+                _broker_definition["hooks_instance"] = _module
             except Exception as e:
                 print(self.log_prefix + "An error occured importing " + _hooks_modulename + " in " + _definitions["description"] + ":" + str(e))
                 if "FailOnError" in _definitions and _definitions["FailOnError"]:
@@ -145,7 +146,7 @@ class CherryPyPlugins(object):
                 else:
                     print(self.log_prefix + "Ignores error, this plugin will continue to attempt initialization.")
 
-            _broker_definition["hooks_instance"] = _module
+
 
 
         # Add definitions

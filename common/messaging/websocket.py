@@ -6,6 +6,9 @@ import threading
 from queue import Empty
 import json
 import traceback
+from time import sleep
+
+from of.common.messaging.constants import GOING_AWAY, ABNORMAL_CLOSE
 from of.common.internal import not_implemented
 
 from ws4py.messaging import TextMessage
@@ -132,9 +135,14 @@ class BPMWebSocket(object):
         :param code: A web socket error code as defined in: http://tools.ietf.org/html/rfc6455#section-7.4.1
         :param reason: A string describing the reason for closing the connection
         """
-        self.monitor_message_queue_thread.terminated = True
-        print(self.log_prefix + "Closed, code: " + str(code) + ", reason: " + str(reason))
+        # TODO: Handle the rest of the possible web socket error codes
 
+        if code == ABNORMAL_CLOSE:
+            print(self.log_prefix + "The connection to " +  self.address + " has been abnormally closed.")
+            self.close(code=code, reason=reason)
+        else:
+            self.monitor_message_queue_thread.terminated = True
+            print(self.log_prefix + "Closed, code: " + str(code) + ", reason: " + str(reason))
 
 
     def error_handler(self, exception):

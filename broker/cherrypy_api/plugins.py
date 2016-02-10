@@ -172,7 +172,7 @@ class CherryPyPlugins(object):
         _plugin_names = os.listdir(_plugins_dir)
         self.plugins = {}
         for _plugin_name in _plugin_names:
-            if os.path.isdir(os.path.join(_plugins_dir, _plugin_name)):
+            if _plugin_name != "__pycache__" and os.path.isdir(os.path.join(_plugins_dir, _plugin_name)):
                 self.plugins[_plugin_name] = self.load_plugin(_plugins_dir, _plugin_name)
                 print("Loaded plugin " + _plugin_name)
 

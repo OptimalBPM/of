@@ -13,6 +13,12 @@ GOING_AWAY = 1001
 PROTOCOL_ERROR = 1002
 #: 1003 indicates that an endpoint is terminating the connection because it has received a type of data it cannot accept (e.g., an endpoint that understands only text data MAY send this if it receives a binary message).
 UNACCEPTABLE_DATA = 1003
+#: 1005 is a reserved value and MUST NOT be set as a status code in a Close control frame by an endpoint.  It is designated for use in applications expecting a status code to indicate that no status code was actually present."
+NO_STATUS = 1005
+#: 1006 is a reserved value and MUST NOT be set as a status code in a Close control frame by an endpoint.  It is designated for use in applications expecting a status code to indicate that the connection was closed abnormally, e.g., without sending or receiving a Close control frame.
+ABNORMAL_CLOSE = 1006
+#: 1007 indicates that an endpoint is terminating the connection because it has received data within a message that was not consistent with the type of the message (e.g., non-UTF-8 [RFC3629] data within a text message).
+INCONSISTENT_DATA = 1007
 #: 1008 indicates that an endpoint is terminating the connection because it has received a message that violates its policy.  This is a generic status code that can be returned when there is no other more suitable status code (e.g., 1003 or 1009) or if there is a need to hide specific details about the policy.
 POLICY_VALIDATION = 1008
 #: 1009 indicates that an endpoint is terminating the connection because it has received a message that is too big for it to process.
@@ -30,3 +36,4 @@ BROKER_RESTARTING = 4011
 BROKER_SHUTTING_DOWN = 4012
 
 
+#: 1004 is Reserved.  The specific meaning might be defined in the future.

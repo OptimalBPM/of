@@ -156,7 +156,6 @@ class CherryPyBroker(object):
         Method for checking if the broker is up. No session id required and no checks performed.
         :return: The string "up" if the broker is up
         """
-        # TODO: Define what "up" means, this should be a thorough analysis. Should queue monitors be running? (PROD-42)
         return "up"
 
     @cherrypy.expose

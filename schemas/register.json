@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Register schema, this schema defines a register call to the broker API, not used for validation, just description.",
+  "title": "Register",
+  "type": "object",
+  "version": "0.1",
+  "properties": {
+    "peerType": {
+      "description": "The type of perr",
+      "$ref": "mbe://peer.json#/properties/peerType"
+    },
+    "address": {
+      "type": "string",
+      "description": "The peer address. An unique address identifying the per within the network."
+    },
+    "environment": {
+      "type": "any",
+      "description": "Environmental data from the peer.",
+    },
+    "credentials": {
+      "type": "object",
+      "description": "The credentials used to register at the broker, can be usernamePassword or a plugin ",
+      "anyOf": [
+        {
+          "properties": {
+
+            "usernamePassword": {
+              "description": "A structure containing the user name and password",
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+              "custom": {
+                "description": "A custom structure, if set, the registered CUSTOM_LOGIN-hook is called",
+                "type": "any"
+              }
+          }
+        }
+      ]
+    },
+    "schemaRef": {
+      "description": "A reference to the schema to which this data adheres.",
+      "type": "string",
+      "format": "uri"
+    }
+  },
+  "required": [
+    "peerType",
+    "address",
+    "environment",
+    "credentials",
+    "schemaRef"
+  ],
+  "collection": "log",
+  "namespace": "of"
+}

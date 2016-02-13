@@ -77,7 +77,9 @@ class CherryPyBroker(object):
         :param kwargs: A structure containing credentials, environment data, peer type and peer address.
         :return: A structure containing the sessionId and settings of the peer.
         """
-        # TODO: Should this get its own schema? (PROD-20)
+        # Note: The input to this function is not validated by against the register.json schema and should not be,
+        # as it is both a simple structure and would be a potential DOS-voulnerability. All other calls require a valid
+        # session cookie before even entering any logic, and are therefore more protected that this function.
         print(self.log_prefix + "Register called")
         try:
             _data = kwargs["message"]

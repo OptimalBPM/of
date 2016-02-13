@@ -290,13 +290,9 @@ def stop_broker(_reason, _restart=None):
 
         _broker_process = Process(target=run_broker, name="optimalframework_broker", daemon=False)
         _broker_process.start()
-        if os.name == "nt":
-            # On windows, the current process (source) must still exist while the new process is initialized
-            sleep(1)
+        _broker_process.join()
 
-        print(_log_prefix + "...before exiting with exit status " + str(_exit_status))
-    else:
-        print(_log_prefix + "Broker exiting with exit status " + str(_exit_status))
+    print(_log_prefix + "Broker exiting with exit status " + str(_exit_status))
 
     if os.name != "nt":
         os._exit(_exit_status)

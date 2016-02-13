@@ -10,7 +10,7 @@ from multiprocessing import Queue
 import cherrypy
 
 import of.broker.lib.messaging.websocket
-from common.messaging.constants import UNEXPECTED_CONDITION
+from of.common.messaging.constants import UNEXPECTED_CONDITION
 from mbe.cherrypy import aop_login_json, aop_check_session
 from mbe.constants import object_id_right_admin_everything
 from mbe.groups import has_right

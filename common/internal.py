@@ -13,7 +13,7 @@ from decorator import decorator
 
 
 # TODO: BPMSettings should probably not be used by QAL(use only resources)optimalbpm.common.* (PROD-94)
-from of.common.settings import INISettings
+from of.common.settings import JSONXPath
 
 stop_handler = None
 
@@ -60,10 +60,9 @@ def load_settings():
     else:
         raise Exception("Unsupported platform: " + platform.system().lower())
 
-    _cfg_filename = os.path.expanduser(os.getenv("OPTIMAL_FW_CFG", os.path.join(_default_settings_folder, "main.cfg")))
+    _cfg_filename = os.path.expanduser(os.getenv("OPTIMAL_FW_CFG", os.path.join(_default_settings_folder, "config.json")))
     print("Config path set to: " + _cfg_filename)
-    return INISettings(_cfg_filename)
-
+    return JSONXPath(_cfg_filename)
 
 def signal_handler_unix(_signal, _frame):
     """

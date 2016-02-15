@@ -8,7 +8,7 @@ import json
 import traceback
 from time import sleep
 
-from common.messaging.factory import reply_with_error_message
+from of.common.messaging.factory import reply_with_error_message
 from of.common.messaging.constants import GOING_AWAY, ABNORMAL_CLOSE
 from of.common.internal import not_implemented
 

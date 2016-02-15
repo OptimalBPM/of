@@ -89,12 +89,12 @@ def start_broker():
         _settings = load_settings()
     except Exception as e:
         write_to_event_log("Application", 1, "Error loading settings", str(e))
-        print("Error loading settings:" + str(e))
+        raise Exception("Error loading settings:" + str(e))
 
-        return
+
 
     # An address is completely neccessary.
-    _address = _settings.get("broker", "address", _default=None)
+    _address = _settings.get("broker/address", _default=None)
     if not _address or _address == "":
         print("Fatal error: Broker cannot start, missing [broker] address setting in configuration file.")
         raise Exception("Broker cannot start, missing address.")
@@ -111,7 +111,7 @@ def start_broker():
 
     print("Load plugin data")
     # Find the plugin directory
-    _plugin_dir = _settings.get_path("broker", "plugin_folder", _default="plugins")
+    _plugin_dir = _settings.get_path("broker/pluginFolder", _default="plugins")
 
     # Load all plugin data
     _plugins = CherryPyPlugins(_plugin_dir=_plugin_dir, _schema_tools=_schema_tools, _definitions=_definitions,
@@ -122,16 +122,16 @@ def start_broker():
     register_signals(stop_broker)
 
     # Connect to the database
-    _host = _settings.get("database", "host", _default="127.0.0.1")
-    _user = _settings.get("database", "username", _default=None)
-    _password = _settings.get("database", "password", _default=None)
+    _host = _settings.get("broker/database/host", _default="127.0.0.1")
+    _user = _settings.get("broker/database/username", _default=None)
+    _password = _settings.get("broker/database/password", _default=None)
     if _user:
         # http://api.mongodb.org/python/current/examples/authentication.html
         _client = MongoClient("mongodb://" + _user + ":" + _password + "@" + _host)
     else:
         _client = MongoClient()
 
-    _database_name = _settings.get("database", "database_name", _default="optimalframework")
+    _database_name = _settings.get("broker/database/databaseName", _default="optimalframework")
     _database = _client[_database_name]
     _database_access = DatabaseAccess(_database=_database, _schema_tools=_schema_tools)
 

@@ -215,7 +215,7 @@ def start_broker():
     # Initialize admin user interface /admin
     _admin = CherryPyAdmin(_database_access=_database_access, _process_id=_process_id,
                            _address=_address, _log_prefix=_log_prefix, _stop_broker=stop_broker,
-                           _definitions=_definitions, _monitor=of.common.messaging.websocket.monitor)
+                           _definitions=_definitions, _monitor=of.common.messaging.websocket.monitor, _root_object=_root)
     _admin.plugins = _plugins
 
     _root.admin = _admin

@@ -7,15 +7,15 @@
   "properties": {
     "peerType": {
       "description": "The type of perr",
-      "$ref": "mbe://peer.json#/properties/peerType"
+      "$ref": "of://peer.json#/properties/peerType"
     },
     "address": {
       "type": "string",
       "description": "The peer address. An unique address identifying the per within the network."
     },
     "environment": {
-      "type": "any",
       "description": "Environmental data from the peer.",
+      "additionalProperties": true
     },
     "credentials": {
       "type": "object",
@@ -23,7 +23,6 @@
       "anyOf": [
         {
           "properties": {
-
             "usernamePassword": {
               "description": "A structure containing the user name and password",
               "type": "object",
@@ -37,16 +36,9 @@
               }
             }
           }
-        },
-        {
-          "properties": {
-              "custom": {
-                "description": "A custom structure, if set, the registered CUSTOM_LOGIN-hook is called",
-                "type": "any"
-              }
-          }
         }
-      ]
+      ],
+      "additionalProperties": false
     },
     "schemaRef": {
       "description": "A reference to the schema to which this data adheres.",

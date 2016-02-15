@@ -120,7 +120,7 @@ def step_impl(context, address):
     """
     print("Tester: Calling get_peers and checking for the address " + str(address))
     try:
-        _peers = call_api(_url="https://127.0.0.1:8080/get_peers",
+        _peers = call_api(_url="https://127.0.0.1:8080/admin/get_peers",
                  _session_id=context.session["session_id"],
                  _data={}
                  )

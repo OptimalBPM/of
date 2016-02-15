@@ -2,12 +2,15 @@
 The admin module holds the CherryPy implementation of the admin interface.
 Note that most of its initialisation happens in the broker init script, ../broker.py
 """
+import copy
 import threading
 
 import cherrypy
 
 from mbe.cherrypy import aop_check_session
 from mbe.cherrypy import CherryPyNode
+from mbe.constants import object_id_right_admin_everything
+from mbe.groups import aop_has_right
 
 
 class CherryPyAdmin(object):
@@ -25,12 +28,13 @@ class CherryPyAdmin(object):
     #: A reference to the stop broker function in the main thread
     stop_broker = None
 
-
+    #: A reference to root object (broker)
+    root = None
 
     #: Node management web service(MBE)
     node = None
 
-    def __init__(self,_database_access, _process_id, _address, _log_prefix, _stop_broker, _definitions, _monitor):
+    def __init__(self,_database_access, _process_id, _address, _log_prefix, _stop_broker, _definitions, _monitor, _root_object):
         print(_log_prefix + "Initializing Admin class.")
 
         self.stop_broker = _stop_broker
@@ -41,6 +45,7 @@ class CherryPyAdmin(object):
         self.address = _address
         self.database_access = _database_access
         self.node = CherryPyNode(_database_access=_database_access)
+        self.root = _root_object
 
     def broker_ctrl(self, _command, _reason, _user):
         """
@@ -73,4 +78,27 @@ class CherryPyAdmin(object):
     def broker_control(self, **kwargs):
         return self.broker_ctrl(cherrypy.request.json["command"],
                                                    cherrypy.request.json["reason"],
-                                                   kwargs["user"])
+                                                   kwargs["_user"])
+
+    @cherrypy.expose
+    @cherrypy.tools.json_out(content_type='application/json')
+    @aop_check_session
+    @aop_has_right([object_id_right_admin_everything])
+    def get_peers(self, **kwargs):
+        """
+        Returns a list of all logged in peers
+        :param kwargs: Unused here so far, but injected by get session
+        :return: A list of all logged in peers
+        """
+
+
+        _result = []
+        # Filter out the unserializable web socket
+        for _session in self.root.peers.values():
+            _new_session = copy.copy(_session)
+            _new_session["web_socket"] = "removed for serialization"
+            _new_session["queue"] = "removed for serialization"
+            _result.append(_new_session)
+
+        print("Returning a list of peers:" + str(_result))
+        return _result

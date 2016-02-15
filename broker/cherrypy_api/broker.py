@@ -13,7 +13,7 @@ import of.broker.lib.messaging.websocket
 from of.common.messaging.constants import UNEXPECTED_CONDITION
 from mbe.cherrypy import aop_login_json, aop_check_session
 from mbe.constants import object_id_right_admin_everything
-from mbe.groups import has_right
+from mbe.groups import has_right, aop_has_right
 from mbe.node import sanitize_node
 from of.common.messaging.utils import get_environment_data
 from of.schemas.constants import peer_type_to_schema_id
@@ -62,8 +62,8 @@ class CherryPyBroker(object):
     @cherrypy.expose
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
+    @aop_has_right([object_id_right_admin_everything])
     def get_broker_environment(self, **kwargs):
-        has_right(object_id_right_admin_everything, kwargs["user"])
         print("Request for broker information")
         return get_environment_data()
 
@@ -82,7 +82,7 @@ class CherryPyBroker(object):
         # session cookie before even entering any logic, and are therefore more protected that this function.
         print(self.log_prefix + "Register called")
         try:
-            _data = kwargs["message"]
+            _data = kwargs["_message"]
             _peer_type = _data["peerType"]
         except KeyError as e:
             print(self.log_prefix + "Register: A peer at " + str(
@@ -94,7 +94,7 @@ class CherryPyBroker(object):
             if _data["address"] is None:
                 if _peer_type == "admin":
                     # Generate an address, like "admin_root".
-                    _address = _peer_type + "_" + kwargs["user"]["name"]
+                    _address = _peer_type + "_" + kwargs["_user"]["name"]
                 else:
                     raise Exception("The " + _peer_type + " peer type must state an address.")
             else:
@@ -104,8 +104,8 @@ class CherryPyBroker(object):
 
             # Load the matching node for the address
             _condition = {"schemaRef": peer_type_to_schema_id(_peer_type), "address": _address}
-            _settings = sanitize_node(self.admin.node._node.find(_condition, kwargs["user"]))
-            _session_id = kwargs["session_id"]
+            _settings = sanitize_node(self.admin.node._node.find(_condition, kwargs["_user"]))
+            _session_id = kwargs["_session_id"]
             print("New _session_id : " + str(_session_id))
 
             # Log out any old sessions
@@ -122,7 +122,7 @@ class CherryPyBroker(object):
 
 
             self.peers[_session_id] = {
-                "user": kwargs["user"],
+                "user": kwargs["_user"],
                 "ip": str(cherrypy.request.remote.ip),
                 "address": _address,
                 "environment": _data["environment"],
@@ -158,24 +158,3 @@ class CherryPyBroker(object):
         """
         return "up"
 
-    @cherrypy.expose
-    @cherrypy.tools.json_out(content_type='application/json')
-    @aop_check_session
-    def get_peers(self, **kwargs):
-        """
-        Returns a list of all logged in peers
-        :param kwargs: Unused here so far, but injected by get session
-        :return: A list of all logged in peers
-        """
-
-        # TODO: Should be governed by a admin peers right and perhaps moved to /admin (PROD-20)
-        _result = []
-        # Filter out the unserializable web socket
-        for _session in self.peers.values():
-            _new_session = copy.copy(_session)
-            _new_session["web_socket"] = "removed for serialization"
-            _new_session["queue"] = "removed for serialization"
-            _result.append(_new_session)
-
-        print("Returning a list of peers:" + str(_result))
-        return _result

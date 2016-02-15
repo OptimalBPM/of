@@ -8,6 +8,7 @@ import json
 import traceback
 from time import sleep
 
+from common.messaging.factory import reply_with_error_message
 from of.common.messaging.constants import GOING_AWAY, ABNORMAL_CLOSE
 from of.common.internal import not_implemented
 
@@ -81,13 +82,18 @@ class BPMWebSocket(object):
         :return:
         """
 
-        # TODO: For now, we'll just ignore the empty messages(PROD-20)
+
         if str(message) != "":
             print(self.log_prefix + "Got this message(putting on queue):" + str(message))
             if isinstance(message, TextMessage):
                 monitor.queue.put([self, json.loads(str(message))])
             else:
                 monitor.queue.put([self, json.loads(message)])
+        else:
+            self.send_message(reply_with_error_message(_runtime_instance= os.getpid(),
+                                                       _error_message="Cannot send empty messages to agent",
+                                                       _message={}))
+
 
     def queue_message(self, message):
         """

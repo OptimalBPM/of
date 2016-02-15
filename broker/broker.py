@@ -88,7 +88,8 @@ def start_broker():
     try:
         _settings = load_settings()
     except Exception as e:
-        write_to_event_log("Application", 1, "Error loading settings", str(e))
+        if os.name == "nt":
+            write_to_event_log("Application", 1, "Error loading settings", str(e))
         raise Exception("Error loading settings:" + str(e))
 
 

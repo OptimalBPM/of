@@ -78,8 +78,7 @@ class BPMWebSocket(object):
         """
         Receives a message from a peer and puts it on the queue
 
-        :param message:
-        :return:
+        :param message: The message
         """
 
 
@@ -90,7 +89,7 @@ class BPMWebSocket(object):
             else:
                 monitor.queue.put([self, json.loads(message)])
         else:
-            self.send_message(reply_with_error_message(_runtime_instance= os.getpid(),
+            self.send_message(reply_with_error_message(_runtime_instance=os.getpid(),
                                                        _error_message="Cannot send empty messages to agent",
                                                        _message={}))
 

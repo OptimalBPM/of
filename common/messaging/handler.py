@@ -49,7 +49,7 @@ class WebSocketHandler(Handler):
         :param _web_socket: If the sender was external, the web socket
         :param _error: The error
         """
-        # TODO: This must become far more fine-grained. Possibly, a severity parameter should be added.(PROD-20)
+        # TODO: This must become far more fine-grained. Possibly, a severity parameter should be added.(PROD-90)
 
         self.logging_function(_message=_error, _severity=logging.ERROR)
         print("in handle_error error with error :" + str(_error))

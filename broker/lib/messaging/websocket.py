@@ -1,6 +1,6 @@
 
 import time
-from time import sleep
+
 import cherrypy
 from ws4py.websocket import WebSocket
 

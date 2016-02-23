@@ -5,7 +5,7 @@ THIS SOFTWARE IS STILL UNRELEASED. IT IS UNDER HEAVY DEVELOPMENT AND NOT RECOMME
 The Optimal Framework is a modern, and running, multi-user system.
 What differs it from many other frameworks is that it comes with a runnable server as-is.
 The goal is to create something that not only provides the framework for solving, but actually has already implemented the most common problems in systems programming.
-A typical implementation would someone moving desktop client-based system to web based clients.
+A typical implementation would someone moving a traditional desktop client-based system to web based clients or apps.
 As the client side of Optimal Framework is Typescript, and the server side is Python, there are no restriction on what can be done.
 The backend is a MongoDB database, which covers a surprising range of usage scenarios, but there is no problems with additionally using a RDBMS backend.
 
@@ -22,8 +22,9 @@ The backend is a MongoDB database, which covers a surprising range of usage scen
 * Installers
 * User interface 
 * Dependency-aware plug-in framework
+* Support for centralized schema and input form management via [JSON Schema](http://json-schema.org/) and [Angular Schema Form](https://github.com/json-schema-form/angular-schema-form)
 
-More features, commercial and non-commercial, ranging from  to actual commercial extensive systems like Optimal BPM and will be available through the plug-in network.
+More features, commercial and non-commercial, ranging from  to actual commercial extensive systems like Optimal BPM and will be available through a plug-in ecosystem.
 
 # Support
 

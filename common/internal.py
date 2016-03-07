@@ -43,7 +43,7 @@ def load_settings():
     """
     Load settings from settings file, first environment variable OPTIMAL_BPM_CFG, then default locations:
     * Windows - %APPDATA%\optimalframework
-    * Linux/OSX - ~/ptimalframework
+    * Linux/OSX - ~/optimalframework
 
     :return: a qal BPM settings instance
     """

@@ -29,7 +29,7 @@ script_dir = os.path.dirname(__file__)
 
 def before_all(context):
 
-    os.environ["OPTIMAL_FW_CFG"] = os.path.join(script_dir, "steps", "main.cfg")
+    os.environ["OPTIMAL_FW_CFG"] = os.path.join(script_dir, "steps", "config.json")
     init_env(context)
 
 

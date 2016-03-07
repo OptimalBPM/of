@@ -1,6 +1,5 @@
 import os
 
-from shelve import _ClosedDict
 import traceback
 from multiprocessing import Process
 import time

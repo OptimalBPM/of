@@ -70,8 +70,14 @@ _plugins = None
 _definitions = None
 
 # The prefix to all logging messages
-_log_prefix = None
+_log_prefix = ""
 
+
+def log_locally(_message, _severity, _type, _process_id):
+    if _severity < 2:
+        print(_log_prefix + _message)
+    else:
+        print(_log_prefix + "An error occured: Severity" + severity_to_identifier(_severity) + "Type: " +)
 
 def start_broker():
     """

@@ -5,3 +5,5 @@ Feature: Logging
   Scenario: A textual log message needs to be created
     Then a log message is built
 
+  Scenario: The callback is defined
+    Then the logging should call it

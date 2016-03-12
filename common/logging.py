@@ -68,20 +68,20 @@ def index_to_string(_index, _array, _error):
 
 
 
-def write_to_log(_message, _severity=0, _type=0, _process_id=None):
+def write_to_log(_message, _severity=0, _errortype=0, _process_id=None):
     """
     Writes a message to the log using the current facility
     :param _message: The error message
     :param _severity: The severity of the error
-    :param _type: The kind of error
+    :param _errortype: The kind of error
     :param _process_id: The current process id
 
     """
     global logging_callback
     if logging_callback is not None:
-        logging_callback(_message, _severity, _type, _process_id)
+        logging_callback(_message, _severity, _errortype, _process_id)
     else:
-        print("Logging callback not set, print message:\n"+ make_textual_log_message(_message, _severity, _type, _process_id))
+        print("Logging callback not set, print message:\n"+ make_textual_log_message(_message, _severity, _errortype, _process_id))
 
 
 def make_textual_log_message(_message, _severity = None, _errortype = None, _process_id = None):

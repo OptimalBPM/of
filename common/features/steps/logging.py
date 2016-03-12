@@ -9,7 +9,7 @@ from of.common.logging import make_textual_log_message, ERR_RESOURCE, SEV_DEBUG,
 
 
 
-@then("a message is built")
+@then("a log message is built")
 def step_impl(context):
     """
     :type context: behave.runner.Context

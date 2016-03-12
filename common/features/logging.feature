@@ -2,6 +2,6 @@
 Feature: Logging
   Logging facilities for the Optimal Framework
 
-  Scenario: An error message needs to be created
-    Then a message is built
+  Scenario: A textual log message needs to be created
+    Then a log message is built
 

@@ -12,7 +12,9 @@ The backend is a MongoDB database, which covers a surprising range of usage scen
 # Features
 
 * Messaging (messaging between different components in a multi-user system is not only a chat function)
-* Settings and resource management - There is a 
+* Settings and resource management - Tree structure
+* JSON Schema based integrity control
+* Centralized schema and input form management using [JSON Schema](http://json-schema.org/) and [Angular Schema Form](https://github.com/json-schema-form/angular-schema-form)
 * Users and groups
 * Permissions
 * Rights
@@ -20,11 +22,10 @@ The backend is a MongoDB database, which covers a surprising range of usage scen
 * Logging, auditing
 * Locking
 * Installers
-* User interface 
+* Administrative User interface 
 * Dependency-aware plug-in framework
-* Support for centralized schema and input form management via [JSON Schema](http://json-schema.org/) and [Angular Schema Form](https://github.com/json-schema-form/angular-schema-form)
 
-More features, commercial and non-commercial, ranging from  to actual commercial extensive systems like Optimal BPM and will be available through a plug-in ecosystem.
+More features, commercial and non-commercial, ranging from  to actual extensive commercial systems like Optimal BPM and will be available through a plug-in ecosystem.
 
 # Support
 

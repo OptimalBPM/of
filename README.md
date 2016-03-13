@@ -44,7 +44,7 @@ b. that one would have in some way treat parts of Optimal BPM as plug-ins,
 
 And as an answer to the question "a plug-in to what?", the Optimal Framework was born.
 
-It is not primarily thought of as something to build a web site, but rather for creating applicatoin systems, like a  
+It is not primarily thought of as something to build a web site, but rather for creating sector-specific computing systems.
 
 
 

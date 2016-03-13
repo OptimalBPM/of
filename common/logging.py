@@ -1,6 +1,8 @@
 """
 This is the central logging facility of the Optimal framework.
 """
+import datetime
+
 __author__ = 'Nicklas Borjesson'
 import os
 
@@ -58,6 +60,7 @@ errortype_descriptions = ["not an error",
                           "error during communication",
                           "error indicating a lack of memory, space or time/cpu",
                           "other, uncategorized error"]
+
 """Set logging callbar to"""
 logging_callback = None
 
@@ -71,7 +74,7 @@ def index_to_string(_index, _array, _error):
 
 
 
-def write_to_log(_message, _severity=0, _errortype=0, _process_id=None, _user_id = None):
+def write_to_log(_message, _severity=0, _errortype=0, _process_id=None, _user_id = None, _occured_when = None):
     """
     Writes a message to the log using the current facility
     :param _message: The error message
@@ -80,14 +83,16 @@ def write_to_log(_message, _severity=0, _errortype=0, _process_id=None, _user_id
     :param _process_id: The current process id
 
     """
+    _occured_when = _occured_when if _occured_when is not None else str(datetime.datetime.utcnow())
+    _process_id = _process_id if _process_id is not None else os.getpid()
     global logging_callback
     if logging_callback is not None:
-        logging_callback(_message, _severity, _errortype, _process_id, _user_id)
+        logging_callback(_message, _severity, _errortype, _process_id, _user_id, _occured_when)
     else:
-        print("Logging callback not set, print message:\n"+ make_textual_log_message(_message, _severity, _errortype, _process_id, _user_id))
+        print("Logging callback not set, print message:\n"+ make_textual_log_message(_message, _severity, _errortype, _process_id, _user_id, _occured_when))
 
 
-def make_textual_log_message(_message, _severity = None, _errortype = None, _process_id = None, _user_id = None):
+def make_textual_log_message(_message, _severity = None, _errortype = None, _process_id = None, _user_id = None, _occurred_when = None):
     """
     Build a nice textual error message based on available information
 
@@ -102,6 +107,7 @@ def make_textual_log_message(_message, _severity = None, _errortype = None, _pro
     _result+= "\nSeverity: " + index_to_string(_severity, severity_identifiers, "invalid severity level:") if _severity is not None else ""
     _result+= "\nError Type: " + index_to_string(_errortype, errortype_identifiers, "invalid severity level:") if _errortype is not None else ""
     _result+= "\nUser Id: " + str(_user_id) if _user_id is not None else ""
+    _result+= "\nOccured when: " + str(_occurred_when) if _occurred_when is not None else ""
 
     return _result
 

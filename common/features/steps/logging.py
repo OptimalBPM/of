@@ -7,10 +7,10 @@ from behave import *
 use_step_matcher("re")
 
 from nose.tools.trivial import ok_
-from of.common.logging import make_textual_log_message, ERR_RESOURCE, SEV_DEBUG, SEV_ERROR, ERR_LOG, write_to_log
+from of.common.logging import make_textual_log_message, LOG_E_RESOURCE, SEV_DEBUG, SEV_ERROR, write_to_log
 import of.common.logging
 _global_params = None
-_global_err_param = ("Test error", SEV_ERROR, ERR_RESOURCE, 1, "TestUser", datetime.datetime(1999, 1, 1, 1, 1, 1, 1), 1)
+_global_err_param = ("Test error", SEV_ERROR, LOG_E_RESOURCE, 1, "TestUser", datetime.datetime(1999, 1, 1, 1, 1, 1, 1), 1)
 _global_err_cmp = "Process Id: 1 - An error occured:\nTest error\nSeverity: error\n" \
                   "Error Type: resource\nUser Id: TestUser\nOccured when: 1999-01-01 01:01:01.000001\nEntity Id: 1"
 _global_debug_param = ("Test message", SEV_DEBUG)

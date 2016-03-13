@@ -5,11 +5,11 @@ from behave import *
 use_step_matcher("re")
 
 from nose.tools.trivial import ok_
-from of.common.logging import make_textual_log_message, ERR_RESOURCE, SEV_DEBUG, SEV_ERROR, ERR_NONE, write_to_log
+from of.common.logging import make_textual_log_message, ERR_RESOURCE, SEV_DEBUG, SEV_ERROR, ERR_LOG, write_to_log
 import of.common.logging
 _global_params = None
-_global_err_param = ("Test error", SEV_ERROR, ERR_RESOURCE, 1)
-_global_err_cmp = "Process Id: 1 - An error occured:\nTest error\nSeverity: error\nError Type: resource"
+_global_err_param = ("Test error", SEV_ERROR, ERR_RESOURCE, 1, "TestUser")
+_global_err_cmp = "Process Id: 1 - An error occured:\nTest error\nSeverity: error\nError Type: resource\nUser Id: TestUser"
 _global_debug_param = ("Test message", SEV_DEBUG)
 _global_debug_cmp = "Process Id: " + str(os.getpid())+" - Message:\nTest message\nSeverity: debug"
 

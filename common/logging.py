@@ -9,12 +9,13 @@ import os
 SEV_INFO = 0  # Informational message
 SEV_DEBUG = 1  # Debugging level message
 SEV_WARNING = 2  # A warning
-SEV_ALERT = 3  # Action must be taken immidiately
-SEV_USER = 4  # A user error or error that can be corrected by the user
-SEV_ERROR = 5  # An error
-SEV_FATAL = 6  # Ar error that causes something to stop functioning
+SEV_ATTACK = 3  # The system consider itself being under attack
+SEV_ALERT = 4  # Action must be taken immidiately
+SEV_USER = 5  # A user error or error that can be corrected by the user
+SEV_ERROR = 6  # An error
+SEV_FATAL = 7  # Ar error that causes something to stop functioning
 
-ERR_NONE = 0  # Not an error condition
+ERR_LOG = 0  # Not an error condition, just logg
 ERR_SECURITY = 1  # A security related error, insufficient permissions or rights
 ERR_INTERNAL = 2  # An internal error, likely a bug in the system
 ERR_INVALID = 3  # A validation error, some information failed to validate, invalid reference
@@ -28,6 +29,7 @@ ERR_OTHER = 6  # Uncategorized error
 severity_identifiers = ["information",
                         "debug",
                         "warning",
+                        "attack",
                         "alert",
                         "user",
                         "error",
@@ -35,7 +37,8 @@ severity_identifiers = ["information",
 
 severity_descriptions = ["informational message",
                          "debugging message",
-                         "warning messare",
+                         "warning message",
+                         "the system is under attack",
                          "action must be taken immitiately",
                          "user correctable error",
                          "error",
@@ -68,7 +71,7 @@ def index_to_string(_index, _array, _error):
 
 
 
-def write_to_log(_message, _severity=0, _errortype=0, _process_id=None):
+def write_to_log(_message, _severity=0, _errortype=0, _process_id=None, _user_id = None):
     """
     Writes a message to the log using the current facility
     :param _message: The error message
@@ -79,12 +82,12 @@ def write_to_log(_message, _severity=0, _errortype=0, _process_id=None):
     """
     global logging_callback
     if logging_callback is not None:
-        logging_callback(_message, _severity, _errortype, _process_id)
+        logging_callback(_message, _severity, _errortype, _process_id, _user_id)
     else:
-        print("Logging callback not set, print message:\n"+ make_textual_log_message(_message, _severity, _errortype, _process_id))
+        print("Logging callback not set, print message:\n"+ make_textual_log_message(_message, _severity, _errortype, _process_id, _user_id))
 
 
-def make_textual_log_message(_message, _severity = None, _errortype = None, _process_id = None):
+def make_textual_log_message(_message, _severity = None, _errortype = None, _process_id = None, _user_id = None):
     """
     Build a nice textual error message based on available information
 
@@ -98,6 +101,7 @@ def make_textual_log_message(_message, _severity = None, _errortype = None, _pro
     _result+= (" - An error occured:\n" if _severity > 2 else " - Message:\n") + _message
     _result+= "\nSeverity: " + index_to_string(_severity, severity_identifiers, "invalid severity level:") if _severity is not None else ""
     _result+= "\nError Type: " + index_to_string(_errortype, errortype_identifiers, "invalid severity level:") if _errortype is not None else ""
+    _result+= "\nUser Id: " + str(_user_id) if _user_id is not None else ""
 
     return _result
 

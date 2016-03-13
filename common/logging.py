@@ -45,7 +45,7 @@ severity_descriptions = ["informational message",
                          "user correctable error",
                          "error",
                          "a fatal error cause loss of functionality"]
-errortype_identifiers = ["no error",
+errortype_identifiers = ["not error",
                          "security",
                          "internal",
                          "invalid",
@@ -74,32 +74,39 @@ def index_to_string(_index, _array, _error):
 
 
 
-def write_to_log(_message, _severity=0, _errortype=0, _process_id=None, _user_id = None, _occured_when = None):
+def write_to_log(_message, _severity=SEV_INFO, _errortype=ERR_LOG, _process_id=None, _user_id = None, _occured_when = None, _entity_id = None):
     """
     Writes a message to the log using the current facility
     :param _message: The error message
-    :param _severity: The severity of the error
-    :param _errortype: The kind of error
-    :param _process_id: The current process id
+    :param _severity: The severity of the error (defaults to ERR_INFO)
+    :param _errortype: The kind of error (defaults to ERR_LOG)
+    :param _process_id: The current process id (defaults to the current pid)
+    :param _user_id: The Id of the user (defaults to the current username)
+    :param _occured_when: The time of occurrance (defaults to the current time)
+    :param _entity_id: An Id for reference (like a node id)
 
     """
     _occured_when = _occured_when if _occured_when is not None else str(datetime.datetime.utcnow())
     _process_id = _process_id if _process_id is not None else os.getpid()
+    _user_id = _user_id if _user_id is not None else os.getlogin()
     global logging_callback
     if logging_callback is not None:
-        logging_callback(_message, _severity, _errortype, _process_id, _user_id, _occured_when)
+        logging_callback(_message, _severity, _errortype, _process_id, _user_id, _occured_when, _entity_id)
     else:
-        print("Logging callback not set, print message:\n"+ make_textual_log_message(_message, _severity, _errortype, _process_id, _user_id, _occured_when))
+        print("Logging callback not set, print message:\n"+ make_textual_log_message(_message, _severity, _errortype, _process_id, _user_id, _occured_when, _entity_id))
 
 
-def make_textual_log_message(_message, _severity = None, _errortype = None, _process_id = None, _user_id = None, _occurred_when = None):
+def make_textual_log_message(_message, _severity = None, _errortype = None, _process_id = None, _user_id = None, _occurred_when = None, _entity_id = None):
     """
     Build a nice textual error message based on available information
 
     :param _message: The error message
     :param _severity: The severity of the error
-    :param _errortype: The kind of log message
+    :param _errortype: The kind of error
     :param _process_id: The current process id
+    :param _user_id: The Id of the user
+    :param _occured_when: The time of occurrance
+    :param _entity_id: An Id for reference (like a node id)
     :return: An error message
     """
     _result= "Process Id: " + (str(_process_id) if _process_id is not None else str(os.getpid()))
@@ -108,6 +115,7 @@ def make_textual_log_message(_message, _severity = None, _errortype = None, _pro
     _result+= "\nError Type: " + index_to_string(_errortype, errortype_identifiers, "invalid severity level:") if _errortype is not None else ""
     _result+= "\nUser Id: " + str(_user_id) if _user_id is not None else ""
     _result+= "\nOccured when: " + str(_occurred_when) if _occurred_when is not None else ""
+    _result+= "\nEntity Id: " + str(_entity_id) if _entity_id is not None else ""
 
     return _result
 

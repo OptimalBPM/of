@@ -12,11 +12,11 @@ from of.common.logging import make_textual_log_message, CE_RESOURCE, SEV_DEBUG, 
 import of.common.logging
 
 _global_params = None
-_global_err_param = ("Test error", CE_RESOURCE, SEV_ERROR, 1, "TestUser", datetime.datetime(1999, 1, 1, 1, 1, 1, 1), 1)
+_global_err_param = ("Test error", CE_RESOURCE, SEV_ERROR, 1, "TestUser", datetime.datetime(1999, 1, 1, 1, 1, 1, 1), 1, "test", 0)
 _global_err_cmp = "Process Id: 1 - An error occurred:\nTest error\nEvent category: resource\n" \
-                  "Severity: error\nUser Id: TestUser\nOccurred when: 1999-01-01 01:01:01.000001\nEntity Id: 1"
-_global_debug_param = ("Test message", CN_NOTIFICATION, SEV_DEBUG)
-_global_debug_cmp = "Process Id: " + str(os.getpid())+" - Message:\nTest message\nEvent category: notification\nSeverity: debug"
+                  "Severity: error\nUser Id: TestUser\nOccurred when: 1999-01-01 01:01:01.000001\nEntity Id: 1\nSystem uid: test\nSystem pid: 0"
+_global_debug_param = ("Test message", CN_NOTIFICATION, SEV_DEBUG, None, None, None, None, "test", 0)
+_global_debug_cmp = "Process Id: Not available - Message:\nTest message\nEvent category: notification\nSeverity: debug\nSystem uid: test\nSystem pid: 0"
 
 
 def local_test_log_writer(*args):
@@ -52,15 +52,15 @@ def step_impl(context):
     """
     global _global_params, _global_err_param, logging_callback
     _global_params = None
-    of.common.logging.logging_callback = local_test_log_writer
+    of.common.logging.callback = local_test_log_writer
     try:
         write_to_log(*_global_err_param)
         ok_(_global_params == _global_err_param, "Global params didn't match!\nResult:" + str(_global_params) + "\nComparison: " + str(_global_err_param))
         _global_params = None
-        of.common.logging.logging_callback = None
+        of.common.logging.callback = None
     except Exception as e:
         # Be sure to reset globals.<
         _global_params = None
-        of.common.logging.logging_callback = None
+        of.common.logging.callback = None
         raise Exception(e)
 

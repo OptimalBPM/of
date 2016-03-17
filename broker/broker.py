@@ -10,8 +10,9 @@ import cherrypy
 from bson.objectid import ObjectId
 from pymongo.mongo_client import MongoClient
 import of.common.logging
-from common.logging import SEV_DEBUG, CE_UNCATEGORIZED, SEV_ERROR
-from of.common.logging import write_to_log, SEV_FATAL, CE_CONFIGURATION, make_textual_log_message
+
+from of.common.logging import write_to_log, SEV_FATAL, EC_CONFIGURATION, make_textual_log_message, SEV_DEBUG, \
+    EC_UNCATEGORIZED, SEV_ERROR, SEV_WARNING, SEV_INFO, EC_NOTIFICATION
 from mbe.access import DatabaseAccess
 from mbe.authentication import init_authentication
 from mbe.misc.schema_mongodb import mbe_object_id
@@ -77,6 +78,8 @@ _definitions = None
 # The prefix to all logging messages
 _log_prefix = ""
 
+# The severity when something is logged to the database
+_log_to_database_severity = None
 
 def log_locally(_data, _category, _severity, _process_id, _user_id, _occurred_when, _node_id, _uid, _pid):
     if os.name == "nt":
@@ -87,23 +90,29 @@ def log_locally(_data, _category, _severity, _process_id, _user_id, _occurred_wh
 
 
 def log_to_database(_data, _category, _severity, _process_id, _user_id, _occurred_when, _node_id, _uid, _pid):
-    try:
-        _database_access.logging.write_log(
-                {
-                    "user_id": mbe_object_id(_user_id),
-                    "data": _data,
-                    "uid": _uid,
-                    "pid": _pid,
-                    "occurredWhen": _occurred_when,
-                    "category": _category,
-                    "process_id": _process_id,
-                    "node_id": _node_id
-                }
-            )
-    except Exception as e:
-        log_locally("Failed to write to database, error: " + str(e), CE_UNCATEGORIZED, SEV_ERROR,
-                    _process_id, _user_id, _occurred_when, _node_id, _uid, _pid)
+    global _log_to_database_severity
+
+    if _severity < _log_to_database_severity:
         log_locally(_data, _category, _severity, _process_id, _user_id, _occurred_when, _node_id, _uid, _pid)
+    else:
+        try:
+            _database_access.logging.write_log(
+                    {
+                        "user_id": mbe_object_id(_user_id),
+                        "data": _data,
+                        "uid": _uid,
+                        "pid": _pid,
+                        "occurredWhen": _occurred_when,
+                        "category": _category,
+                        "process_id": _process_id,
+                        "node_id": _node_id,
+                        "schemaRef" : "mbe://event.json"
+                    }
+                )
+        except Exception as e:
+            log_locally("Failed to write to database, error: " + str(e), EC_UNCATEGORIZED, SEV_ERROR,
+                        _process_id, _user_id, _occurred_when, _node_id, _uid, _pid)
+            log_locally(_data, _category, _severity, _process_id, _user_id, _occurred_when, _node_id, _uid, _pid)
 
 
 def start_broker():
@@ -112,11 +121,11 @@ def start_broker():
     """
 
     global _process_id, _database_access, _address, _web_socket_plugin, _repository_parent_folder, \
-        _web_config, _schema_tools, _definitions, _log_prefix
+        _web_config, _schema_tools, _definitions, _log_prefix, _log_to_database_severity
 
     _process_id = str(ObjectId())
 
-    of.common.logging.logging_callback = log_locally
+    of.common.logging.callback = log_locally
 
     write_to_log("=====Starting broker=============================")
     write_to_log("=====Process Id: " + str(_process_id) + "=====")
@@ -125,14 +134,20 @@ def start_broker():
     except Exception as e:
         if os.name == "nt":
             write_to_log(_data="Error loading settings.",
-                     _category=CE_CONFIGURATION, _severity=SEV_FATAL)
+                     _category=EC_CONFIGURATION, _severity=SEV_FATAL)
         raise Exception("Error loading settings:" + str(e))
+    of.common.logging.severity = of.common.logging.severity_identifiers.index(
+        _settings.get("broker/logging/severityLevel", _default="warning"))
+
+    _log_to_database_severity = of.common.logging.severity_identifiers.index(
+        _settings.get("broker/logging/databaseLevel", _default="warning"))
+
 
     # An address is completely neccessary.
     _address = _settings.get("broker/address", _default=None)
     if not _address or _address == "":
         write_to_log(_data="Broker cannot start, missing [broker] address setting in configuration file.",
-                     _category=CE_CONFIGURATION, _severity=SEV_FATAL)
+                     _category=EC_CONFIGURATION, _severity=SEV_FATAL)
         raise Exception("Broker cannot start, missing address.")
 
     _log_prefix = make_log_prefix(_address)
@@ -174,7 +189,7 @@ def start_broker():
 
     _database = _client[_database_name]
     _database_access = DatabaseAccess(_database=_database, _schema_tools=_schema_tools)
-    of.common.logging.logging_callback = log_to_database
+    of.common.logging.callback = log_to_database
     _database_access.save(store_process_system_document(_process_id=_process_id,
                                                         _name="Broker instance(" + _address + ")"),
                           _user=None,
@@ -265,14 +280,14 @@ def start_broker():
     # Generate the static content, initialisation
     _plugins.refresh_static(_web_config)
 
-    _web_config_debug = "Starting web server. Web config:\n"
+    _web_config_debug = "Starting broker web server. Web config:\n"
     for _curr_key, _curr_config in _web_config.items():
         if "tools.staticdir.dir" in _curr_config:
             _web_config_debug+= "Path: " + _curr_key + " directory: " + _curr_config["tools.staticdir.dir"]
         else:
             _web_config_debug+= "Path: " + _curr_key + " - no static dir"
 
-    write_to_log(_web_config_debug, _severity= SEV_DEBUG)
+    write_to_log(_web_config_debug, _category=EC_NOTIFICATION, _severity=SEV_INFO)
     _plugins.call_hook("pre_webserver_start", web_config=_web_config, globals=globals())
     cherrypy.quickstart(_root, "/", _web_config)
 

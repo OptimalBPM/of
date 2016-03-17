@@ -18,27 +18,27 @@ SEV_FATAL = 6  # A problem that causes something to stop functioning
 
 # EVENT CATEGORIES
 
-CN_NOTIFICATION = 0  # A notification
+EC_NOTIFICATION = 0  # A notification
 
 # Errors
-CE_INTERNAL = 1  # An internal error, likely a bug in the system
-CE_INVALID = 2  # A validation error, some information failed to validate, invalid reference
-CE_COMMUNICATION = 3  # A communications error
-CE_CONFIGURATION = 4 # A configuraton error
-CE_RESOURCE = 5  # A resource error indicating a lack of memory, space or time/cpu or other resource
-CE_RIGHT = 6  # A security related error, insufficient permissions or rights
-CE_PERMISSION = 7  # A security related error, insufficient permissions or rights
-CE_UNCATEGORIZED = 8  # Uncategorized error
+EC_INTERNAL = 1  # An internal error, likely a bug in the system
+EC_INVALID = 2  # A validation error, some information failed to validate, invalid reference
+EC_COMMUNICATION = 3  # A communications error
+EC_CONFIGURATION = 4 # A configuraton error
+EC_RESOURCE = 5  # A resource error indicating a lack of memory, space or time/cpu or other resource
+EC_RIGHT = 6  # A security related error, insufficient permissions or rights
+EC_PERMISSION = 7  # A security related error, insufficient permissions or rights
+EC_UNCATEGORIZED = 8  # Uncategorized error
 
 # Node change categories
-CC_ADD = 9  # Something was added
-CC_REMOVE = 10  # Something was removed
-CC_CHANGE = 11  # Something was changed
+EC_ADD = 9  # Something was added
+EC_REMOVE = 10  # Something was removed
+EC_CHANGE = 11  # Something was changed
 
 # Attack categories
-CA_PROBE = 12  # The system consider itself being probed
-CA_DOS = 13  # The system consider itself being under a denial-of-service attack
-CA_BREAKIN = 14  # The system consider itself being broken in to
+EC_PROBE = 12  # The system consider itself being probed
+EC_DOS = 13  # The system consider itself being under a denial-of-service attack
+EC_BREAKIN = 14  # The system consider itself being broken in to
 
 # Human representations
 
@@ -101,7 +101,8 @@ category_descriptions = [
 
 
 """The logging callback"""
-logging_callback = None
+callback = None
+severity = SEV_WARNING
 
 if os.name == "nt":
     import win32api
@@ -137,9 +138,6 @@ if os.name == "nt":
                                     data="Raw\0Data".encode("ascii"), sid=my_sid)
 
 
-
-
-
 def severity_to_identifier(_severity, _error):
     """Returns a matching severity identifiers"""
     if isinstance(_severity, int) and 0 <= _severity < len(severity_identifiers):
@@ -172,7 +170,7 @@ def category_to_description(_category, _error):
         return _error + str(_category)
 
 
-def write_to_log(_data, _category=CN_NOTIFICATION, _severity=SEV_INFO, _process_id=None, _user_id=None,
+def write_to_log(_data, _category=EC_NOTIFICATION, _severity=SEV_INFO, _process_id=None, _user_id=None,
                  _occurred_when=None,
                  _node_id=None, _uid=None, _pid=None):
     """
@@ -188,15 +186,17 @@ def write_to_log(_data, _category=CN_NOTIFICATION, _severity=SEV_INFO, _process_
     :param _uid: The system uid
     :param _pid: The system pid
     """
-
+    global callback, severity
+    if _severity < severity:
+        return
 
     _occurred_when = _occurred_when if _occurred_when is not None else str(datetime.datetime.utcnow())
     _pid = _pid if _pid is not None else os.getpid()
     _uid = _uid if _uid is not None else os.getlogin()
 
-    global logging_callback
-    if logging_callback is not None:
-        logging_callback(_data, _category, _severity, _process_id, _user_id, _occurred_when, _node_id, _uid, _pid)
+
+    if callback is not None:
+        callback(_data, _category, _severity, _process_id, _user_id, _occurred_when, _node_id, _uid, _pid)
     else:
         print("Logging callback not set, print message:\n" + make_textual_log_message(_data, _category,
                                                                                       _severity,
@@ -238,7 +238,7 @@ def make_textual_log_message(_data, _category=None, _severity=None, _process_id=
     _result += "\nUser Id: " + str(_user_id) if _user_id is not None else ""
     _result += "\nOccurred when: " + str(_occurred_when) if _occurred_when is not None else ""
     _result += "\nEntity Id: " + str(_node_id) if _node_id is not None else ""
-    _result += "\nSystem uid: " + str(_uid) if _uid is not None else str(os.getlogin())
-    _result += "\nSystem pid: " + str(_pid) if _pid is not None else str(os.getpid())
+    _result += "\nSystem uid: " + (str(_uid) if _uid is not None else str(os.getlogin()))
+    _result += "\nSystem pid: " + (str(_pid) if _pid is not None else str(os.getpid()))
 
     return _result

@@ -13,8 +13,8 @@ import of.common.logging
 
 _global_params = None
 _global_err_param = ("Test error", CE_RESOURCE, SEV_ERROR, 1, "TestUser", datetime.datetime(1999, 1, 1, 1, 1, 1, 1), 1)
-_global_err_cmp = "Process Id: 1 - An error occured:\nTest error\nEvent category: resource\n" \
-                  "Severity: error\nUser Id: TestUser\nOccured when: 1999-01-01 01:01:01.000001\nEntity Id: 1"
+_global_err_cmp = "Process Id: 1 - An error occurred:\nTest error\nEvent category: resource\n" \
+                  "Severity: error\nUser Id: TestUser\nOccurred when: 1999-01-01 01:01:01.000001\nEntity Id: 1"
 _global_debug_param = ("Test message", CN_NOTIFICATION, SEV_DEBUG)
 _global_debug_cmp = "Process Id: " + str(os.getpid())+" - Message:\nTest message\nEvent category: notification\nSeverity: debug"
 

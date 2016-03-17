@@ -28,9 +28,25 @@
             <b>Occurred when:</b> {{historyItem.occurredWhen}}<br/>
             <b>Id:</b> {{ historyItem._id }}<br/>
             <b>User_id:</b> {{historyItem.user_id}}<br/>
-            <div ng-repeat="(key, value)  in historyItem.event">
-                <b>{{key}}</b>: {{value}}<br />
+            <div ng-if="historyItem.add">
+                <p>Node added: </p>
+                <div ng-repeat="(key, value)  in historyItem.add">
+                    <b>{{key}}</b>: {{value}}<br />
+                </div>
             </div>
+            <div ng-if="historyItem.remove">
+                <p>Node removes: </p>
+                <div ng-repeat="(key, value)  in historyItem.remove">
+                    <b>{{key}}</b>: {{value}}<br />
+                </div>
+            </div>
+            <div ng-if="historyItem.change">
+                <p>Node changed: </p>
+                <div ng-repeat="(key, value)  in historyItem.change">
+                    <b>{{key}}</b>: {{value}}<br />
+                </div>
+            </div>
+
             <br />
             -------------------------------
         </div>

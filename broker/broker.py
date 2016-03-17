@@ -2,17 +2,21 @@ import json
 import os
 import sys
 import time
+
 from multiprocessing import Process
 from time import sleep
 
 import cherrypy
 from bson.objectid import ObjectId
 from pymongo.mongo_client import MongoClient
-
-
+import of.common.logging
+from common.logging import SEV_DEBUG, CE_UNCATEGORIZED, SEV_ERROR
+from of.common.logging import write_to_log, SEV_FATAL, CE_CONFIGURATION, make_textual_log_message
 from mbe.access import DatabaseAccess
 from mbe.authentication import init_authentication
+from mbe.misc.schema_mongodb import mbe_object_id
 from mbe.schema import SchemaTools
+
 from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
 
 __author__ = "Nicklas Borjesson"
@@ -38,6 +42,7 @@ from of.broker.cherrypy_api.admin import CherryPyAdmin
 from of.broker.lib.messaging.handler import BrokerWebSocketHandler
 from of.common.queue.monitor import Monitor
 import of.common.messaging.websocket
+
 
 if os.name == "nt":
     from of.common.win32svc import write_to_event_log
@@ -73,11 +78,33 @@ _definitions = None
 _log_prefix = ""
 
 
-def log_locally(_message, _severity, _type, _process_id):
-    if _severity < 2:
-        print(_log_prefix + _message)
+def log_locally(_data, _category, _severity, _process_id, _user_id, _occurred_when, _node_id, _uid, _pid):
+    if os.name == "nt":
+        write_to_event_log(_data, "Application", _category, _severity)
     else:
-        print(_log_prefix + "An error occured: Severity" + severity_to_identifier(_severity) + "Type: " +)
+        print(make_textual_log_message(_data, _category, _severity, _process_id, _user_id, _occurred_when, _node_id, _uid, _pid))
+        # TODO: Add support for /var/log/message
+
+
+def log_to_database(_data, _category, _severity, _process_id, _user_id, _occurred_when, _node_id, _uid, _pid):
+    try:
+        _database_access.logging.write_log(
+                {
+                    "user_id": mbe_object_id(_user_id),
+                    "data": _data,
+                    "uid": _uid,
+                    "pid": _pid,
+                    "occurredWhen": _occurred_when,
+                    "category": _category,
+                    "process_id": _process_id,
+                    "node_id": _node_id
+                }
+            )
+    except Exception as e:
+        log_locally("Failed to write to database, error: " + str(e), CE_UNCATEGORIZED, SEV_ERROR,
+                    _process_id, _user_id, _occurred_when, _node_id, _uid, _pid)
+        log_locally(_data, _category, _severity, _process_id, _user_id, _occurred_when, _node_id, _uid, _pid)
+
 
 def start_broker():
     """
@@ -89,21 +116,23 @@ def start_broker():
 
     _process_id = str(ObjectId())
 
-    print("=====Starting broker=============================")
-    print("=====Process Id: " + str(_process_id) + "=====")
+    of.common.logging.logging_callback = log_locally
+
+    write_to_log("=====Starting broker=============================")
+    write_to_log("=====Process Id: " + str(_process_id) + "=====")
     try:
         _settings = load_settings()
     except Exception as e:
         if os.name == "nt":
-            write_to_event_log("Application", 1, "Error loading settings", str(e))
+            write_to_log(_data="Error loading settings.",
+                     _category=CE_CONFIGURATION, _severity=SEV_FATAL)
         raise Exception("Error loading settings:" + str(e))
-
-
 
     # An address is completely neccessary.
     _address = _settings.get("broker/address", _default=None)
     if not _address or _address == "":
-        print("Fatal error: Broker cannot start, missing [broker] address setting in configuration file.")
+        write_to_log(_data="Broker cannot start, missing [broker] address setting in configuration file.",
+                     _category=CE_CONFIGURATION, _severity=SEV_FATAL)
         raise Exception("Broker cannot start, missing address.")
 
     _log_prefix = make_log_prefix(_address)
@@ -124,29 +153,33 @@ def start_broker():
     _plugins = CherryPyPlugins(_plugin_dir=_plugin_dir, _schema_tools=_schema_tools, _definitions=_definitions,
                                _log_prefix=_log_prefix)
 
-    _plugins.call_hook("before_reading", _globals=globals())
+
     print("===register signal handlers===")
     register_signals(stop_broker)
-
+    _plugins.call_hook("before_db_connect", _globals=globals())
     # Connect to the database
     _host = _settings.get("broker/database/host", _default="127.0.0.1")
     _user = _settings.get("broker/database/username", _default=None)
     _password = _settings.get("broker/database/password", _default=None)
     if _user:
+        print("===Connect to remote MongoDB backend " + _host + "===")
         # http://api.mongodb.org/python/current/examples/authentication.html
         _client = MongoClient("mongodb://" + _user + ":" + _password + "@" + _host)
     else:
+        print("===Connect to local MongoDB backend===")
         _client = MongoClient()
 
     _database_name = _settings.get("broker/database/databaseName", _default="optimalframework")
+    print("to database name :" + _database_name)
+
     _database = _client[_database_name]
     _database_access = DatabaseAccess(_database=_database, _schema_tools=_schema_tools)
-
+    of.common.logging.logging_callback = log_to_database
     _database_access.save(store_process_system_document(_process_id=_process_id,
                                                         _name="Broker instance(" + _address + ")"),
                           _user=None,
                           _allow_save_id=True)
-
+    _plugins.call_hook("after_db_connect", _globals=globals())
     # TODO: It is possible that one would like to initialize, or at least read the plugins *before* trying to connect to the database
 
     # Must have a valid CherryPy version
@@ -222,7 +255,8 @@ def start_broker():
     # Initialize admin user interface /admin
     _admin = CherryPyAdmin(_database_access=_database_access, _process_id=_process_id,
                            _address=_address, _log_prefix=_log_prefix, _stop_broker=stop_broker,
-                           _definitions=_definitions, _monitor=of.common.messaging.websocket.monitor, _root_object=_root)
+                           _definitions=_definitions, _monitor=of.common.messaging.websocket.monitor,
+                           _root_object=_root)
     _admin.plugins = _plugins
 
     _root.admin = _admin
@@ -231,13 +265,14 @@ def start_broker():
     # Generate the static content, initialisation
     _plugins.refresh_static(_web_config)
 
-    print(_log_prefix + "Starting web server. Web config:\n" )
+    _web_config_debug = "Starting web server. Web config:\n"
     for _curr_key, _curr_config in _web_config.items():
         if "tools.staticdir.dir" in _curr_config:
-            print("Path: " + _curr_key + " directory: " +_curr_config["tools.staticdir.dir"])
+            _web_config_debug+= "Path: " + _curr_key + " directory: " + _curr_config["tools.staticdir.dir"]
         else:
-            print("Path: " + _curr_key + " - no static dir")
+            _web_config_debug+= "Path: " + _curr_key + " - no static dir"
 
+    write_to_log(_web_config_debug, _severity= SEV_DEBUG)
     _plugins.call_hook("pre_webserver_start", web_config=_web_config, globals=globals())
     cherrypy.quickstart(_root, "/", _web_config)
 
@@ -260,7 +295,6 @@ def stop_broker(_reason, _restart=None):
         print(_log_prefix + "Exception trying to stop monitor:" + str(e))
         _exit_status += 1
     time.sleep(1)
-
 
     # TODO: Terminate all child processes.(ORG-112)
 

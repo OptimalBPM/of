@@ -76,7 +76,7 @@ class CherryPyPlugins(object):
                             print(self.log_prefix + "Calling " + _hook_name + " in " + _curr_plugin["description"])
                             getattr(_hooks_instance, _hook_name)(**kwargs)
                         except Exception as e:
-                            print(self.log_prefix + "An error occured "+ "Calling " + _hook_name + " in " + _curr_plugin["description"] + ":" + str(e))
+                            print(self.log_prefix + "An error occurred "+ "Calling " + _hook_name + " in " + _curr_plugin["description"] + ":" + str(e))
                             if "FailOnError" in _curr_plugin and _curr_plugin["FailOnError"]:
                                 print(self.log_prefix + "Setting as Failed. No more hooks will be called for this plugin.")
                                 _curr_plugin["failed"] = True
@@ -139,7 +139,7 @@ class CherryPyPlugins(object):
                 _module = importlib.import_module("plugins." + _plugin_name + "." + _hooks_modulename)
                 _broker_definition["hooks_instance"] = _module
             except Exception as e:
-                print(self.log_prefix + "An error occured importing " + _hooks_modulename + " in " + _definitions["description"] + ":" + str(e))
+                print(self.log_prefix + "An error occurred importing " + _hooks_modulename + " in " + _definitions["description"] + ":" + str(e))
                 if "FailOnError" in _definitions and _definitions["FailOnError"]:
                     print(self.log_prefix + "Setting as Failed. No more hooks will be called for this plugin.")
                     _definitions["failed"] = True

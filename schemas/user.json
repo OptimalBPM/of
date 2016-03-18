@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "MBE User Schema",
+  "title": "User",
+  "type": "object",
+  "version": "0.1",
+  "allOf": [
+    {
+      "properties":
+      {
+        "$ref": "of://node.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "credentials": {
+          "anyOf": [
+            {
+              "usernamePassword": {
+                "description": "A username and password combination",
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "propertyId": "fc7d05e0-996d-4467-afab-6b99644d4aa0"
+                  },
+                  "password": {
+                    "type": "string",
+                    "propertyId": "fed1fe4b-31c5-4f1d-a6c8-0e6c38bbb0b8"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ],
+                "propertyId": "d0c457b3-7341-4ddc-891d-f79831f89553"
+              },
+              "clientCertificate": {
+                "description": "A client certificate.  Not implemented.",
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "propertyId": "268e4b30-14f9-4716-ba4c-2b7106fc30aa"
+                  },
+                  "password": {
+                    "type": "string",
+                    "propertyId": "0a09a3a4-1d05-4dea-81a2-31cfd3601aaf"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ],
+                "propertyId": "17cc191d-b26a-436f-9736-3c554cd7bbbd"
+              },
+              "oneTimePassword": {
+                "description": "Set of OTP settings.  Not implemented.",
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "propertyId": "07ba9a88-5f50-4b86-8a4d-4cd080c2f912"
+                  },
+                  "password": {
+                    "type": "string",
+                    "propertyId": "62e851e3-1db2-43a7-9b43-942ef459f82b"
+                  },
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "SMS",
+                      "EMAIL",
+                      "OTHER"
+                    ],
+                    "propertyId": "3570d360-43f3-469f-b68a-48d6287fb5cf"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password",
+                  "method"
+                ],
+                "propertyId": "29f57973-1a51-4dcc-82d9-acfe02bdcbf2"
+              }
+            }
+          ],
+          "propertyId": "c5ec3ea2-3eda-4b63-8449-5c2cb775fc74"
+        },
+        "groups": {
+          "description": "The groups this user belongs to.",
+          "type": "array",
+          "items": {
+            "$ref": "of://type.json#/properties/objectId",
+            "refSchemaRef": "of://group.json",
+            "propertyId": "17404cf6-6120-49dc-b07a-1f223a2e005f",
+            "objectId": "true"
+          }
+        }
+      }
+    }
+  ],
+  "required": [
+    "name",
+    "createdWhen",
+    "canRead",
+    "canWrite",
+    "groups",
+    "schemaRef"
+  ],
+  "collection": "node",
+  "namespace": "of"
+}

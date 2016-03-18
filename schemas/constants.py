@@ -7,8 +7,16 @@ __author__ = 'Nicklas Borjesson'
 Constants for _ids in the Optimal BPM database
 TODO: These are only constant for this instance of the database (perhaps XOR-them together with environment Id?)
 """
+# Hard coded locations of always present nodes
 
-# The users node
+id_administration = "000000010000010001e64c23"
+id_groups = "000000010000010001e64c24"
+id_users = "000000010000010001e64c25"
+id_rights = "000000010000010001e64c26"
+id_right_admin_everything = "000000010000010001e64c27"
+id_group_administrators = "000000010000010001e64c28"
+id_group_users = "000000010000010001e64c29"
+
 id_users = "000000010000010001e64c25"
 id_peers = "000000010000010002e64d03"
 

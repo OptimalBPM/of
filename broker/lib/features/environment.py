@@ -21,10 +21,10 @@ from of.common.testing.init_env import init_env
 __author__ = 'nibo'
 
 # Test users uuids
-object_id_user_root = "000000010000010001e64c30"
-object_id_user_test = "000000010000010001e64c31"
+id_user_root = "000000010000010001e64c30"
+id_user_test = "000000010000010001e64c31"
 
-object_id_right_admin_nodes = "000000010000010001e64d01"
+id_right_admin_nodes = "000000010000010001e64d01"
 
 
 def before_all(context):

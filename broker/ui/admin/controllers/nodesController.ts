@@ -174,7 +174,7 @@ export class NodesController extends NodeManager implements NodeManagement {
 
         return this.$http.get('views/nodes/node_forms.js')
             .success((data: any) => {
-                var _nodeSchemaRef = 'mbe://node.json';
+                var _nodeSchemaRef = 'of://node.json';
                 this.forms = {};
                 // Import the data, pass the tree scope to the function
                 var _data = new Function("scope", data.toString()).call(this, this.tree);

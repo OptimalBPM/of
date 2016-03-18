@@ -11,10 +11,10 @@ import cherrypy
 
 from of.common.logging import EC_SERVICE, write_to_log, SEV_DEBUG, EC_NOTIFICATION, EC_PROBE, SEV_WARNING
 from of.common.messaging.constants import UNEXPECTED_CONDITION
-from mbe.cherrypy import aop_login_json, aop_check_session
-from mbe.constants import object_id_right_admin_everything
-from mbe.groups import has_right, aop_has_right
-from mbe.node import sanitize_node
+from of.broker.cherrypy_api.node import aop_login_json, aop_check_session
+from of.schemas.constants import id_right_admin_everything
+from of.common.security.groups import has_right, aop_has_right
+from of.broker.lib.node import sanitize_node
 from of.common.messaging.utils import get_environment_data
 from of.schemas.constants import peer_type_to_schema_id
 
@@ -61,7 +61,7 @@ class CherryPyBroker(object):
     @cherrypy.expose
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
-    @aop_has_right([object_id_right_admin_everything])
+    @aop_has_right([id_right_admin_everything])
     def get_broker_environment(self, **kwargs):
         self.write_debug_info("Request for broker information")
         return get_environment_data()

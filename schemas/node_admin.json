@@ -1,14 +1,14 @@
 
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "An admin ui",
-  "title": "Settings for an instance of the admin user interface",
+  "description": "Settings for an instance of the admin user interface",
+  "title": "An admin ui",
   "type": "object",
   "version": "0.1",
   "allOf": [
     {
       "properties": {
-        "$ref": "mbe://node.json#/properties"
+        "$ref": "of://node.json#/properties"
       }
     },
     {

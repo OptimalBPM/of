@@ -1,26 +1,23 @@
-
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "A Broker",
-  "title": "Broker node",
+  "description": "MBE Right Schema",
+  "title": "Right",
   "type": "object",
   "version": "0.1",
   "allOf": [
     {
-      "properties": {
+      "properties":
+      {
         "$ref": "of://node.json#/properties"
+
       }
     },
     {
       "properties": {
-        "$ref": "of://peer.json#/properties"
-      }
-    },
-    {
-      "properties": {
-        "repositories_location": {
-          "description": "The parent folder of all source repositories.",
-          "type": "string"
+        "description": {
+          "description": "The description of the right",
+          "type": "string",
+          "propertyId": "01678a5c-956e-44fb-b6e0-f549f5042af9"
         }
       }
     }
@@ -28,11 +25,11 @@
   "required": [
     "name",
     "createdWhen",
-    "schemaRef",
     "canRead",
     "canWrite",
-    "address"
+    "schemaRef"
   ],
+
   "collection": "node",
   "namespace": "of"
 }

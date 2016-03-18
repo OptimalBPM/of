@@ -1,5 +1,5 @@
 var a = {
-    "mbe://node.json": [
+    "of://node.json": [
         {
             key: "name",
             type: "text",
@@ -111,7 +111,7 @@ var a = {
             ]
         }
     ],
-    "mbe://group.json": [
+    "of://group.json": [
         {
             key: "rights",
             title: "Rights",
@@ -129,8 +129,8 @@ var a = {
         }
 
     ],
-    "mbe://right.json": [],
-    "mbe://user.json": [
+    "of://right.json": [],
+    "of://user.json": [
         {
             title: "Credentials",
             type: "fieldset",

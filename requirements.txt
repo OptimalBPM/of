@@ -1,4 +1,7 @@
-mbe
+pymongo
+jsonschema
+decorator
+bson
 requests
 cherrypy
 pycrypto

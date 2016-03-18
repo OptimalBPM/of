@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "MBE type definitions",
+  "title": "Type",
+  "version": 0.1,
+  "type": "string",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+    },
+    "datetime": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}$"
+    },
+    "objectId": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{24}$"
+    }
+  },
+  "collection": "",
+  "namespace": "of"
+}

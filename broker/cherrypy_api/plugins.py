@@ -11,8 +11,8 @@ import sys
 
 import cherrypy
 
-from of.common.internal import make_log_prefix
-from mbe.cherrypy import aop_check_session
+
+from of.broker.cherrypy_api.node import aop_check_session
 from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG, SEV_ERROR, EC_SERVICE, SEV_INFO
 
 __author__ = 'Nicklas Borjesson'
@@ -67,7 +67,10 @@ class CherryPyPlugins(object):
     def call_hook(self, _hook_name, **kwargs):
         self.write_debug_info("Running hook " + _hook_name)
         for _curr_plugin_name, _curr_plugin in self.plugins.items():
-            if not ("failed" in _curr_plugin and _curr_plugin["failed"]) and "hooks" in _curr_plugin:
+            if ("failed" in _curr_plugin and _curr_plugin["failed"]):
+               self.write_debug_info("Plugin " + _curr_plugin_name+ " marked failed, will not call its hook.")
+               continue
+            if "hooks" in _curr_plugin:
                 if "hooks_instance" in _curr_plugin["hooks"]:
                     _hooks_instance = _curr_plugin["hooks"]["hooks_instance"]
                     if hasattr(_hooks_instance, _hook_name):
@@ -218,7 +221,7 @@ class CherryPyPlugins(object):
         _routes = ""
         _systemjs = ""
         _admin_menus = []
-        # has_right(object_id_right_admin_everything, kwargs["user"])
+        # has_right(id_right_admin_everything, kwargs["user"])
         for _curr_plugin_key, _curr_plugin_info in self.plugins.items():
             # Add any plugin configuration for the Admin user interface
             if "admin-ui" in _curr_plugin_info:

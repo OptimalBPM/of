@@ -6,7 +6,7 @@
   "version": "0.1",
   "properties": {
     "processId": {
-      "$ref": "mbe://type.json#/properties/objectId",
+      "$ref": "of://type.json#/properties/objectId",
       "description": "The object _id of the process, an object id.",
       "propertyId": "e9b714fa-9f9f-4bd0-9500-3638ba2154e2",
       "objectId": "true"
@@ -29,9 +29,9 @@
       "propertyId": "61e951e2-d2e7-424a-a0d0-debaccd21db9"
     },
     "changedBy": {
-      "$ref": "mbe://type.json#/properties/objectId",
+      "$ref": "of://type.json#/properties/objectId",
       "description": "The user that initiated the state change.",
-      "refSchemaRef": "mbe://user.json",
+      "refSchemaRef": "of://user.json",
       "propertyId": "55e937b7-9e58-49ad-9b42-c6557ca23d0a",
       "isObjectId": "true"
     },

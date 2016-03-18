@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "MBE Session Schema",
+  "title": "Session",
+  "type": "object",
+  "version": "0.1",
+  "properties": {
+    "_id": {
+      "$ref": "of://type.json#/properties/objectId",
+      "description": "The object id of the session, an object id.",
+      "propertyId": "03fd685a-a98b-408b-b9a3-e3877564f611",
+      "objectId": true
+    },
+    "user_id": {
+      "$ref": "of://type.json#/properties/objectId",
+      "description": "The logged-in user.",
+      "refSchemaRef": "of://user.json",
+      "propertyId": "03fd685a-a98b-408b-b9a3-e3877564f611",
+      "objectId": true
+    },
+    "createdWhen": {
+      "description": "The time the session was created",
+      "type": "string",
+      "format": "date-time",
+      "propertyId": "877a78e9-5da4-406a-a9e1-e648d8f18e05"
+    },
+    "schemaRef": {
+      "description": "A reference to the schema to which this data adheres.",
+      "type": "string",
+      "format": "uri",
+      "propertyId": "21780645-9f2f-4b16-b4a4-65d9108dddb6"
+    }
+  },
+  "required": [
+    "user_id",
+    "createdWhen",
+    "schemaRef"
+  ],
+  "collection": "session",
+  "namespace": "of"
+}

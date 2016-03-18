@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "MBE Group Schema",
+  "title": "Group",
+  "type": "object",
+  "version": "0.1",
+  "allOf": [
+    {
+      "properties":
+      {
+        "$ref": "of://node.json#/properties"
+
+      }
+    },
+    {
+      "properties": {
+        "rights": {
+          "description": "The rights this group have.",
+          "type": "array",
+          "items": {
+            "$ref": "of://type.json#/properties/objectId",
+            "propertyId": "bd1ce980-86c7-11e4-b4a9-0800200c9a66",
+            "objectId": "true"
+          }
+        }
+      }
+    }
+  ],
+  "required": [
+    "name",
+    "createdWhen",
+    "canRead",
+    "canWrite",
+    "rights",
+    "schemaRef"
+  ],
+
+  "collection": "node",
+  "namespace": "of"
+}

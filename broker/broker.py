@@ -1,22 +1,20 @@
 import os
 import sys
 import time
-
 from multiprocessing import Process
 
 import cherrypy
 from bson.objectid import ObjectId
 from pymongo.mongo_client import MongoClient
-import of.common.logging
 
+import of.common.logging
+from of.broker.lib.access import DatabaseAccess
+from of.broker.lib.schema_mongodb import mbe_object_id
 from of.common.logging import write_to_log, SEV_FATAL, EC_SERVICE, SEV_DEBUG, \
     EC_UNCATEGORIZED, SEV_ERROR, SEV_INFO, EC_INVALID, make_sparse_log_message, make_textual_log_message
-from mbe.access import DatabaseAccess
-from mbe.authentication import init_authentication
-from mbe.misc.schema_mongodb import mbe_object_id
-from mbe.schema import SchemaTools
+from of.common.security.authentication import init_authentication
 from of.common.settings import JSONXPath
-
+from of.schemas.schema import SchemaTools
 from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
 
 __author__ = "Nicklas Borjesson"
@@ -115,7 +113,7 @@ def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _o
                     "category": _category,
                     "process_id": _process_id_param,
                     "node_id": _node_id,
-                    "schemaRef": "mbe://event.json"
+                    "schemaRef": "of://event.json"
                 }
             )
         except Exception as e:

@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "MBE Conditions schema",
+  "title": "Conditions",
+  "type": "object",
+  "version": "0.1",
+  "properties": {
+    "conditions": {
+      "description": "The conditions.",
+      "type": "object",
+      "patternProperties": {
+        ".*": {}
+      },
+      "minProperties": 0
+    },
+    "collection": {
+      "description": "The collection they apply to.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "conditions",
+    "collection"
+  ],
+  "collection": "*",
+  "namespace": "of"
+}

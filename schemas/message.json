@@ -22,17 +22,17 @@
     },
     "sourceProcessId": {
       "description": "A reference to the processId of the source.",
-      "$ref": "mbe://type.json#/properties/objectId",
+      "$ref": "of://type.json#/properties/objectId",
       "propertyId": "5579b996-db01-4425-9479-b49a23a0306e"
     },
     "userId": {
       "description": "The user sending the message.",
-      "$ref": "mbe://type.json#/properties/objectId",
+      "$ref": "of://type.json#/properties/objectId",
       "propertyId": "1ea887ea-8de8-4cc1-9101-d912bd4816b0"
     },
     "destinationProcessId": {
       "description": "A reference to the processId of the destination.",
-      "$ref": "mbe://type.json#/properties/objectId",
+      "$ref": "of://type.json#/properties/objectId",
       "propertyId": "5579b996-db01-4425-9479-b49a23a0306e"
     },
     "schemaRef": {

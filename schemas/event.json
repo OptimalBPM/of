@@ -1,0 +1,158 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "MBE Event Schema",
+  "title": "Event",
+  "type": "object",
+  "version": "0.1",
+  "properties": {
+    "_id": {
+      "$ref": "of://type.json#/properties/objectId",
+      "description": "The object _id of the event, an object id.",
+      "propertyId": "dcf7fb13-f934-4121-90ec-c8992203a299",
+      "objectId": "true"
+    },
+    "user_id": {
+      "$ref": "of://type.json#/properties/objectId",
+      "description": "The user involved in the event.",
+      "refSchemaRef": "of://user.json",
+      "propertyId": "d1714064-a023-4d54-b801-4e6385cf6975",
+      "isObjectId": "true"
+    },
+    "writtenWhen": {
+      "description": "The time the event was written to the database",
+      "type": "string",
+      "format": "date-time",
+      "propertyId": "b2dc70cf-93a1-4275-842a-76fc48d1d2d2"
+    },
+    "occurredWhen": {
+      "description": "The time the event occurred",
+      "type": "string",
+      "format": "date-time",
+      "propertyId": "965e56c4-2501-453e-b1c7-2fe4d22ca546"
+    },
+    "category": {
+      "type": "string",
+      "propertyId": "837f349f-6531-4b91-916a-d016faa192eb",
+      "enum": [
+        "notification",
+        "internal",
+        "invalid",
+        "communication",
+        "configuration",
+        "resource",
+        "right",
+        "permission",
+        "uncategorized",
+        "add",
+        "remove",
+        "change",
+        "probe",
+        "dos",
+        "breakin"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "propertyId": "837f349f-6531-4b91-916a-d016faa192eb",
+      "enum": [
+        "information",
+        "debug",
+        "warning",
+        "user",
+        "alert",
+        "error",
+        "fatal"
+      ]
+    },
+    "data": {
+      "description": "Event data",
+      "type": "string",
+      "additionalProperties": false
+    },
+    "node_id": {
+      "$ref": "of://type.json#/properties/objectId",
+      "description": "If applicable, the relevant _id in the node-collection, used for tracking changes to a node or identifying reporting functionality.",
+      "propertyId": "a062bbc2-1f61-4237-a41f-c16482d5c196",
+      "isObjectId": "true"
+    },
+    "uid": {
+      "type": "string",
+      "description": "The logged in user.",
+      "propertyId": "2ef576a0-fc2d-43e2-a1ed-7a48eb41c0f7"
+    },
+    "pid": {
+      "type": "integer",
+      "description": "The system process id.",
+      "propertyId": "77e8a89f-69bc-4413-9fe9-b9f0a8dc0fd5"
+    },
+    "add": {
+      "description": "This document was written to the node collection ",
+      "type": "object",
+      "additionalProperties": true
+    },
+    "remove": {
+      "description": "This document was removed from the node collection ",
+      "type": "object",
+      "additionalProperties": true
+    },
+    "change": {
+      "description": "This/these field(s) was changed in the node collection",
+      "type": "array",
+      "items": {
+        "description": "An individual change",
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "description": "The field uuid of the change",
+            "type": "string"
+          },
+          "before": {
+            "description": "The value before the change",
+            "type": "object",
+            "additionalProperties": true
+          },
+          "after": {
+            "description": "The value after the change",
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "propertyId",
+          "after"
+        ]
+      }
+    },
+
+    "attack": {
+      "description": "The system is under attack",
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "schemaRef": {
+      "description": "A reference to the schema to which this data adheres.",
+      "type": "string",
+      "format": "uri",
+      "propertyId": "b1b75292-10d4-42be-a438-cd4f9835cc0a"
+    }
+  },
+  "required": [
+    "user_id",
+    "writtenWhen",
+    "occurredWhen",
+    "message",
+    "schemaRef"
+  ],
+  "collection": "log",
+  "namespace": "of"
+}

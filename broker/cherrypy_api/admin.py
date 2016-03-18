@@ -7,10 +7,10 @@ import threading
 
 import cherrypy
 
-from mbe.cherrypy import aop_check_session
-from mbe.cherrypy import CherryPyNode
-from mbe.constants import object_id_right_admin_everything
-from mbe.groups import aop_has_right
+from of.broker.cherrypy_api.node import aop_check_session,CherryPyNode
+
+from of.schemas.constants import id_right_admin_everything
+from of.common.security.groups import aop_has_right
 from of.common.logging import write_to_log, EC_SERVICE, SEV_DEBUG, EC_NOTIFICATION
 
 
@@ -81,7 +81,7 @@ class CherryPyAdmin(object):
     @cherrypy.expose
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
-    @aop_has_right([object_id_right_admin_everything])
+    @aop_has_right([id_right_admin_everything])
     def get_peers(self, **kwargs):
         """
         Returns a list of all logged in peers

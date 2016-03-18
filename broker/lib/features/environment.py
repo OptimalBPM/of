@@ -1,14 +1,12 @@
 """
     Initialization for MBE tests.
 """
-import queue
+
 import time
 
-from bson.objectid import ObjectId
 import cherrypy
 from multiprocessing import Queue
 
-from of.broker.lib.node import Node
 
 from of.broker.lib.messaging.handler import BrokerWebSocketHandler
 from of.common.messaging.constants import GOING_AWAY

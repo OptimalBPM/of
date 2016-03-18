@@ -24,7 +24,7 @@ EC_NOTIFICATION = 0  # A notification
 EC_INTERNAL = 1  # An internal error, likely a bug in the system
 EC_INVALID = 2  # A validation error, some information failed to validate, invalid reference
 EC_COMMUNICATION = 3  # A communications error
-EC_CONFIGURATION = 4 # A configuraton error
+EC_SERVICE = 4 # A service level error, such as a failure to start or configuration errors
 EC_RESOURCE = 5  # A resource error indicating a lack of memory, space or time/cpu or other resource
 EC_RIGHT = 6  # A security related error, insufficient permissions or rights
 EC_PERMISSION = 7  # A security related error, insufficient permissions or rights
@@ -67,7 +67,7 @@ category_identifiers = [
     "internal",
     "invalid",
     "communication",
-    "configuration",
+    "service",
     "resource",
     "right",
     "permission",
@@ -85,7 +85,7 @@ category_descriptions = [
     "internal error, likely a bug in the system",
     "validation error, information/structure failed to validate, invalid reference",
     "error during communication",
-    "configuration error",
+    "service",
     "error indicating a lack of memory, space or time/cpu",
     "insufficient rights",
     "insufficient permissions",
@@ -188,7 +188,7 @@ def write_to_log(_data, _category=EC_NOTIFICATION, _severity=SEV_INFO, _process_
     """
     global callback, severity
     if _severity < severity:
-        return
+        return _data
 
     _occurred_when = _occurred_when if _occurred_when is not None else str(datetime.datetime.utcnow())
     _pid = _pid if _pid is not None else os.getpid()
@@ -204,6 +204,7 @@ def write_to_log(_data, _category=EC_NOTIFICATION, _severity=SEV_INFO, _process_
                                                                                       _occurred_when, _node_id,
                                                                                       _uid, _pid))
 
+    return _data
 
 def make_mbe_event(_data, _log_type, _event_category, _severity, _process_id, _user_id, _occurred_when, _node_id):
     pass
@@ -212,7 +213,7 @@ def make_mbe_event(_data, _log_type, _event_category, _severity, _process_id, _u
 def make_textual_log_message(_data, _category=None, _severity=None, _process_id=None, _user_id=None,
                              _occurred_when=None, _node_id=None, _uid=None, _pid=None):
     """
-    Build a nice textual error message based on available information
+    Build a nice textual error message based on available information for dialogs or event logs.
 
     :param _data: The message text or data
     :param _log_type: The type of data
@@ -240,5 +241,43 @@ def make_textual_log_message(_data, _category=None, _severity=None, _process_id=
     _result += "\nEntity Id: " + str(_node_id) if _node_id is not None else ""
     _result += "\nSystem uid: " + (str(_uid) if _uid is not None else str(os.getlogin()))
     _result += "\nSystem pid: " + (str(_pid) if _pid is not None else str(os.getpid()))
+
+    return _result
+
+
+def make_sparse_log_message(_data, _category=None, _severity=None, _process_id=None, _user_id=None,
+                             _occurred_when=None, _node_id=None, _uid=None, _pid=None):
+    """
+    Build a sparse textual error message based on available information. One row unless data is multirow.
+
+    :param _data: The message text or data
+    :param _log_type: The type of data
+    :param _category: The kind of error
+    :param _severity: The severity of the error
+    :param _process_id: The current process id
+    :param _user_id: The Id of the user
+    :param _occurred_when: The time of occurrance
+    :param _node_id: An Id for reference (like a node id)
+    :param _uid: The system uid
+    :param _pid: The system pid
+
+    :return: An error message
+
+    """
+    _tab = chr(9)
+    _result = "pid: " + (str(_pid) if _pid is not None else str(os.getpid()))
+    _result += ", uid: " + (str(_uid) if _uid is not None else str(os.getlogin()))
+
+    if "\n" in _data:
+        _result += ", multirow data:\n" + str(_data) +"\n"
+    else:
+        _result += ", data: " + str(_data) + ", "
+    _result += "ec: " + category_to_identifier(_category,"INV") if _category is not None else "N/A"
+    _result += ", sev: " + severity_to_identifier(_severity,"INV") if _severity is not None else "N/A"
+    _result += ", p_id: " + (str(_process_id) if _process_id is not None else "N/A")
+    _result += ", u_id: " + str(_user_id) if _user_id is not None else ""
+    _result += ", t: " + str(_occurred_when) if _occurred_when is not None else ""
+    _result += ", node_id: " + str(_node_id) if _node_id is not None else ""
+    _result += ", uid: " + (str(_uid) if _uid is not None else str(os.getlogin()))
 
     return _result

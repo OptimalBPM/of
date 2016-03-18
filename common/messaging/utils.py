@@ -14,6 +14,8 @@ import requests
 import sys
 from requests.cookies import RequestsCookieJar
 
+from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG, SEV_FATAL, EC_SERVICE, SEV_ERROR, \
+    EC_COMMUNICATION
 from of.common.messaging.factory import get_current_login
 
 
@@ -50,6 +52,8 @@ def get_environment_data():
         "user": get_current_login(),
     }
 
+def write_dbg_info(_data):
+    write_to_log(_data, _category=EC_NOTIFICATION, _severity=SEV_DEBUG)
 
 def register_at_broker(_address, _type, _server, _username, _password, _log_prefix=""):
     _log_prefix = make_log_prefix(_log_prefix)
@@ -66,16 +70,16 @@ def register_at_broker(_address, _type, _server, _username, _password, _log_pref
         "address": _address
     }
     # TODO: Credentials should not be outputted here in production.(ORG-112)
-    print(_log_prefix + "[" + str(datetime.datetime.utcnow()) + "] Registering at broker API.")
+    write_dbg_info(_log_prefix + "[" + str(datetime.datetime.utcnow()) + "] Registering at broker API.")
 
     _headers = {'content-type': 'application/json'}
     _response = requests.post(_server + "/register", data=json.dumps(_data), auth=('user', 'pass'), headers=_headers,
                               verify=False)
     if _response.status_code == 500:
-        print(_log_prefix + "Broker login failed with internal server error! Exiting.")
+        write_dbg_info(_log_prefix + "Broker login failed with internal server error! Exiting.")
         return False
     if _response.status_code != 200:
-        print(_log_prefix + "Broker login failed with error + "+ str(_response.status_code) + "! Exiting.")
+        write_dbg_info(_log_prefix + "Broker login failed with error + "+ str(_response.status_code) + "! Exiting.")
         return False
 
     _response_dict = _response.json()
@@ -83,14 +87,14 @@ def register_at_broker(_address, _type, _server, _username, _password, _log_pref
         _data = _response_dict
 
         if "session_id" in _data:
-            print(_log_prefix + "Got a session id:" + _data["session_id"])
+            write_dbg_info(_log_prefix + "Got a session id:" + _data["session_id"])
             return _data
         else:
-            print(_log_prefix + "Broker login failed! Exiting.")
+            write_to_log(_log_prefix + "Broker login failed! Exiting.", _category=EC_SERVICE, _severity=SEV_ERROR)
         return False
 
     else:
-        print(_log_prefix + "Broker login failed! Exiting.")
+        write_to_log(_log_prefix + "Broker login failed! Exiting.", _category=EC_SERVICE, _severity=SEV_ERROR)
         return False
 
 
@@ -99,33 +103,34 @@ def call_api(_url, _session_id, _data, _timeout=None):
     _cookie_jar.set(name="session_id", value=_session_id, secure=True)
 
     _headers = {'content-type': 'application/json'}
-    print("[" + str(datetime.datetime.utcnow()) + "] Calling API " + _url)
+    write_dbg_info("[" + str(datetime.datetime.utcnow()) + "] Calling API " + _url)
 
     _response = requests.post(_url, data=json.dumps(_data), headers=_headers, timeout=_timeout,
                               verify=False, cookies=_cookie_jar)
     _response_dict = None
 
     if _response.status_code != 200:
-        print("Response code :" + str(_response.status_code))
+        write_dbg_info("Response code :" + str(_response.status_code))
         try:
             _response.raise_for_status()
         except Exception as e:
-            print("Error in call_api:" + str(e))
-            raise Exception("Error in call_api:" + str(e))
+            raise Exception(write_to_log("Error in call_api:" + str(e), _category=EC_COMMUNICATION, _severity=SEV_ERROR))
     else:
         if _response.content:
             try:
                 _response_dict = _response.json()
             except Exception as e:
-                print("response.content didn't contain JSON data")
+                write_to_log("response.content didn't contain JSON data", _category=EC_COMMUNICATION, _severity=SEV_ERROR)
                 _response_dict = None
 
     if _response_dict is not None:
 
-        print("Got a response from " + _url + " :" + str(_response_dict))
+        write_dbg_info("Got a response from " + _url + " :" + str(_response_dict))
         return _response_dict
     else:
-        print("Got an empty response from server:" + str(_response.content))
+        write_to_log("Got an empty response from server:" + str(_response.content), _category=EC_COMMUNICATION,
+                     _severity=SEV_ERROR)
+
         return None
 
 
@@ -152,11 +157,12 @@ def message_is_none(_message, _property, _value):
 
 
 class MultiprocessingLoggingHandler:
+    # TODO: Should this be removed or is it used elsewhere?
     level = 0
     debug_prefix = None
 
     def handle(self, _record):
-        print(self.debug_prefix + ": " + str(_record))
+        write_dbg_info(self.debug_prefix + ": " + str(_record))
 
     def __init__(self, _log_prefix=None, _level=None):
         if _log_prefix is not None:

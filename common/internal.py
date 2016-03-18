@@ -13,7 +13,7 @@ from decorator import decorator
 
 
 # TODO: BPMSettings should probably not be used by QAL(use only resources)optimalbpm.common.* (PROD-94)
-from of.common.settings import JSONXPath
+from of.common.logging import write_to_log, EC_SERVICE, SEV_INFO
 
 stop_handler = None
 
@@ -39,7 +39,7 @@ def node_id_with_env(_node_id, _environment_id):
     return '{:x}'.format(result)
 
 
-def load_settings():
+def resolve_config_path():
     """
     Load settings from settings file, first environment variable OPTIMAL_BPM_CFG, then default locations:
     * Windows - %APPDATA%\optimalframework
@@ -60,9 +60,9 @@ def load_settings():
     else:
         raise Exception("Unsupported platform: " + platform.system().lower())
 
-    _cfg_filename = os.path.expanduser(os.getenv("OPTIMAL_FW_CFG", os.path.join(_default_settings_folder, "config.json")))
-    print("Config path set to: " + _cfg_filename)
-    return JSONXPath(_cfg_filename)
+    return os.path.expanduser(os.getenv("OPTIMAL_FW_CFG", os.path.join(_default_settings_folder, "config.json")))
+
+
 
 def signal_handler_unix(_signal, _frame):
     """
@@ -85,7 +85,7 @@ def signal_handler_unix(_signal, _frame):
         stop_handler(_reason)
 
 def signal_handler_windows():
-    print("Windows signal handler called")
+    write_to_log("Windows signal handler called", _category=EC_SERVICE, _severity=SEV_INFO)
     stop_handler('The process has been terminated, shutting down..')
 
 def register_signals(_stop_handler):
@@ -107,7 +107,7 @@ def register_signals(_stop_handler):
             raise Exception("pywin32 not installed for Python " + version)
         else:
             win32api.SetConsoleCtrlHandler(signal_handler_windows, True)
-            print("Registered win32 ctrl handler")
+            write_to_log("Registered win32 ctrl handler", _category=EC_SERVICE, _severity=SEV_INFO)
     else:
         signal.signal(signal.SIGINT, signal_handler_unix)
         signal.signal(signal.SIGTERM, signal_handler_unix)

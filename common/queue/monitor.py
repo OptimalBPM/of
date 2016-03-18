@@ -6,6 +6,7 @@ import traceback
 import threading
 from queue import Empty, Queue
 
+from of.common.logging import write_to_log, EC_UNCATEGORIZED, SEV_DEBUG, SEV_ERROR, EC_INTERNAL
 from of.schemas.constants import zero_object_id
 
 __author__ = 'Nicklas Boerjesson'
@@ -30,7 +31,7 @@ class Monitor(object):
     queue = None
     #: The handler that reacts on each queue item
     handler = None
-    #: The Optimal BPM process id the monitor is running within
+    #: The Optimal Framework process id the monitor is running within
     process_id = None
     #: Called each time the queue is polled
     before_get_queue = None
@@ -45,7 +46,7 @@ class Monitor(object):
 
         self.logging_function = _logging_function
 
-        self.log_prefix = str(os.getpid()) + "-" + self.__class__.__name__ + "(" + str(
+        self.log_prefix = self.__class__.__name__ + "(" + str(
             _handler.__class__.__name__) + "): "
 
         if _queue:
@@ -58,6 +59,10 @@ class Monitor(object):
         if self.queue:
             self.start()
 
+    def write_dbg_info(self, _data):
+        write_to_log(write_to_log(self.log_prefix + _data, _category=EC_UNCATEGORIZED,
+                                  _severity=SEV_DEBUG, _process_id=self.process_id))
+
     def after_get_queue(self):
         """
         Implement this for something to happen immidiately after a each queue check has happened.
@@ -68,25 +73,26 @@ class Monitor(object):
         """
         Monitors the queue. Stops when the queue-threads' terminated attribute is set to True
         """
-        print(self.log_prefix + "In monitor thread monitoring queue.")
+        self.write_dbg_info("In monitor thread monitoring queue.")
         while not self.monitor_thread.terminated:
             try:
                 _item = self.queue.get(True, .1)
                 try:
                     self.handler.handle(_item)
                 except Exception as e:
-                    print(self.log_prefix + "Error handling item:" + str(e))
-                    print("\nData:\n" + str(_item))
-                    print("\nTraceback:" + traceback.format_exc())
+                    write_to_log(self.log_prefix + "Error handling item:" + str(e) + "\nData:\n" + str(_item) +
+                                 "\nTraceback:" + traceback.format_exc(), _category=EC_INTERNAL,
+                                 _severity=SEV_ERROR)
             except Empty:
                 pass
             except Exception as e:
                 self.monitor_thread.terminated = True
-                raise Exception(self.log_prefix + "Terminating, error accessing own queue:" + str(e))
+                raise Exception(write_to_log(self.log_prefix + "Terminating, error accessing own queue:" + str(e),
+                                             _category=EC_INTERNAL, _severity=SEV_ERROR))
 
             self.after_get_queue()
 
-        print(self.log_prefix + "Monitor thread stopped.")
+        self.write_dbg_info("Monitor thread stopped.")
 
     def stop(self, _user_id=zero_object_id, _reverse_order=None):
         """
@@ -96,17 +102,17 @@ class Monitor(object):
         :param _reverse_order: If true, the monitor is kept running while the handler is shut down.
         """
         if not _reverse_order:
-            print(self.log_prefix + "Told to stop, ceasing monitoring.")
+            self.write_dbg_info("Told to stop, ceasing monitoring.")
             self.monitor_thread.terminated = True
 
         # TODO: Handle any residual items on the queue.(PROD-28)
         # There should be a general framework for unhandled queue items
 
-        print(self.log_prefix + "Shutting down handler(" + str(self.handler.__class__.__name__) + ").")
+        self.write_dbg_info("Shutting down handler(" + str(self.handler.__class__.__name__) + ").")
         self.handler.shut_down(_user_id)
-        print(self.log_prefix + "Handler shut down.")
+        self.write_dbg_info("Handler shut down.")
         if _reverse_order:
-            print(self.log_prefix + "Told to stop, ceasing monitoring.")
+            self.write_dbg_info("Told to stop, ceasing monitoring.")
             self.monitor_thread.terminated = True
 
     def start(self):
@@ -115,8 +121,9 @@ class Monitor(object):
         """
 
         if self.monitor_thread and not self.monitor_thread.terminated:
-            raise Exception(self.log_prefix + "The queue monitor is already running.")
+            raise Exception(write_to_log(self.log_prefix + "The queue monitor is already running.",
+                                         _category=EC_INTERNAL, _severity=SEV_ERROR))
         self.monitor_thread = MonitorThread(_monitor=self)
         self.monitor_thread.terminated = False
         self.monitor_thread.start()
-        print(self.log_prefix + "Running, monitoring thread: " + str(self.monitor_thread.name))
+        self.write_dbg_info("Running, monitoring thread: " + str(self.monitor_thread.name))

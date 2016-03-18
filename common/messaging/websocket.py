@@ -1,5 +1,5 @@
 """
-This module implements the BPMWebSocket class and maintains the monitor global variable.
+This module implements the OptimalWebSocket class and maintains the monitor global variable.
 """
 import os
 import threading
@@ -8,6 +8,7 @@ import json
 import traceback
 from time import sleep
 
+from of.common.logging import write_to_log, EC_COMMUNICATION, SEV_DEBUG, SEV_ERROR, EC_INTERNAL
 from of.common.messaging.factory import reply_with_error_message
 from of.common.messaging.constants import GOING_AWAY, ABNORMAL_CLOSE
 from of.common.internal import not_implemented
@@ -23,9 +24,9 @@ This is not optimal, but the ws4py offer no other way to reach outside its conte
 monitor = None
 
 
-class BPMWebSocket(object):
+class OptimalWebSocket(object):
     """
-    This is a parent class that is use by both client- and server-side web sockets to provide Optimal BPM-specifics.
+    This is a parent class that is use by both client- and server-side web sockets to provide Optimal Framework-specifics.
     It monitors a message_queue, and transmits information appearing in that queue to another connected web socket.
     It also handles session information and registering with the central message monitor.
     """
@@ -34,12 +35,16 @@ class BPMWebSocket(object):
     address = None
     #: The session id of the socket
     session_id = None
+
+    #: The optimal framework process id
+    process_id = None
     #: The thread responsible for monitoring the queue of messages to be sent.
     monitor_message_queue_thread = None
 
     #: The message queue of the socket
     message_queue = None
-    #: The log prefix of the socket, used to identify where the log item originated
+
+    #: A string containing the classname and address classname(address) for use with logging
     log_prefix = None
 
     def init(self, _session_id):
@@ -53,10 +58,17 @@ class BPMWebSocket(object):
         try:
             monitor.handler.register_web_socket(self)
         except Exception as e:
-            raise Exception(self.log_prefix + "BPMWebSocket: Exception registering web socket:" + str(e))
+            raise Exception(write_to_log("OptimalWebSocket: Exception registering web socket:" + str(e),
+                                         _category=EC_COMMUNICATION, _severity=SEV_ERROR))
 
+        # Generate log prefix string for performance
         self.log_prefix = str(os.getpid()) + "-" + self.__class__.__name__ + "(" + str(self.address) + "): "
+
         self.start_monitoring_message_queue()
+
+    def write_dbg_info(self, _data):
+        write_to_log(self.log_prefix + _data,
+                     _category=EC_COMMUNICATION, _severity=SEV_DEBUG, _process_id=self.process_id)
 
     def start_monitoring_message_queue(self):
         """
@@ -65,7 +77,7 @@ class BPMWebSocket(object):
         self.monitor_message_queue_thread = threading.Thread(target=self.monitor_message_queue,
                                                              name=self.address + " message queue monitor thread")
         self.monitor_message_queue_thread.start()
-        print(self.log_prefix + "Message queue thread started: " + str(self.monitor_message_queue_thread.name))
+        self.write_dbg_info("Message queue thread started: " + str(self.monitor_message_queue_thread.name))
 
 
     def opened(self):
@@ -83,7 +95,7 @@ class BPMWebSocket(object):
 
 
         if str(message) != "":
-            print(self.log_prefix + "Got this message(putting on queue):" + str(message))
+            self.write_dbg_info(self.log_prefix + "Got this message(putting on queue):" + str(message))
             if isinstance(message, TextMessage):
                 monitor.queue.put([self, json.loads(str(message))])
             else:
@@ -113,14 +125,15 @@ class BPMWebSocket(object):
                 try:
                     self.send_message(_message)
                 except Exception as e:
-                    print(self.log_prefix + "Error sending message:" + str(e) + "\nTraceback:" + traceback.format_exc())
+                    write_to_log(self.log_prefix + "Error sending message:" + str(e) + "\nTraceback:" + traceback.format_exc(),
+                                 _category=EC_COMMUNICATION, _severity=SEV_ERROR)
             except Empty:
                 pass
             except Exception as e:
-                print(self.log_prefix + "Error accessing send queue:" + str(e))
+                write_to_log(self.log_prefix + "Error accessing send queue:" + str(e) + "\nTraceback:" + traceback.format_exc(),
+                             _category=EC_INTERNAL, _severity=SEV_ERROR)
 
-
-        print(self.log_prefix + "(" + str(self.address) + ") stopped message queue monitoring. Exiting thread \"" +
+        self.write_dbg_info(" stopped message queue monitoring. Exiting thread \"" +
               str(self.monitor_message_queue_thread.name) + "\"")
 
 
@@ -130,7 +143,7 @@ class BPMWebSocket(object):
         Sends a message to the connected counterpart web socket
         :param message: A string containing the message
         """
-        print(self.log_prefix + "Sending message:" + str(message))
+        self.write_dbg_info(self.log_prefix + "Sending message:" + str(message))
         # send() below is implemented by multiple inheritance in the subclass. Ignore "unresolved attribute"-warning.
         self.send(bytes(json.dumps(message).encode()))
 
@@ -143,18 +156,20 @@ class BPMWebSocket(object):
         # TODO: Handle the rest of the possible web socket error codes
 
         if code == ABNORMAL_CLOSE:
-            print(self.log_prefix + "The connection to " +  self.address + " has been abnormally closed.")
+            write_to_log(self.log_prefix + "The connection to " +  self.address + " has been abnormally closed.",
+                         _category=EC_COMMUNICATION, _severity=SEV_ERROR)
             self.close(code=code, reason=reason)
         else:
             self.monitor_message_queue_thread.terminated = True
-            print(self.log_prefix + "Closed, code: " + str(code) + ", reason: " + str(reason))
+            self.write_dbg_info(self.log_prefix + "Closed, code: " + str(code) + ", reason: " + str(reason))
 
 
     def error_handler(self, exception):
         """
         If an unhandled error occurs, unregister at the broker, and close the socket
         """
-        print(self.log_prefix + "An exception handle in the socket, closing. Error: " + str(exception))
+        write_to_log(self.log_prefix + "An exception handle in the socket, closing. Error: " + str(exception),
+                                 _category=EC_COMMUNICATION, _severity=SEV_ERROR)
         monitor.handler.unregister_web_socket(self)
 
         # Tell the socket to close

@@ -1,7 +1,7 @@
 """
 This module holds the BrokerWebSocketHandler class
 """
-
+from of.common.logging import write_to_log, EC_COMMUNICATION, SEV_INFO, SEV_DEBUG, EC_NOTIFICATION
 from of.common.messaging.constants import UNACCEPTABLE_DATA, BROKER_SHUTTING_DOWN
 from of.common.messaging.handler import WebSocketHandler
 from of.schemas.constants import intercept_schema_ids
@@ -59,9 +59,8 @@ class BrokerWebSocketHandler(WebSocketHandler):
         if _destination == self.address:
             # TODO: Figure out what should be done when the broker itself is the addressee.(PROD-42)
             # The reason for this is likely that something was instigated by the web client.
-            print(
-                self.log_prefix + "Broker was the addressee, doing nothing, likely something started by the web client."
-            )
+            write_to_log("Broker was the addressee, doing nothing, likely something started by the web client.",
+                         _category=EC_COMMUNICATION, _severity=SEV_DEBUG, _process_id=self.process_id)
             return
 
         try:
@@ -83,9 +82,13 @@ class BrokerWebSocketHandler(WebSocketHandler):
         :param _process_data: The data to write.
         """
         # Handle messages that writes to the backend, like process instances
-        print("before saving process information, session: " + str(self.peers[_web_socket.session_id]))
+        write_to_log("before saving process information, session: " + str(self.peers[_web_socket.session_id]),
+                     _category=EC_NOTIFICATION, _severity=SEV_DEBUG, _process_id=self.process_id)
+
         self.database_access.save(_process_data, self.peers[_web_socket.session_id]["user"], _allow_save_id=True)
-        print("handle_process succeeded\n")
+
+        write_to_log("handle_process succeeded", _category=EC_NOTIFICATION, _severity=SEV_DEBUG,
+                     _process_id=self.process_id)
 
     def handle_logging(self, _web_socket, _log_data):
         """
@@ -103,7 +106,9 @@ class BrokerWebSocketHandler(WebSocketHandler):
             _log_data["writtenBy"] = self.peers[_web_socket.session_id]["user"]["_id"]
 
         self.database_access.logging.write_log(_log_data)
-        print("handle_logging succeeded\n")
+
+        write_to_log("handle_logging succeeded", _category=EC_NOTIFICATION, _severity=SEV_DEBUG,
+                     _process_id=self.process_id)
         # Store states
         if _log_data["schemaRef"] == "of://log_process_state.json":
             # Handle the objectIds

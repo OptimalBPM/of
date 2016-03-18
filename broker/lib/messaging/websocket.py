@@ -4,23 +4,23 @@ import time
 import cherrypy
 from ws4py.websocket import WebSocket
 
-from of.common.messaging.websocket import BPMWebSocket
+from of.common.messaging.websocket import OptimalWebSocket
 import of.common.messaging.websocket
 __author__ = 'Nicklas Borjesson'
 
 
-class BrokerWebSocket(BPMWebSocket, WebSocket):
+class BrokerWebSocket(OptimalWebSocket, WebSocket):
     """
     This class holds a connection from a web socket client
     """
     monitor_message_queue_thread = None
 
     def __init__(self,  sock, protocols=None, extensions=None, environ=None, heartbeat_freq=None):
-        print("BrokerWebSocket: Peer connected:" + str(cherrypy.request.remote.ip))
+        self.write_dbg_info("BrokerWebSocket: Peer connected:" + str(cherrypy.request.remote.ip))
         super(BrokerWebSocket, self).__init__(sock, protocols, extensions, environ, heartbeat_freq)
         # TODO: Will fail with many requests? It is claimed to be safe, but not very nice to rely on scope.(PROD-42)
 
-        print("BrokerWebSocket: New peer session, init " + str(cherrypy.request.cookie['session_id'].value))
+        self.write_dbg_info("BrokerWebSocket: New peer session, init " + str(cherrypy.request.cookie['session_id'].value))
         self.init(_session_id=cherrypy.request.cookie['session_id'].value)
 
     def close(self, code=1000, reason=''):
@@ -29,7 +29,7 @@ class BrokerWebSocket(BPMWebSocket, WebSocket):
         :param code: A web socket error code as defined in optimalbpm.common messaging.constants, information at: http://tools.ietf.org/html/rfc6455#section-7.4.1
         :param reason: A string describing the reason for closing the connection
         """
-        print(self.log_prefix + "Told to close (session_id:" + str(self.session_id) + ") , code: " + str(code) + ", reason: " + str(reason))
+        self.write_dbg_info(self.log_prefix + "Told to close (session_id:" + str(self.session_id) + ") , code: " + str(code) + ", reason: " + str(reason))
         if self.monitor_message_queue_thread:
             self.monitor_message_queue_thread.terminated = True
 
@@ -37,7 +37,7 @@ class BrokerWebSocket(BPMWebSocket, WebSocket):
 
         super(BrokerWebSocket, self).close(code, reason)
 
-        print(self.log_prefix+ "Web socket for "+ self.address + " closed.")
+        self.write_dbg_info("Web socket for "+ self.address + " closed.")
 
     def closed(self, code, reason=None):
         """
@@ -45,7 +45,7 @@ class BrokerWebSocket(BPMWebSocket, WebSocket):
         :param code: A web socket error code as defined in: http://tools.ietf.org/html/rfc6455#section-7.4.1
         :param reason: A string describing the reason for closing the connection
         """
-        print(self.log_prefix + "Closed, code: " + str(code) + ", reason: " + str(reason))
+        self.write_dbg_info("Closed, code: " + str(code) + ", reason: " + str(reason))
 
 class MockupWebSocket(BrokerWebSocket):
     """

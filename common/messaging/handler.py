@@ -2,9 +2,12 @@
 This module contains the implementation of the WebSocketHandler class
 """
 import logging
+from asyncore import write
 from threading import Lock
 
+from of.common.logging import write_to_log, SEV_ERROR, EC_COMMUNICATION, EC_PROBE, EC_UNCATEGORIZED, EC_INTERNAL
 from of.common.messaging.constants import PROTOCOL_ERROR, GOING_AWAY
+from of.common.messaging.factory import reply_with_error_message
 from of.common.queue.handler import Handler
 from of.schemas.constants import schema_categories
 
@@ -17,7 +20,7 @@ class WebSocketHandler(Handler):
     """
     #: A dictionary containing the peers of the connected web sockets
     peers = None
-    #: The Optimal BPM adress of this web socket
+    #: The peer adress of this web socket
     address = None
     #: A map between adresses and peers
     address__session = None
@@ -43,18 +46,32 @@ class WebSocketHandler(Handler):
         self._last_message_id = 0
         self.web_socket_lock = Lock()
 
-    def handle_error(self, _web_socket, _error):
+
+    def handle_error(self, _error, _category = EC_COMMUNICATION, _severity = SEV_ERROR,
+                     _web_socket= None, _close_socket = None, _message_to_reply_to=None):
+        """
+
+        :param _error: The error message
+        :param _category: The category of the error
+        :param _severity: Error severity
+        :param _web_socket: If the sender was external, the web socket
+        :param _close_socket: Close the web socket
+        :param _message_to_reply_to: The source message, if set, the error message is sent to the sender
+        :return:
+        """
         """ Handles and logs errors, decides whether to keep the connection open if an error occurrs
 
-        :param _web_socket: If the sender was external, the web socket
-        :param _error: The error
-        """
-        # TODO: This must become far more fine-grained. Possibly, a severity parameter should be added.(PROD-90)
 
-        self.logging_function(_message=_error, _severity=logging.ERROR)
-        print("in handle_error error with error :" + str(_error))
+        """
+        _error = write_to_log(_data=self.log_prefix + "In handler.handle_error error with error :" +
+                           str(_error, _category=_category, _severity=_severity))
         if _web_socket:
-            _web_socket.close(code=PROTOCOL_ERROR, reason=_error)
+
+            if _message_to_reply_to:
+                _web_socket.send_message(reply_with_error_message(self, _message_to_reply_to, _error))
+
+            if _close_socket:
+                _web_socket.close(code=PROTOCOL_ERROR, reason=_error)
 
     def get_handler(self, _web_socket, _schema_id):
         """
@@ -67,7 +84,9 @@ class WebSocketHandler(Handler):
         try:
             _category = schema_categories[_schema_id]
         except KeyError:
-            self.handle_error(_web_socket, self.log_prefix + "No category found for schema Id " + str(_schema_id))
+            # A proper running system should never encounter this error, so this is considered a concious probe
+            self.handle_error(_web_socket, "No category found for schema Id " + str(_schema_id),
+                _web_socket=_web_socket, _category=EC_PROBE, _severity=SEV_ERROR)
             return None
         try:
             return self.category_shortcut[_category]
@@ -85,14 +104,16 @@ class WebSocketHandler(Handler):
         _message_data = _item[1]
 
         if _web_socket:
-            print(self.log_prefix + "Handling " + _web_socket.address + " - message : " + str(_message_data))
+            self.write_dbg_info("Handling " + _web_socket.address + " - message : " + str(_message_data))
         else:
-            print(self.log_prefix + "Handling outgoing message : " + str(_message_data))
+            self.write_dbg_info("Handling outgoing message : " + str(_message_data))
 
         try:
             _schema_id = _message_data["schemaRef"]
         except KeyError:
-            self.handle_error(_web_socket, self.log_prefix + "No schema id found in message.")
+            # A proper running system should never encounter this error, so this is considered a concious probe
+            self.handle_error(_web_socket, "No schema id found in message",
+                _web_socket=_web_socket, _category=EC_PROBE, _severity=SEV_ERROR)
             return
 
         _handler = self.get_handler(_web_socket, _schema_id)
@@ -100,9 +121,9 @@ class WebSocketHandler(Handler):
         try:
             _handler(_web_socket, _message_data)
         except Exception as e:
-            # TODO: This should really not close the socket, rather return information (PROD-21)
-            self.handle_error(_web_socket,
-                              self.log_prefix + "Error running handler " + str(_schema_id) + " Error: " + str(e))
+            self.handle_error(_web_socket, "Error running handler " + str(_schema_id) + " Error: " + str(e),
+                _web_socket=_web_socket, _category=EC_INTERNAL, _severity=SEV_ERROR)
+
 
     def shut_down(self, _user_id, _code=GOING_AWAY):
         """
@@ -110,10 +131,10 @@ class WebSocketHandler(Handler):
         :param _user_id: The user initiating the shut down
         """
         # Stop web sockets
-        print(self.log_prefix + "shut_down: Closing sockets..")
+        self.write_dbg_info("shut_down: Closing sockets..")
         for session in self.peers.values():
             if "web_socket" in session:
-                print("Closing " + session["address"])
+                self.write_dbg_info(session["address"])
                 session["web_socket"].close(code=_code, reason="Shutting down")
 
         super(WebSocketHandler, self).shut_down(_user_id)
@@ -138,14 +159,14 @@ class WebSocketHandler(Handler):
             # Set the address of the socket
             _web_socket.address = _session["address"]  # Perhaps the web socket should set this itself, dunno..
             _web_socket.message_queue = _session["queue"]
+            _web_socket.process_id = self.process_id
             # Add the peer to the address session dict
             if _web_socket.address in self.address__session:
-                print(
-                    self.log_prefix + "Register_web_socket: The " + "\"" + _web_socket.address +
+                self.write_dbg_info("Register_web_socket: The " + "\"" + _web_socket.address +
                     "\" peer was already registered. Earlier failure to unregister/disconnect? Overwriting the registration.")
 
             self.address__session[_web_socket.address] = _web_socket.session_id
-            print(self.log_prefix + str(_web_socket.address) + " registered, session data: " + str(_session))
+            self.write_dbg_info(str(_web_socket.address) + " registered, session data: " + str(_session))
 
         finally:
             # Unlock
@@ -163,17 +184,16 @@ class WebSocketHandler(Handler):
                 del self.address__session[_web_socket.address]
             else:
                 # TODO: Should this be a problem?
-                print(
-                    self.log_prefix + "unregister_web_socket: The " + "\"" + str(
+                self.write_dbg_info("unregister_web_socket: The " + "\"" + str(
                         _web_socket.address) + "\" peer wasn't registered.")
             if "web_socket" not in self.peers[_web_socket.session_id]:
-                print(
+                self.write_dbg_info(
                     self.log_prefix + "ERROR: Failing to unregister web socket completely as there is no web socket, " +
                     "address " + str(_web_socket.address) + "session: " +
                     str(self.peers[_web_socket.session_id]))
             else:
                 del self.peers[_web_socket.session_id]["web_socket"]
-            print(self.log_prefix + "web_socket (address " + str(_web_socket.address) +
+            self.write_dbg_info(self.log_prefix + "web_socket (address " + str(_web_socket.address) +
                   ", session_id " + str(_web_socket.session_id) + ") unregistered.")
         finally:
             # Unlock

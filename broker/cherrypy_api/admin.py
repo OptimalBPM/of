@@ -11,16 +11,13 @@ from mbe.cherrypy import aop_check_session
 from mbe.cherrypy import CherryPyNode
 from mbe.constants import object_id_right_admin_everything
 from mbe.groups import aop_has_right
+from of.common.logging import write_to_log, EC_SERVICE, SEV_DEBUG, EC_NOTIFICATION
 
 
 class CherryPyAdmin(object):
     """
     The CherryPyAdmin class is a plugin for CherryPy that shows the admin UI for the Optimal Framework
     """
-
-
-    #: The log prefix of the broker
-    log_prefix = None
 
     #: Plugin management
     plugins = None
@@ -34,11 +31,11 @@ class CherryPyAdmin(object):
     #: Node management web service(MBE)
     node = None
 
-    def __init__(self,_database_access, _process_id, _address, _log_prefix, _stop_broker, _definitions, _monitor, _root_object):
-        print(_log_prefix + "Initializing Admin class.")
+    def __init__(self, _database_access, _process_id, _address, _stop_broker, _definitions, _monitor, _root_object):
+        write_to_log(_category=EC_SERVICE, _severity=SEV_DEBUG, _process_id=_process_id,
+                     _data="Initializing administrative REST API.")
 
         self.stop_broker = _stop_broker
-        self.log_prefix = _log_prefix
         self.monitor = _monitor
 
         self.process_id = _process_id
@@ -54,7 +51,9 @@ class CherryPyAdmin(object):
         :param _command: Can be "stop" or "restart".
         :param _user: A user instance
         """
-        print(self.log_prefix + "broker.broker_control: Got the command " + str(_command))
+        write_to_log("broker.broker_control: Got the command " + str(_command), _category=EC_SERVICE,
+                     _process_id=self.process_id)
+
         # TODO: There should be a log item written with reason and userid.(PROD-32)
         # TODO: UserId should also be appended to reason below.(PROD-32)
 
@@ -70,15 +69,14 @@ class CherryPyAdmin(object):
 
         return {}
 
-
     @cherrypy.expose
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out(content_type='application/json')
     @aop_check_session
     def broker_control(self, **kwargs):
         return self.broker_ctrl(cherrypy.request.json["command"],
-                                                   cherrypy.request.json["reason"],
-                                                   kwargs["_user"])
+                                cherrypy.request.json["reason"],
+                                kwargs["_user"])
 
     @cherrypy.expose
     @cherrypy.tools.json_out(content_type='application/json')
@@ -91,7 +89,6 @@ class CherryPyAdmin(object):
         :return: A list of all logged in peers
         """
 
-
         _result = []
         # Filter out the unserializable web socket
         for _session in self.root.peers.values():
@@ -100,5 +97,6 @@ class CherryPyAdmin(object):
             _new_session["queue"] = "removed for serialization"
             _result.append(_new_session)
 
-        print("Returning a list of peers:" + str(_result))
+        write_to_log(_process_id=self.process_id, _category=EC_NOTIFICATION, _severity=SEV_DEBUG,
+             _data="Returning a list of peers:" + str(_result))
         return _result

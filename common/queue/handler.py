@@ -4,6 +4,8 @@ The handler module implements the Handler class.
 
 import os
 
+from of.common.logging import write_to_log, EC_COMMUNICATION, SEV_DEBUG
+
 __author__ = 'Nicklas Borjesson'
 
 
@@ -33,17 +35,14 @@ class Handler(object):
         """
         pass
 
-    def logging_function(self, _message, _severity):
+    def write_dbg_info(self, _data):
         """
-        Called when something has happened worth logging
-
+        Shortcut to writing debug information
         :param _message: The message
         :param _severity: The severity of the log information, a constant defined in the built-in logging module
         """
-        # TODO: Make it so that logging is harmonized, currently it is mostly prints. (PROD-32). This should replace
-        # prints in subclasses
+        write_to_log(self.log_prefix + _data, _category=EC_COMMUNICATION, _severity=SEV_DEBUG, _process_id=self.process_id)
 
-        print(self.log_prefix + "Unhandled: " + str(_message) + "\nSeverity: " + str(_severity))
 
     def handle(self, _item):
         """

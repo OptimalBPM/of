@@ -5,8 +5,8 @@ import os
 
 from bson.objectid import ObjectId
 
-from mbe.authentication import init_authentication
-from mbe.misc.init import init_database
+from of.common.security.authentication import init_authentication
+from of.common.testing.init import init_database
 from of.schemas.validation import of_uri_handler
 
 __author__ = 'nibo'

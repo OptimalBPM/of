@@ -1,58 +1,4 @@
 [
-    {
-    "_id": "000000010000010001e64c00",
-    "name": "Top",
-    "description": "All system wide settings, users, permissions, rights ",
-    "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "of://node.json",
-    "canRead": ["000000010000010001e64c28"],
-    "canWrite": ["000000010000010001e64c28"],
-    "allowedChildTypes": ["of://node.json"]
-  },
-  {
-    "_id": "000000010000010001e64c23",
-    "parent_id": "000000010000010001e64c00",
-    "name": "Administration",
-    "description": "All system wide settings, users, permissions, rights ",
-    "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "of://node.json",
-    "canRead": ["000000010000010001e64c28"],
-    "canWrite": ["000000010000010001e64c28"],
-    "allowedChildTypes": ["of://node.json"]
-  },
-  {
-    "_id": "000000010000010001e64c24",
-    "parent_id": "000000010000010001e64c23",
-    "name": "Groups",
-    "description": "All groups and their settings",
-    "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "of://node.json",
-    "canRead": ["000000010000010001e64c28"],
-    "canWrite": ["000000010000010001e64c28"],
-    "allowedChildTypes": ["of://group.json"]
-  },
-  {
-    "_id": "000000010000010001e64c25",
-    "parent_id": "000000010000010001e64c23",
-    "name": "Users",
-    "description": "All users and their settings",
-    "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "of://node.json",
-    "canRead": ["000000010000010001e64c28"],
-    "canWrite": ["000000010000010001e64c28"],
-    "allowedChildTypes": ["of://user.json"]
-  },
-  {
-    "_id": "000000010000010001e64c26",
-    "parent_id": "000000010000010001e64c23",
-    "name": "Rights",
-    "description": "All the defined rights and their settings",
-    "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "of://node.json",
-    "canRead": ["000000010000010001e64c28"],
-    "canWrite": ["000000010000010001e64c28"],
-    "allowedChildTypes": ["of://right.json"]
-  },
   {
     "_id": "000000010000010001e64c27",
     "parent_id": "000000010000010001e64c26",
@@ -60,8 +6,12 @@
     "description": "The Administer everything right",
     "createdWhen": "2014-11-13T01:00:00+00:00",
     "schemaRef": "of://right.json",
-    "canRead": ["000000010000010001e64c28"],
-    "canWrite": ["000000010000010001e64c28"],
+    "canRead": [
+      "000000010000010001e64c28"
+    ],
+    "canWrite": [
+      "000000010000010001e64c28"
+    ],
     "allowedChildTypes": []
   },
   {
@@ -70,9 +20,15 @@
     "name": "Administrators",
     "createdWhen": "2014-11-13T01:00:00+00:00",
     "schemaRef": "of://group.json",
-    "rights": ["000000010000010001e64c27"],
-    "canRead": ["000000010000010001e64c28"],
-    "canWrite": ["000000010000010001e64c28"],
+    "rights": [
+      "000000010000010001e64c27"
+    ],
+    "canRead": [
+      "000000010000010001e64c28"
+    ],
+    "canWrite": [
+      "000000010000010001e64c28"
+    ],
     "allowedChildTypes": []
   },
   {
@@ -83,8 +39,12 @@
     "createdWhen": "2014-11-13T01:00:00+00:00",
     "schemaRef": "of://group.json",
     "rights": [],
-    "canRead": ["000000010000010001e64c28"],
-    "canWrite": ["000000010000010001e64c28"],
+    "canRead": [
+      "000000010000010001e64c28"
+    ],
+    "canWrite": [
+      "000000010000010001e64c28"
+    ],
     "allowedChildTypes": []
   },
   {
@@ -99,9 +59,15 @@
     },
     "createdWhen": "2014-11-13T01:00:00+00:00",
     "schemaRef": "of://user.json",
-    "groups": ["000000010000010001e64c28"],
-    "canRead": ["000000010000010001e64c28"],
-    "canWrite": ["000000010000010001e64c28"],
+    "groups": [
+      "000000010000010001e64c28"
+    ],
+    "canRead": [
+      "000000010000010001e64c28"
+    ],
+    "canWrite": [
+      "000000010000010001e64c28"
+    ],
     "allowedChildTypes": []
   },
   {
@@ -127,7 +93,9 @@
     "name": "Node administrators group",
     "createdWhen": "2014-11-13T01:00:00+00:00",
     "schemaRef": "of://group.json",
-    "rights": ["000000010000010001e64d01"],
+    "rights": [
+      "000000010000010001e64d01"
+    ],
     "canRead": [
       "000000010000010001e64c28",
       "000000010000010001e64d02"
@@ -151,7 +119,8 @@
     "createdWhen": "2014-11-13T01:00:00+00:00",
     "schemaRef": "of://user.json",
     "groups": [
-      "000000010000010001e64d02", "000000010000010001e64c28"
+      "000000010000010001e64d02",
+      "000000010000010001e64c28"
     ],
     "canRead": [
       "000000010000010001e64c28",
@@ -169,7 +138,9 @@
     "name": "The Guests group",
     "createdWhen": "2014-11-13T01:00:00+00:00",
     "schemaRef": "of://group.json",
-    "rights": ["000000010000010001e64d01"],
+    "rights": [
+      "000000010000010001e64d01"
+    ],
     "canRead": [
       "000000010000010001e64c28",
       "000000010000010001e64d02"
@@ -192,65 +163,13 @@
     },
     "createdWhen": "2014-11-13T01:00:00+00:00",
     "schemaRef": "of://user.json",
-    "groups": ["000000010000010001e64d12"],
+    "groups": [
+      "000000010000010001e64d12"
+    ],
     "canRead": [
       "000000010000010001e64c28",
       "000000010000010001e64d02"
     ],
-    "canWrite": [
-      "000000010000010001e64c28",
-      "000000010000010001e64d02"
-    ],
-    "allowedChildTypes": []
-  },
-  {
-    "_id": "000000010000010001e64d15",
-    "parent_id": "000000010000010001e64c25",
-    "name": "none",
-    "credentials": {
-      "usernamePassword": {
-        "username": "none",
-        "password": "098f6bcd4621d373cade4e832627b4f6"
-      }
-    },
-    "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "of://user.json",
-    "groups": [],
-    "canRead": [
-      "000000010000010001e64c28",
-      "000000010000010001e64d02"
-    ],
-    "canWrite": [
-      "000000010000010001e64c28",
-      "000000010000010001e64d02"
-    ],
-    "allowedChildTypes": []
-  },
-  {
-    "_id": "000000010000010002e64d03",
-    "parent_id": "000000010000010001e64c00",
-    "name": "Peers",
-    "description": "The peers in the Optimal BPM system",
-    "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef":  "of://node.json",
-    "canRead": ["000000010000010001e64c28", "000000010000010001e64d02"],
-    "canWrite": [
-      "000000010000010001e64c28",
-      "000000010000010001e64d02"
-    ],
-    "allowedChildTypes": [
-      "of://node_broker.json", "of://node_admin.json", "of://peer.json", "bpm://node_agent.json"
-    ]
-  },
-  {
-    "_id": "000000010000010002e64d17",
-    "parent_id": "000000010000010002e64d03",
-    "name": "admin_root",
-    "description": "The settings of the web admin interface for the user root",
-    "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef":  "of://node_admin.json",
-    "address": "admin_root",
-    "canRead": ["000000010000010001e64c28", "000000010000010001e64d02"],
     "canWrite": [
       "000000010000010001e64c28",
       "000000010000010001e64d02"
@@ -263,15 +182,17 @@
     "name": "broker01",
     "description": "Broker number 1",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef":  "of://node_broker.json",
+    "schemaRef": "of://node_broker.json",
     "address": "broker01",
     "repositoriesLocation": "~/optimalframework/broker_repositories",
-    "canRead": ["000000010000010001e64c28", "000000010000010001e64d02"],
+    "canRead": [
+      "000000010000010001e64c28",
+      "000000010000010001e64d02"
+    ],
     "canWrite": [
       "000000010000010001e64c28",
       "000000010000010001e64d02"
     ],
     "allowedChildTypes": []
   }
-
 ]

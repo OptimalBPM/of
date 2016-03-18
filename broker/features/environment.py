@@ -8,7 +8,7 @@ import time
 from bson.objectid import ObjectId
 import cherrypy
 
-from mbe.node import Node
+from of.broker.cherrypy_api.node import Node
 
 from of.broker.lib.messaging.handler import BrokerWebSocketHandler
 from of.common.queue.monitor import Monitor

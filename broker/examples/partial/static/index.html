@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+    <!-- The example -->
+
+    <!-- To make it not look like 1992 -->
+    <link rel="stylesheet" href="index.css">
+
+    <!-- The interesting part, the javascript-->
+    <script type="text/javascript" src="index.js"></script>
+    <title>Running parts of OF</title>
+
+</head>
+<body style="margin: 2em;">
+<div style="float:left;width: 50%">
+
+    <div>
+        <h1 style="display: block">Session</h1>
+        <span id="please_login">Please log in to OF using the login button.</span>
+
+        <div style="display: table">
+            <div style="display: table-cell">
+                <div>
+                    <button class="button" onclick="login();">Login</button>
+                </div>
+                <div>
+                    <button class="button" onclick="logout();">Logout</button>
+                </div>
+            </div>
+            &nbsp;
+            <div id="session_status_div" class="session_status">
+                <span style="" id="session_status">Not logged in</span>
+            </div>
+            <div class="reset_database" onclick="reset_database();">
+                Reset database<br/>(logs out all users)
+            </div>
+        </div>
+    </div>
+    <div id="examples" style="visibility: hidden;height: 70%;float:left;width:100%">
+        <div>
+            <h1 style="display: block">Nodes</h1>
+            Press a list to populate selects. Press load to load their name into the inputs:
+            <div style="display: block">
+                <div>
+                    <button class="button" onclick="load_lookup('ObjectId(000000010000010001e64c24)', 'sel_group');">
+                        List groups
+                    </button>
+                    &nbsp;-&nbsp;<select class="select" id="sel_group"></select>
+                    <button class="button" onclick="load_sel_data('group');">
+                        Load
+                    </button>
+                    <button class="button" onclick="delete_sel_node('group');">
+                        Delete
+                    </button>
+                </div>
+                <div>
+                    <button class="button" onclick="load_lookup('ObjectId(000000010000010001e64c25)', 'sel_users');">
+                        List users
+                    </button>
+                    &nbsp;-&nbsp;<select class="select" id="sel_users"></select>
+                    <button class="button" onclick="load_sel_data('users');">
+                        Load
+                    </button>
+                    <button class="button" onclick="delete_sel_node('users');">
+                        Delete
+                    </button>
+                </div>
+                <div>
+                    <button class="button" onclick="load_lookup('ObjectId(000000010000010001e64c26)', 'sel_rights');">
+                        List rights
+                    </button>
+                    &nbsp;-&nbsp;<select class="select" id="sel_rights"></select>
+                    <button class="button" onclick="load_sel_data('rights');">
+                        Load
+                    </button>
+                    <button class="button" onclick="delete_sel_node('rights');">
+                        Delete
+                    </button>
+                </div>
+            </div>
+            <h1 style="display: block">Properties</h1>
+            Press a button to save the loaded name back to the database, and then reload lists above:
+            <div style="display: block">
+                <div>
+                    Id:<span id="id_group"></span>&nbsp;-&nbsp;<input class="input" id="in_group"/>
+                    <button class="button" onclick="save_sel_data('group');">
+                        Save
+                    </button>
+                </div>
+                <div>
+                    Id:<span id="id_users"></span>&nbsp;-&nbsp;<input class="input" id="in_users"/>
+                    <button class="button" onclick="save_sel_data('users');">
+                        Save
+                    </button>
+                </div>
+                <div>
+                    Id:<span id="id_rights"></span>&nbsp;-&nbsp;<input class="input" id="in_rights"/>
+                    <button class="button" onclick="save_sel_data('rights');">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+<div style="height:80%;width: 50%;float:right;">
+    <h1>Log</h1>
+    All JSON communication between client and server is logged below:
+    <textarea style="height:100%;width: 100%;" id="log_output"></textarea>
+</div>
+<footer style="position: absolute;bottom:2em; ">Don't forget to check out the <a href="demo.optimalbpm.com/MBE">full
+    angular implementation of MBE</a></footer>
+
+</body>
+</html>

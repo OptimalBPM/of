@@ -1,0 +1,41 @@
+.button {
+    width: 7em;
+}
+
+.select {
+    width: 8em;
+}
+
+.input {
+    width: 8em;
+}
+
+.session_status {
+    text-align: center;
+    display: table-cell;
+    margin-left: 3px;
+    width: 10em;
+    border-radius: 3px;
+    background-color: #d55537
+
+}
+
+.reset_database {
+    text-align: center;
+    display: table-cell;
+    margin-left: 3px;
+    width: 10em;
+    border-radius: 3px;
+    background-color: #d5bf02
+
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    background: #fff;
+    color: #333;
+}

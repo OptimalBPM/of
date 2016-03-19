@@ -64,7 +64,6 @@ class SchemaTools():
 
         self.json_schema_objects = {}
 
-
         # Load application specific schemas
         for _curr_folder in _json_schema_folders:
             self.load_schemas_from_directory(os.path.abspath(_curr_folder))
@@ -149,7 +148,10 @@ class SchemaTools():
             _json_schema_obj = self.json_schema_objects[_schema_ref]
         else:
             if "schemaRef" in _data:
-                _json_schema_obj = self.json_schema_objects[_data["schemaRef"]]
+                try:
+                    _json_schema_obj = self.json_schema_objects[_data["schemaRef"]]
+                except KeyError as e:
+                    raise Exception("SchemaTools.apply, invalid schemaRef: " + _data["schemaRef"])
             else:
                 raise Exception("SchemaTools.apply, data must have a schemaRef attribute")
 

@@ -6,6 +6,8 @@
 """
 
 from bson.objectid import ObjectId
+
+from of.broker.lib.auth_backend import MongoDBAuthBackend
 from of.common.security.authentication import init_authentication
 from of.common.security.groups import aop_has_right, init_groups
 
@@ -67,7 +69,6 @@ class Node():
         if _database_access is None:
             raise Exception("Node: The database access parameter is None, it must be set for the Node class to work")
 
-        init_authentication(_database_access)
         self.database_access = _database_access
         global node_rights
 

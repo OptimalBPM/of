@@ -2,6 +2,8 @@
 The authentication module is responsible for taking log in credentials an establish a session.
 Session data is saved in the Session collection.
 """
+from abc import ABCMeta
+
 from of.broker.lib.schema_mongodb import mbe_object_id
 
 __author__ = "Nicklas Boerjesson"
@@ -19,15 +21,15 @@ from inspect import getfullargspec
 _authentication = None
 
 
-def init_authentication(_database_access):
+def init_authentication(_authentication_backend):
     """
     Initializes the global authentication object
 
-    :param _database_access: A database access instance that provides access to the node collection (users)
+    :param _authentication_backend: An instance of an AuthenticationBackend subclass
     :return: an instance of the global authentication object
     """
     global _authentication
-    _authentication = Authentication(_database_access)
+    _authentication = Authentication(_authentication_backend)
     return _authentication
 
 
@@ -111,18 +113,34 @@ class AuthenticationError(Exception):
     pass
 
 
+class AuthenticationBackend(metaclass=ABCMeta):
+
+    def get_session(self, session_id):
+        raise Exception("AuthenticationBackend.get_session is not implemented!")
+
+    def get_user(self, user_id):
+        raise Exception("AuthenticationBackend.get_user is not implemented!")
+
+    def authenticate_username_password(self, _credentials):
+        raise Exception("AuthenticationBackend.authenticate_username_password is not implemented!")
+
+    def logout(self, _session_id):
+        raise Exception("AuthenticationBackend.logout is not implemented!")
+
 class Authentication():
     """
     The authentication class is the central entity for authentication in MBE.
     It handles login, logout and session validation.
     """
 
-    def __init__(self, _database_access):
+    authentication_backend = None
+
+    def __init__(self, _authentication_backend):
         """
         The Authentication class need access to the database for user information.
-        :param _database_access: Database access object
+        :param _authentication_backend: An instance of an AuthenticationBackend subclass
         """
-        self._da = _database_access
+        self.authentication_backend = _authentication_backend
 
     def check_session(self, _session_id):
         """
@@ -134,23 +152,12 @@ class Authentication():
 
         """
 
-        _session_cond = {
-            "conditions": {"_id": mbe_object_id(_session_id)},
-            "collection": "session"
-        }
+        _session = self.authentication_backend.get_session(_session_id)
+        if _session is not None:
+            _user = self.authentication_backend.get_user(_session["user_id"])
 
-        _sessions = self._da.find(_session_cond)
-        if len(_sessions) > 0:
-            if len(_sessions) > 1:
-                raise Exception("password_login error: Multiple users returned by user query.")
-
-            _user_condition = {
-                "conditions": {"_id": mbe_object_id(_sessions[0]["user_id"]), "schemaRef": "of://user.json"},
-                "collection": "node"
-            }
-            _users = list(self._da.find(_user_condition))
-            if len(_users) > 0:
-                return _users[0]
+            if _user is not None:
+                return _user
             else:
                 raise AuthenticationError("Authentication failed. The user associated with the session"
                                           " has been removed.\nSessionId: " + str(_session_id))
@@ -171,39 +178,13 @@ class Authentication():
         """
 
         if "usernamePassword" in _credentials:
+            _session_id, _user = self.authentication_backend.authenticate_username_password(_credentials)
 
-            _cred_condition = {
-                    "conditions":
-                            {
-                                "credentials.usernamePassword.username": _credentials["usernamePassword"]["username"],
-                             "credentials.usernamePassword.password": hashlib.md5(
-                                _credentials["usernamePassword"]["password"].encode('utf-8')).hexdigest()
-
-                            },
-                    "collection": "node"
-                }
-
-            # TODO: FTRT make a general credentials schema that is used by the user schema and use it to verify \
-            # credential packets
-
-            _users = self._da.find(_cred_condition)
-            if len(_users) > 0:
-                if len(_users) > 1:
-                    raise Exception("password_login error: Multiple users returned by user query.")
-
-                _user = _users[0]
-                # Create Session
-                _session_data = {
-                    "createdWhen": str(datetime.datetime.utcnow()),
-                    "user_id": str(_user["_id"]),
-                    "schemaRef": "of://session.json"
-                }
-
-                _session_id = self._da.save(_session_data, _user)
-
-                return _session_id, _user
-            else:
+            if _session_id is None:
                 raise AuthenticationError("login error: Invalid login/username combination.")
+            else:
+                return _session_id, _user
+
         else:
             if len(_credentials) > 0:
                 raise AuthenticationError("login error: Invalid authentication scheme \"" + _credentials[0] + "\"")
@@ -218,10 +199,4 @@ class Authentication():
         :return:
 
         """
-
-        _remove_cond = {
-            "conditions": {"_id": mbe_object_id(_session_id)},
-            "collection": "session"
-        }
-
-        self._da.remove_condition(_remove_cond, None)
+        self.authentication_backend.logout(_session_id)

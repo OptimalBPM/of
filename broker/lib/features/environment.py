@@ -14,16 +14,16 @@ from of.common.queue.monitor import Monitor
 import of.common.messaging.websocket
 
 from of.broker.lib.messaging.websocket import MockupWebSocket
-from of.common.testing.init_env import init_env
+from of.broker.lib.node import Node
+from of.broker.testing.init_env import init_env
 
 __author__ = 'nibo'
 
 # Test users uuids
 id_user_root = "000000010000010001e64c30"
 id_user_test = "000000010000010001e64c31"
-
+#id_user_testagent = "000000010000010001e64c32"
 id_right_admin_nodes = "000000010000010001e64d01"
-
 
 def before_all(context):
     init_env(context)
@@ -75,12 +75,17 @@ def before_feature(context, feature):
     if feature.name in ["Process Management", "Process definition management API", "Message broker"]:
         init_low_level(context, feature)
 
+    if feature.name == "Node management":
+        context.node = Node(_database_access=context.db_access, _rights=[id_right_admin_nodes])
 
 
 def after_feature(context, feature):
     print("After feature " + feature.name + ", stopping broker.")
-    context.sender.close(code=GOING_AWAY, reason="Close sender")
-    context.receiver.close(code=GOING_AWAY, reason="Close receiver")
+    if hasattr(context, "sender"):
+        context.sender.close(code=GOING_AWAY, reason="Close sender")
+
+    if hasattr(context, "receiver"):
+        context.receiver.close(code=GOING_AWAY, reason="Close receiver")
     if feature.name in ["Process Management", "Process definition management API", "Message broker"]:
         context.monitor.stop()
         time.sleep(.1)

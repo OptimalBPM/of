@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "A schema for cars",
+  "title": "Car",
+  "type": "object",
+  "version": "0.1",
+  "allOf": [
+    {
+      "$ref": "of://node.json/properties"
+    },
+    {
+      "properties": {
+        "model": {
+          "type": "string",
+          "description": "The kind of car (i.e. saloon, cabriolet, sedan)"
+        },
+        "weight": {
+          "type": "number",
+          "description": "The weight of the car in kilograms"
+        },
+        "color": {
+          "type": "string",
+          "description": "The kind of car (i.e. saloon, cabriolet, sedan)"
+        },
+        "power": {
+          "type": "number",
+          "description": "The rated power output of the engine in kilowatts"
+        },
+        "torque": {
+          "type": "number",
+          "description": "The engine torgue in Newton meter."
+        }
+      }
+    },
+    {
+      "$ref": "of://node.json/required"
+    }
+  ],
+  "required": [
+    "formDefinition",
+    "formschemaRef"
+  ],
+  "collection": "node",
+  "namespace": "cust"
+}

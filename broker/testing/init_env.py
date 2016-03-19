@@ -5,8 +5,9 @@ import os
 
 from bson.objectid import ObjectId
 
+from of.broker.lib.auth_backend import MongoDBAuthBackend
 from of.common.security.authentication import init_authentication
-from of.common.testing.init import init_database
+from of.broker.testing.init import init_database
 from of.schemas.validation import of_uri_handler
 
 __author__ = 'nibo'
@@ -30,7 +31,7 @@ def init_env(_context=None, _data_files=[], _json_schema_folders=[], _uri_handle
 
     if _context:
         _context.db_access = _db_access
-        _context.auth = init_authentication(_context.db_access)
+        _context.auth = init_authentication(MongoDBAuthBackend(_context.db_access))
 
         _context.session_id, _context.user = _context.auth.login(
             {"usernamePassword": {"username": "tester", "password": "test"}})

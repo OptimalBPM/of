@@ -1,0 +1,9 @@
+{
+  "_id": "000000010000010001e64c00",
+  "name": "Top",
+  "description": "All system wide settings, users, permissions, rights ",
+  "createdWhen": "2014-11-13T01:00:00+00:00",
+  "canWrite": ["000000010000010001e64c28"],
+  "allowedChildTypes": ["of://node.json"],
+  "schemaRef": "of://node.json"
+}

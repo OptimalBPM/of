@@ -133,7 +133,7 @@
     "allowedChildTypes": []
   },
   {
-    "_id": "000000010000010001e64d13",
+    "_id": "000000010000010001e64d12",
     "parent_id": "000000010000010001e64c24",
     "name": "The Guests group",
     "createdWhen": "2014-11-13T01:00:00+00:00",
@@ -152,7 +152,7 @@
     "allowedChildTypes": []
   },
   {
-    "_id": "000000010000010001e64d14",
+    "_id": "000000010000010001e64d13",
     "parent_id": "000000010000010001e64c25",
     "name": "guest",
     "credentials": {
@@ -166,6 +166,29 @@
     "groups": [
       "000000010000010001e64d12"
     ],
+    "canRead": [
+      "000000010000010001e64c28",
+      "000000010000010001e64d02"
+    ],
+    "canWrite": [
+      "000000010000010001e64c28",
+      "000000010000010001e64d02"
+    ],
+    "allowedChildTypes": []
+  },
+{
+    "_id": "000000010000010001e64d15",
+    "parent_id": "000000010000010001e64c25",
+    "name": "none",
+    "credentials": {
+      "usernamePassword": {
+        "username": "none",
+        "password": "098f6bcd4621d373cade4e832627b4f6"
+      }
+    },
+    "createdWhen": "2014-11-13T01:00:00+00:00",
+    "schemaRef": "of://user.json",
+    "groups": [],
     "canRead": [
       "000000010000010001e64c28",
       "000000010000010001e64d02"
@@ -194,5 +217,41 @@
       "000000010000010001e64d02"
     ],
     "allowedChildTypes": []
+  },
+  {
+    "_id": "000000010000010001e64d40",
+    "parent_id": "000000010000010001e64c23",
+    "name": "UI",
+    "description": "UI settings for all schemas",
+    "createdWhen": "2014-11-13T01:00:00+00:00",
+    "schemaRef": "of://node.json",
+    "canRead": ["000000010000010001e64c28"],
+    "canWrite": [
+      "000000010000010001e64c28",
+      "000000010000010001e64d02"
+    ],
+    "allowedChildTypes": [
+      "of://node.json",
+      "of://user.json",
+      "of://group.json"
+    ]
+  },
+  {
+    "_id": "000000010000010001e64d41",
+    "parent_id": "000000010000010001e64d40",
+    "name": "Node",
+    "description": "UI settings for the Node schema",
+    "createdWhen": "2014-11-13T01:00:00+00:00",
+    "formDefinition": [
+      "_id",
+      "name",
+      "schemaRef"
+    ],
+    "formSchemaRef": "of://node.json",
+    "schemaRef": "of://node.json",
+    "canRead": ["000000010000010001e64c28"],
+    "canWrite": ["000000010000010001e64c28"],
+    "allowedChildTypes": []
   }
+
 ]

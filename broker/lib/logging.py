@@ -154,7 +154,9 @@ class Logging():
 
         """
         _event = self._generate_node_event_skeleton(_user_id, str(datetime.datetime.utcnow()), _node_id)
-        _event["event"] = {"security": {"category": _category, "severity": "user", "message": _message}}
+        _event["category"] = _category
+        _event["severity"] = "user"
+        _event["data"] = _message
         self.write_log(_event)
 
     def log_save(self, _document, _user_id, _old_document=None):
@@ -173,10 +175,12 @@ class Logging():
         if _old_document:
             # If so, compare and generate differences and save an "change" event to the "log" collection
             _event["change"] = self._compare_documents(_old_document, _document)
+            _event["category"] = "change"
 
         else:
             # Save an "add" event to "log" collection
             _event["add"] = _document
+            _event["category"] = "add"
 
         self.write_log(_event)
 
@@ -192,6 +196,7 @@ class Logging():
         _event = self._generate_node_event_skeleton(_user_id, str(datetime.datetime.utcnow()),
                                                _removed_document["_id"])
         _event["remove"] = _removed_document
+        _event["category"] = "remove"
         self.write_log(_event)
 
 

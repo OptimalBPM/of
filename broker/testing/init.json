@@ -84,29 +84,6 @@
     ]
   },
   {
-    "_id": "000000010000010001e64d15",
-    "parent_id": "000000010000010001e64c25",
-    "name": "none",
-    "credentials": {
-      "usernamePassword": {
-        "username": "none",
-        "password": "098f6bcd4621d373cade4e832627b4f6"
-      }
-    },
-    "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "of://user.json",
-    "groups": [],
-    "canRead": [
-      "000000010000010001e64c28",
-      "000000010000010001e64d02"
-    ],
-    "canWrite": [
-      "000000010000010001e64c28",
-      "000000010000010001e64d02"
-    ],
-    "allowedChildTypes": []
-  },
-  {
     "_id": "000000010000010002e64d03",
     "parent_id": "000000010000010001e64c00",
     "name": "Peers",

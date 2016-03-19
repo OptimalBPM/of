@@ -9,6 +9,7 @@ from pymongo.mongo_client import MongoClient
 
 import of.common.logging
 from of.broker.lib.access import DatabaseAccess
+from of.broker.lib.auth_backend import MongoDBAuthBackend
 from of.broker.lib.schema_mongodb import mbe_object_id
 from of.common.logging import write_to_log, SEV_FATAL, EC_SERVICE, SEV_DEBUG, \
     EC_UNCATEGORIZED, SEV_ERROR, SEV_INFO, EC_INVALID, make_sparse_log_message, make_textual_log_message
@@ -263,7 +264,7 @@ def start_broker():
     cherrypy.engine.signals.bus.signal_handler.handlers = {'SIGUSR1': cherrypy.engine.signals.bus.graceful}
 
     # Initialize the decorator-based authentication framework
-    init_authentication(_database_access)
+    init_authentication(MongoDBAuthBackend(_database_access))
 
     # Initialize root UI
     _root = CherryPyBroker(_process_id=_process_id, _address=_address)

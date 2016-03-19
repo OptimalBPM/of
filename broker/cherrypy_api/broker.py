@@ -143,7 +143,7 @@ class CherryPyBroker(object):
             # TODO: Create stats on attempts to block attacking IP:s (PROD-133)
 
             # report all other errors as probes as it isn't humans making typing errors
-            write_to_log(self.log_prefix + "Register: A peer at " + str(
+            write_to_log("Register: A peer at " + str(
                 cherrypy.request.remote.ip) + " failed logging in with this data:" + str(_data) + "\nError:" + str(
                 e), _category=EC_PROBE, _severity=SEV_WARNING)
 
@@ -154,7 +154,7 @@ class CherryPyBroker(object):
         """
         Called when a client wants to upgrade to a websocket. Currently only implemented for logging purposes.
         """
-        self.write_debug_info(self.log_prefix + "Broker: Got a /socket upgrade web socket request.")
+        self.write_debug_info("Broker: Got a /socket upgrade web socket request.")
 
     @cherrypy.expose
     def status(self):

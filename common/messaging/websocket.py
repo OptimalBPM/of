@@ -67,7 +67,7 @@ class OptimalWebSocket(object):
         self.start_monitoring_message_queue()
 
     def write_dbg_info(self, _data):
-        write_to_log(self.log_prefix + _data,
+        write_to_log(self.log_prefix + str(_data),
                      _category=EC_COMMUNICATION, _severity=SEV_DEBUG, _process_id=self.process_id)
 
     def start_monitoring_message_queue(self):

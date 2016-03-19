@@ -16,6 +16,7 @@ class BrokerWebSocket(OptimalWebSocket, WebSocket):
     monitor_message_queue_thread = None
 
     def __init__(self,  sock, protocols=None, extensions=None, environ=None, heartbeat_freq=None):
+        self.log_prefix = ""
         self.write_dbg_info("BrokerWebSocket: Peer connected:" + str(cherrypy.request.remote.ip))
         super(BrokerWebSocket, self).__init__(sock, protocols, extensions, environ, heartbeat_freq)
         # TODO: Will fail with many requests? It is claimed to be safe, but not very nice to rely on scope.(PROD-42)

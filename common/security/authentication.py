@@ -129,7 +129,7 @@ class AuthenticationBackend(metaclass=ABCMeta):
 
 class Authentication():
     """
-    The authentication class is the central entity for authentication in MBE.
+    The authentication class is the central entity for authentication in IF.
     It handles login, logout and session validation.
     """
 

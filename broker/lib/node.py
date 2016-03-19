@@ -1,5 +1,5 @@
 """
-    The node module provides the node-API for MBE. All interaction with the node-collection should happen
+    The node module provides the node-API for OF. All interaction with the node-collection should happen
     through the Node-class
 
     Note: Sphinx does not properly document this module with the decorators, comment them before running sphinx
@@ -54,7 +54,7 @@ def get_node_rights():
 
 class Node():
     """
-    The node class is used for all node management in MBE.
+    The node class is used for all node management in OF.
     """
     database_access = None
     rights = None

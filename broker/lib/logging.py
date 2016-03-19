@@ -1,5 +1,5 @@
 """
-The logging module handles all the logging of MBE.
+The logging module handles all the logging to database of OF.
 """
 
 import datetime

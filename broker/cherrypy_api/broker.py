@@ -17,6 +17,7 @@ from of.common.security.groups import has_right, aop_has_right
 from of.broker.lib.node import sanitize_node
 from of.common.messaging.utils import get_environment_data
 from of.schemas.constants import peer_type_to_schema_id
+from qal.common.strings import empty_when_none
 
 __author__ = 'Nicklas Borjesson'
 
@@ -48,12 +49,11 @@ class CherryPyBroker(object):
         :param _address: The peer address of the broker
         :param _stop_broker: A callback to a function that shuts down the broker
         """
-        write_to_log(_process_id=_process_id, _category=EC_SERVICE, _severity= SEV_DEBUG,
+        write_to_log(_process_id=_process_id, _category=EC_SERVICE, _severity=SEV_DEBUG,
                      _data="Initializing broker REST API.")
         self.peers = {}
         self.process_id = _process_id
         self.address = _address
-
 
     def write_debug_info(self, _data):
         write_to_log(_data=_data, _category=EC_NOTIFICATION, _severity=SEV_DEBUG, _process_id=self.process_id)
@@ -65,7 +65,6 @@ class CherryPyBroker(object):
     def get_broker_environment(self, **kwargs):
         self.write_debug_info("Request for broker information")
         return get_environment_data()
-
 
     @cherrypy.expose
     @cherrypy.tools.json_in()
@@ -99,7 +98,7 @@ class CherryPyBroker(object):
                     _address = _peer_type + "_" + kwargs["_user"]["name"]
                 else:
                     write_to_log("The " + _peer_type + " peer type must state an address.",
-                        _category=EC_PROBE, _severity=SEV_WARNING)
+                                 _category=EC_PROBE, _severity=SEV_WARNING)
                     return None
             else:
                 _address = _data["address"]
@@ -115,7 +114,8 @@ class CherryPyBroker(object):
             # Log out any old sessions
             for _curr_session_id, _curr_peer in dict(self.peers).items():
                 if _curr_peer["address"] == _address and _curr_session_id != _session_id:
-                    self.write_debug_info("Removing old registration for the peer at " + _address + ": " + _curr_session_id)
+                    self.write_debug_info(
+                        "Removing old registration for the peer at " + _address + ": " + _curr_session_id)
                     if "websocket" in _curr_peer:
                         try:
                             self.write_debug_info("Close remaining websocket: " + _address + ": " + _curr_session_id)
@@ -163,3 +163,31 @@ class CherryPyBroker(object):
         :return: The string "up" if the broker is up
         """
         return "up"
+
+    @cherrypy.expose
+    @cherrypy.tools.json_in()
+    @aop_check_session
+    def write_to_log(self, **kwargs):
+        """
+        This function provides a way for registered peers to write to the log even if they have no web socket.
+        :param kwargs:
+        :return:
+        """
+        _session_id = kwargs["_session_id"]
+        # Only registered peers get to write to the log, other trying is a probe
+        if _session_id not in self.peers:
+            write_to_log("Client that wasn't registered as peer tried to write to log ",
+                         _category=EC_PROBE, _severity=SEV_WARNING)
+            return None
+
+        _message = cherrypy.request.json
+        write_to_log(_data=_message.get("data"),
+                     _category=_message.get("category"),
+                     _severity=_message.get("severity"),
+                     _occurred_when=_message.get("occurred_when"),
+                     _process_id=_message.get("process_id"),
+                     _user_id=_message.get("user_id"),
+                     _pid=_message.get("pid"),
+                     _uid=_message.get("uid"),
+                     _node_id=_message.get("node_id")
+                     )

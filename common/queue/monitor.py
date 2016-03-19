@@ -35,16 +35,12 @@ class Monitor(object):
     process_id = None
     #: Called each time the queue is polled
     before_get_queue = None
-    #: Called each time logging is required
-    logging_function = None
     #: A prefix that is applied to all log items
     log_prefix = None
     #: The thread that monitors the queue
     monitor_thread = None
 
-    def __init__(self, _handler, _logging_function, _queue=None):
-
-        self.logging_function = _logging_function
+    def __init__(self, _handler, _queue=None):
 
         self.log_prefix = self.__class__.__name__ + "(" + str(
             _handler.__class__.__name__) + "): "

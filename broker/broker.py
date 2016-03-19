@@ -272,8 +272,7 @@ def start_broker():
     of.common.messaging.websocket.monitor = Monitor(_handler=BrokerWebSocketHandler(_process_id, _peers=_root.peers,
                                                                                     _database_access=_database_access,
                                                                                     _schema_tools=_database_access.schema_tools,
-                                                                                    _address=_address),
-                                                    _logging_function=None)
+                                                                                    _address=_address))
 
     _root.plugins = _plugins
     _plugins.call_hook("init_ui", _root_object=_root, _definitions=_definitions)

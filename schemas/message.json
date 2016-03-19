@@ -6,7 +6,7 @@
   "version": "0.1",
   "properties": {
     "destination": {
-      "description": "The destination adress",
+      "description": "The destination address",
       "type": "string",
       "propertyId": "484808c0-d8f2-4d58-973b-777e445b1ebd"
     },

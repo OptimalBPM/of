@@ -12,7 +12,7 @@ from of.broker.lib.access import DatabaseAccess
 from of.broker.lib.auth_backend import MongoDBAuthBackend
 from of.broker.lib.schema_mongodb import mbe_object_id
 from of.common.logging import write_to_log, SEV_FATAL, EC_SERVICE, SEV_DEBUG, \
-    EC_UNCATEGORIZED, SEV_ERROR, SEV_INFO, EC_INVALID, make_sparse_log_message, make_textual_log_message
+    EC_UNCATEGORIZED, SEV_ERROR, SEV_INFO, EC_INVALID, make_sparse_log_message, make_textual_log_message, make_event
 from of.common.security.authentication import init_authentication
 from of.common.settings import JSONXPath
 from of.schemas.schema import SchemaTools
@@ -102,6 +102,7 @@ def log_locally(_data, _category, _severity, _process_id_param, _user_id, _occur
 
 def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param, _node_id,
                     _uid, _pid):
+
     global _log_to_database_severity, _process_id, _address
 
     if _process_id_param is None:
@@ -110,29 +111,18 @@ def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _o
         _address_param = _address
 
     if _severity < _log_to_database_severity:
-        log_locally(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param, _node_id, _uid, _pid)
+        log_locally(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param,
+                    _node_id, _uid, _pid)
     else:
         try:
-            _database_access.logging.write_log(
-                {
-                    "user_id": mbe_object_id(_user_id),
-                    "data": _data,
-                    "uid": _uid,
-                    "pid": _pid,
-                    "occurredWhen": _occurred_when,
-                    "address": _address_param,
-                    "category": _category,
-                    "severity": _severity,
-                    "process_id": _process_id_param,
-                    "node_id": _node_id,
-                    "schemaRef": "of://event.json"
-                }
-            )
+            _database_access.logging.write_log(make_event(_data, _category, _severity, _process_id_param, _user_id,
+                                                          _occurred_when, _address_param, _node_id, _uid, _pid))
         except Exception as e:
             log_locally("Failed to write to database, error: " + str(e), EC_UNCATEGORIZED, SEV_ERROR,
                         _process_id_param, _user_id, _occurred_when, _address_param, _node_id, _uid, _pid)
 
-        log_locally(_data, _category, _severity, _process_id, _user_id, _occurred_when, _address_param, _node_id, _uid, _pid)
+        log_locally(_data, _category, _severity, _process_id, _user_id, _occurred_when, _address_param, _node_id, _uid,
+                    _pid)
 
 
 def start_broker():

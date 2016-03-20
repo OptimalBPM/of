@@ -104,6 +104,7 @@ class BrokerWebSocketHandler(WebSocketHandler):
         if _web_socket:
             # TODO: Should writtenBy be in some base log schema? (PROD-32)
             _log_data["writtenBy"] = self.peers[_web_socket.session_id]["user"]["_id"]
+            _log_data["address"] = _web_socket.address
 
         self.database_access.logging.write_log(_log_data)
 

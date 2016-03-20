@@ -32,8 +32,12 @@ class OptimalWebSocket(object):
     It also handles session information and registering with the central message monitor.
     """
 
-    #: The name of the client
+    #: The peer name of the client the web socket is connected to
     address = None
+
+    #: The peer name of the client the web socket is located on
+    address_own = None
+
     #: The session id of the socket
     session_id = None
 
@@ -149,7 +153,8 @@ class OptimalWebSocket(object):
         """
         if of.common.logging.severity < SEV_INFO:
             # We cannot use the normal facility here as that would cause recursion
-            print(make_sparse_log_message("Sending message:" + str(message), _category=EC_COMMUNICATION, _severity = SEV_DEBUG))
+            print(make_sparse_log_message("Sending message:" + str(message), _category=EC_COMMUNICATION,
+                                          _severity = SEV_DEBUG, _address=self.address_own, _process_id=self.process_id))
         # send() below is implemented by multiple inheritance in the subclass. Ignore "unresolved attribute"-warning.
         self.send(bytes(json.dumps(message).encode()))
 

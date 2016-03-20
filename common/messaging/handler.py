@@ -160,6 +160,7 @@ class WebSocketHandler(Handler):
             _web_socket.address = _session["address"]  # Perhaps the web socket should set this itself, dunno..
             _web_socket.message_queue = _session["queue"]
             _web_socket.process_id = self.process_id
+            _web_socket.address_own = self.address
             # Add the peer to the address session dict
             if _web_socket.address in self.address__session:
                 self.write_dbg_info("Register_web_socket: The " + "\"" + _web_socket.address +

@@ -19,6 +19,7 @@ from jsonschema.exceptions import SchemaError
 
 
 from of.broker.lib.schema_mongodb import MongodbValidator
+from of.common.logging import EC_NOTIFICATION, SEV_INFO, SEV_DEBUG, write_to_log
 
 
 class SchemaTools():
@@ -72,7 +73,9 @@ class SchemaTools():
         for curr_schemaRef, curr_schema in self.json_schema_objects.items():
             self.json_schema_objects[curr_schemaRef] = self.resolveSchema(curr_schema)
 
-        print("Schemas loaded and resolved:  " + str.join(", ",  ["\"" +_curr_schema["title"] + "\""  for _curr_schema in self.json_schema_objects.values()]))
+        write_to_log("Schemas loaded and resolved: " +
+                     str.join(", ",  ["\"" +_curr_schema["title"] + "\""  for _curr_schema in self.json_schema_objects.values()])
+                     , _category=EC_NOTIFICATION, _severity=SEV_DEBUG)
 
 
     @staticmethod

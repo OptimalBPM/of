@@ -171,8 +171,7 @@ def category_to_description(_category, _error):
 
 
 def write_to_log(_data, _category=EC_NOTIFICATION, _severity=SEV_INFO, _process_id=None, _user_id=None,
-                 _occurred_when=None, _address=None,
-                 _node_id=None, _uid=None, _pid=None):
+                 _occurred_when=None, _address=None, _node_id=None, _uid=None, _pid=None):
     """
     Writes a message to the log using the current facility
     :param _data: The error message
@@ -181,6 +180,7 @@ def write_to_log(_data, _category=EC_NOTIFICATION, _severity=SEV_INFO, _process_
     :param _process_id: The current process id (defaults to the current pid)
     :param _user_id: The Id of the user (defaults to the current username)
     :param _occurred_when: The time of occurrance (defaults to the current time)
+    :param _address: The peer address
     :param _node_id: An Id for reference (like a node id)
     :param _uid: The system uid
     :param _pid: The system pid
@@ -197,16 +197,37 @@ def write_to_log(_data, _category=EC_NOTIFICATION, _severity=SEV_INFO, _process_
         callback(_data, _category, _severity, _process_id, _user_id, _occurred_when, _address, _node_id, _uid, _pid)
     else:
         print("Logging callback not set, print message:\n" + make_textual_log_message(_data, _category,
-                                                                                      _severity,
-                                                                                      _process_id, _user_id,
-                                                                                      _occurred_when, _address,_node_id,
+                                                                                      _severity, _process_id, _user_id,
+                                                                                      _occurred_when, _address, _node_id,
                                                                                       _uid, _pid))
 
     return _data
 
-def make_mbe_event(_data, _log_type, _event_category, _severity, _process_id, _user_id, _occurred_when, _node_id):
-    pass
+def make_event(_data, _category=None, _severity=None, _process_id=None, _user_id=None,
+                             _occurred_when=None, _address=None,_node_id=None, _uid=None, _pid=None):
 
+    _event = (
+        {
+            "data": _data,
+            "category": category_identifiers[_category],
+            "severity": severity_identifiers[_severity],
+            "uid": _uid,
+            "pid": _pid,
+            "occurredWhen": _occurred_when,
+            "process_id": _process_id,
+            "schemaRef": "of://event.json"
+        }
+    )
+    if _node_id is not None:
+        _event["node_id"] = _node_id
+    if _user_id is not None:
+        _event["user_id"] = _user_id
+    if _address is not None:
+        _event["address"] = _address
+    if _process_id is not None:
+        _event["process_id"] = _process_id
+
+    return _event
 
 def make_textual_log_message(_data, _category=None, _severity=None, _process_id=None, _user_id=None,
                              _occurred_when=None, _address=None,_node_id=None, _uid=None, _pid=None):
@@ -283,9 +304,7 @@ def make_sparse_log_message(_data, _category=None, _severity=None, _process_id=N
         _result += ", u_id: " + str(_user_id) if _user_id is not None else ""
         _result += ", t: " + str(_occurred_when) if _occurred_when is not None else ""
         _result += ", node_id: " + str(_node_id) if _node_id is not None else ""
-        _result += ", uid: " + (str(_uid) if _uid is not None else str(os.getlogin()))
         _result += "\n===\n" + str(_data) +"\n=== "
-
     else:
         _result += ", data: " + str(_data) + ", "
         _result += "ec: " + category_to_identifier(_category,"INV") if _category is not None else "N/A"
@@ -294,6 +313,5 @@ def make_sparse_log_message(_data, _category=None, _severity=None, _process_id=N
         _result += ", u_id: " + str(_user_id) if _user_id is not None else ""
         _result += ", t: " + str(_occurred_when) if _occurred_when is not None else ""
         _result += ", node_id: " + str(_node_id) if _node_id is not None else ""
-        _result += ", uid: " + (str(_uid) if _uid is not None else str(os.getlogin()))
 
     return _result

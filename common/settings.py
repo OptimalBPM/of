@@ -86,7 +86,7 @@ class JSONXPath(object):
     def get(self, _xpath, _default=None):
         """Get a certain option"""
         _node = self.find(_xpath)
-        if _node:
+        if _node is not None:
             return _node
         else:
             return _default

@@ -193,7 +193,6 @@ def write_to_log(_data, _category=EC_NOTIFICATION, _severity=SEV_INFO, _process_
     _pid = _pid if _pid is not None else os.getpid()
     _uid = _uid if _uid is not None else os.getlogin()
 
-
     if callback is not None:
         callback(_data, _category, _severity, _process_id, _user_id, _occurred_when, _address, _node_id, _uid, _pid)
     else:

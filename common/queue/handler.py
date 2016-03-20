@@ -4,7 +4,7 @@ The handler module implements the Handler class.
 
 import os
 
-from of.common.logging import write_to_log, EC_COMMUNICATION, SEV_DEBUG
+from of.common.logging import write_to_log, EC_COMMUNICATION, SEV_DEBUG, EC_NOTIFICATION
 
 __author__ = 'Nicklas Borjesson'
 
@@ -41,7 +41,7 @@ class Handler(object):
         :param _message: The message
         :param _severity: The severity of the log information, a constant defined in the built-in logging module
         """
-        write_to_log(self.log_prefix + _data, _category=EC_COMMUNICATION, _severity=SEV_DEBUG, _process_id=self.process_id)
+        write_to_log(self.log_prefix + _data, _category=EC_NOTIFICATION, _severity=SEV_DEBUG, _process_id=self.process_id)
 
 
     def handle(self, _item):

@@ -185,9 +185,11 @@ class CherryPyBroker(object):
                      _category=_message.get("category"),
                      _severity=_message.get("severity"),
                      _occurred_when=_message.get("occurred_when"),
+                     _address=_message.get("address"),
                      _process_id=_message.get("process_id"),
                      _user_id=_message.get("user_id"),
                      _pid=_message.get("pid"),
                      _uid=_message.get("uid"),
                      _node_id=_message.get("node_id")
                      )
+        return "{}"

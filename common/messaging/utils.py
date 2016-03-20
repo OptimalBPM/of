@@ -12,12 +12,19 @@ import logging
 
 import requests
 import sys
+
+
 from requests.cookies import RequestsCookieJar
 
 from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG, SEV_FATAL, EC_SERVICE, SEV_ERROR, \
     EC_COMMUNICATION
 from of.common.messaging.factory import get_current_login
+import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning, SSLError
 
+# Suppress insecure request
+# TODO: However, this cho
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 # TODO: get_python_versions should be duplicated into of.common.* (PROD-94)
 
@@ -55,7 +62,7 @@ def get_environment_data():
 def write_dbg_info(_data):
     write_to_log(_data, _category=EC_NOTIFICATION, _severity=SEV_DEBUG)
 
-def register_at_broker(_address, _type, _server, _username, _password, _log_prefix=""):
+def register_at_broker(_address, _type, _server, _username, _password, _log_prefix="", _verify_SSL=True):
     _log_prefix = make_log_prefix(_log_prefix)
 
     _data = {
@@ -74,7 +81,7 @@ def register_at_broker(_address, _type, _server, _username, _password, _log_pref
 
     _headers = {'content-type': 'application/json'}
     _response = requests.post(_server + "/register", data=json.dumps(_data), auth=('user', 'pass'), headers=_headers,
-                              verify=False)
+                              verify=_verify_SSL)
     if _response.status_code == 500:
         write_dbg_info(_log_prefix + "Broker login failed with internal server error! Exiting.")
         return False
@@ -98,7 +105,7 @@ def register_at_broker(_address, _type, _server, _username, _password, _log_pref
         return False
 
 
-def call_api(_url, _session_id, _data, _timeout=None, _print_log=None):
+def call_api(_url, _session_id, _data, _timeout=None, _print_log=None, _verify_SSL=True):
     """
 
     :param _url:
@@ -120,10 +127,10 @@ def call_api(_url, _session_id, _data, _timeout=None, _print_log=None):
     _cookie_jar.set(name="session_id", value=_session_id, secure=True)
 
     _headers = {'content-type': 'application/json'}
-    do_log("[" + str(datetime.datetime.utcnow()) + "] Calling API " + _url)
 
     _response = requests.post(_url, data=json.dumps(_data), headers=_headers, timeout=_timeout,
-                              verify=False, cookies=_cookie_jar)
+                              verify=_verify_SSL, cookies=_cookie_jar)
+
     _response_dict = None
 
     if _response.status_code != 200:
@@ -141,8 +148,6 @@ def call_api(_url, _session_id, _data, _timeout=None, _print_log=None):
                 _response_dict = None
 
     if _response_dict is not None:
-
-        do_log("Got a response from " + _url + " :" + str(_response_dict))
         return _response_dict
     else:
         do_log("Got an empty response from server:" + str(_response.content), _category=EC_COMMUNICATION,

@@ -122,6 +122,7 @@ def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _o
                     "occurredWhen": _occurred_when,
                     "address": _address_param,
                     "category": _category,
+                    "severity": _severity,
                     "process_id": _process_id_param,
                     "node_id": _node_id,
                     "schemaRef": "of://event.json"

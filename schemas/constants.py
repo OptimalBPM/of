@@ -42,6 +42,7 @@ schema_categories = {
     # Log category - Log messages - written to the log collection by the broker
     "of://log_progression.json": "log",
     "of://log_process_state.json": "log",
+    "of://event.json": "log",
     # Process category - Process instance data - written to the process collection by the broker
     "of://process_system.json": "process"
     # Control category - Control messages for runtime entities

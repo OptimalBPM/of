@@ -6,12 +6,13 @@ import threading
 from queue import Empty
 import json
 import traceback
-from time import sleep
 
-from of.common.logging import write_to_log, EC_COMMUNICATION, SEV_DEBUG, SEV_ERROR, EC_INTERNAL
+
+from of.common.logging import write_to_log, EC_COMMUNICATION, SEV_DEBUG, SEV_ERROR, EC_INTERNAL, SEV_INFO, \
+    make_sparse_log_message
+import of.common.logging
 from of.common.messaging.factory import reply_with_error_message
-from of.common.messaging.constants import GOING_AWAY, ABNORMAL_CLOSE
-from of.common.internal import not_implemented
+from of.common.messaging.constants import ABNORMAL_CLOSE
 
 from ws4py.messaging import TextMessage
 
@@ -44,6 +45,9 @@ class OptimalWebSocket(object):
     #: The message queue of the socket
     message_queue = None
 
+    # The socket is connected
+    connected = None
+
     #: A string containing the classname and address classname(address) for use with logging
     log_prefix = None
 
@@ -54,7 +58,7 @@ class OptimalWebSocket(object):
         """
         self.session_id = _session_id
         self.log_prefix = str(os.getpid()) + "-" + self.__class__.__name__ + "(No address yet): "
-
+        self.connected = False
         try:
             monitor.handler.register_web_socket(self)
         except Exception as e:
@@ -84,7 +88,7 @@ class OptimalWebSocket(object):
         """
         Implement to have something happen when the socket is opened.
         """
-        pass
+        self.connected = True
 
     def received_message(self, message):
         """
@@ -95,7 +99,7 @@ class OptimalWebSocket(object):
 
 
         if str(message) != "":
-            self.write_dbg_info(self.log_prefix + "Got this message(putting on queue):" + str(message))
+            self.write_dbg_info("Got this message(putting on queue):" + str(message))
             if isinstance(message, TextMessage):
                 monitor.queue.put([self, json.loads(str(message))])
             else:
@@ -143,7 +147,9 @@ class OptimalWebSocket(object):
         Sends a message to the connected counterpart web socket
         :param message: A string containing the message
         """
-        self.write_dbg_info(self.log_prefix + "Sending message:" + str(message))
+        if of.common.logging.severity < SEV_INFO:
+            # We cannot use the normal facility here as that would cause recursion
+            print(make_sparse_log_message("Sending message:" + str(message), _category=EC_COMMUNICATION, _severity = SEV_DEBUG))
         # send() below is implemented by multiple inheritance in the subclass. Ignore "unresolved attribute"-warning.
         self.send(bytes(json.dumps(message).encode()))
 
@@ -154,7 +160,7 @@ class OptimalWebSocket(object):
         :param reason: A string describing the reason for closing the connection
         """
         # TODO: Handle the rest of the possible web socket error codes
-
+        self.connected = False
         if code == ABNORMAL_CLOSE:
             write_to_log(self.log_prefix + "The connection to " +  self.address + " has been abnormally closed.",
                          _category=EC_COMMUNICATION, _severity=SEV_ERROR)

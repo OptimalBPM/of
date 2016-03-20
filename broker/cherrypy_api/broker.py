@@ -9,7 +9,8 @@ from multiprocessing import Queue
 
 import cherrypy
 
-from of.common.logging import EC_SERVICE, write_to_log, SEV_DEBUG, EC_NOTIFICATION, EC_PROBE, SEV_WARNING
+from of.common.logging import EC_SERVICE, write_to_log, SEV_DEBUG, EC_NOTIFICATION, EC_PROBE, SEV_WARNING, \
+    severity_identifiers, category_identifiers
 from of.common.messaging.constants import UNEXPECTED_CONDITION
 from of.broker.cherrypy_api.node import aop_login_json, aop_check_session
 from of.schemas.constants import id_right_admin_everything
@@ -182,8 +183,8 @@ class CherryPyBroker(object):
 
         _message = cherrypy.request.json
         write_to_log(_data=_message.get("data"),
-                     _category=_message.get("category"),
-                     _severity=_message.get("severity"),
+                     _category=category_identifiers.index(_message.get("category")),
+                     _severity=severity_identifiers.index(_message.get("severity")),
                      _occurred_when=_message.get("occurred_when"),
                      _address=_message.get("address"),
                      _process_id=_message.get("process_id"),

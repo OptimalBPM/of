@@ -38,7 +38,7 @@
         "internal",
         "invalid",
         "communication",
-        "configuration",
+        "service",
         "resource",
         "right",
         "permission",
@@ -152,11 +152,11 @@
     }
   },
   "required": [
-    "user_id",
-    "writtenWhen",
     "occurredWhen",
-    "message",
-    "schemaRef"
+    "data",
+    "schemaRef",
+    "pid",
+    "uid"
   ],
   "collection": "log",
   "namespace": "of"

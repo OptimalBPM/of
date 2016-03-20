@@ -85,7 +85,7 @@ class WebSocketHandler(Handler):
             _category = schema_categories[_schema_id]
         except KeyError:
             # A proper running system should never encounter this error, so this is considered a concious probe
-            self.handle_error(_web_socket, "No category found for schema Id " + str(_schema_id),
+            self.handle_error("No category found for schema Id " + str(_schema_id),
                 _web_socket=_web_socket, _category=EC_PROBE, _severity=SEV_ERROR)
             return None
         try:

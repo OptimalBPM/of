@@ -67,7 +67,8 @@ def step_impl(context):
     print(_log_prefix + "Telling Broker to restart using a call to broker_control...")
     call_api(_url="https://127.0.0.1:8080/admin/broker_control",
              _session_id=context.session["session_id"],
-             _data={"command": "restart", "reason": "Testing restarting the broker"}
+             _data={"command": "restart", "reason": "Testing restarting the broker"},
+             _verify_SSL=False
              )
     print(_log_prefix + "Waiting for process to exit...")
 
@@ -82,7 +83,8 @@ def step_impl(context):
     print(_log_prefix + "Telling Broker to stop using a call to stop_broker...")
     call_api(_url="https://127.0.0.1:8080/admin/broker_control",
              _session_id=context.session["session_id"],
-             _data={"command": "stop", "reason": "Testing stopping the broker"}
+             _data={"command": "stop", "reason": "Testing stopping the broker"},
+             _verify_SSL=False
              )
     ok_(True)
 
@@ -94,7 +96,7 @@ def step_impl(context):
     try:
         _response = call_api(_url="https://127.0.0.1:8080/get_broker_environment",
                  _session_id=context.session["session_id"],
-                 _data={})
+                 _data={}, _verify_SSL=False)
     except Exception as e:
         ok_(True, str(e))
     else:
@@ -121,7 +123,7 @@ def step_impl(context, address):
     try:
         _peers = call_api(_url="https://127.0.0.1:8080/admin/get_peers",
                  _session_id=context.session["session_id"],
-                 _data={}
+                 _data={}, _verify_SSL=False
                  )
     except Exception as e:
         ok_(False, "An error occurred contacting server:" + str(e))
@@ -145,7 +147,7 @@ def step_impl(context, peer_type):
 
     try:
         context.session = register_at_broker(_address="test", _type=peer_type, _server="https://127.0.0.1:8080",
-                                             _username="tester", _password="test")
+                                             _username="tester", _password="test", _verify_SSL=False)
 
         if context.session["session_id"]:
             print("Successfully registered at broker, got sessionid: " + str(context.session["session_id"]))

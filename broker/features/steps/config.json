@@ -5,6 +5,10 @@
     "pluginFolder": "~/optimalframework/plugins",
     "database": {
       "databaseName": "test_broker"
+    },
+    "logging": {
+      "severityLevel": "debug",
+      "databaseLevel": "debug"
     }
   }
 }

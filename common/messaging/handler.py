@@ -64,7 +64,7 @@ class WebSocketHandler(Handler):
 
         """
         _error = write_to_log(_data=self.log_prefix + "In handler.handle_error error with error :" +
-                           str(_error, _category=_category, _severity=_severity))
+                           str(_error), _category=_category, _severity=_severity)
         if _web_socket:
 
             if _message_to_reply_to:

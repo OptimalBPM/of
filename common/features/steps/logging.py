@@ -12,11 +12,11 @@ from of.common.logging import make_textual_log_message, SEV_DEBUG, SEV_ERROR, wr
 import of.common.logging
 
 _global_params = None
-_global_err_param = ("Test error", EC_RESOURCE, SEV_ERROR, 1, "TestUser", datetime.datetime(1999, 1, 1, 1, 1, 1, 1), 1, "test", 0)
-_global_err_cmp = "Process Id: 1 - An error occurred:\nTest error\nEvent category: resource\n" \
+_global_err_param = ("Test error", EC_RESOURCE, SEV_ERROR, 1, "TestUser", datetime.datetime(1999, 1, 1, 1, 1, 1, 1),"peer",  1, "test", 0)
+_global_err_cmp = "Process Id: 1, Adress: peer - An error occurred:\nTest error\nEvent category: resource\n" \
                   "Severity: error\nUser Id: TestUser\nOccurred when: 1999-01-01 01:01:01.000001\nEntity Id: 1\nSystem uid: test\nSystem pid: 0"
-_global_debug_param = ("Test message", EC_NOTIFICATION, SEV_DEBUG, None, None, None, None, "test", 0)
-_global_debug_cmp = "Process Id: Not available - Message:\nTest message\nEvent category: notification\nSeverity: debug\nSystem uid: test\nSystem pid: 0"
+_global_debug_param = ("Test message", EC_NOTIFICATION, SEV_DEBUG, None, None, None, None, None, "test", 0)
+_global_debug_cmp = "Process Id: Not available, Adress: None - Message:\nTest message\nEvent category: notification\nSeverity: debug\nSystem uid: test\nSystem pid: 0"
 
 
 def local_test_log_writer(*args):
@@ -64,3 +64,4 @@ def step_impl(context):
         of.common.logging.callback = None
         raise Exception(e)
 
+# TODO: Add test for sparse message

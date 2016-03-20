@@ -50,7 +50,7 @@ def init_low_level(context, feature):
     context.monitor = Monitor(
         _handler=BrokerWebSocketHandler(_process_id=context.peer_process_id, _peers=_peers,
                                         _schema_tools=context.db_access.schema_tools, _address="broker",
-                                        _database_access=context.db_access), _logging_function=cherrypy.log.error)
+                                        _database_access=context.db_access))
 
     of.common.messaging.websocket.monitor = context.monitor
 

@@ -69,6 +69,11 @@
       "type": "string",
       "additionalProperties": false
     },
+    "address": {
+      "description": "The peer address",
+      "type": "string",
+      "additionalProperties": false
+    },
     "node_id": {
       "$ref": "of://type.json#/properties/objectId",
       "description": "If applicable, the relevant _id in the node-collection, used for tracking changes to a node or identifying reporting functionality.",

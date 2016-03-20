@@ -56,8 +56,8 @@ class Monitor(object):
             self.start()
 
     def write_dbg_info(self, _data):
-        write_to_log(write_to_log(self.log_prefix + _data, _category=EC_UNCATEGORIZED,
-                                  _severity=SEV_DEBUG, _process_id=self.process_id))
+        write_to_log(self.log_prefix + _data, _category=EC_UNCATEGORIZED,
+                                  _severity=SEV_DEBUG, _process_id=self.process_id)
 
     def after_get_queue(self):
         """

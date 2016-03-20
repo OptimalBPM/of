@@ -82,26 +82,35 @@ def write_srvc_dbg(_data):
     write_to_log(_data, _category=EC_SERVICE, _severity=SEV_DEBUG, _process_id=_process_id)
 
 
-def log_locally(_data, _category, _severity, _process_id, _user_id, _occurred_when, _node_id, _uid, _pid):
-    if os.name == "nt":
-        write_to_event_log(make_textual_log_message(_data, _data, _category, _severity, _process_id, _user_id,
-                                                    _occurred_when, _node_id, _uid, _pid),
-                           "Application", _category, _severity)
-    else:
-        print(
-            make_sparse_log_message(_data, _category, _severity, _process_id, _user_id, _occurred_when, _node_id, _uid,
-                                     _pid))
-        # TODO: Add support for /var/log/message
-
-
-def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _node_id, _uid, _pid):
-    global _log_to_database_severity, _process_id
+def log_locally(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param, _node_id, _uid, _pid):
+    global _process_id, _address
 
     if _process_id_param is None:
         _process_id_param = _process_id
+    if _address_param is None:
+        _address_param = _address
+    if os.name == "nt":
+        write_to_event_log(make_textual_log_message(_data, _data, _category, _severity, _process_id_param, _user_id,
+                                                    _occurred_when, _address_param, _node_id, _uid, _pid),
+                           "Application", _category, _severity)
+    else:
+        print(
+            make_sparse_log_message(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param, _node_id, _uid,
+                                    _pid))
+        # TODO: Add support for /var/log/message
+
+
+def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param, _node_id,
+                    _uid, _pid):
+    global _log_to_database_severity, _process_id, _address
+
+    if _process_id_param is None:
+        _process_id_param = _process_id
+    if _address_param is None:
+        _address_param = _address
 
     if _severity < _log_to_database_severity:
-        log_locally(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _node_id, _uid, _pid)
+        log_locally(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param, _node_id, _uid, _pid)
     else:
         try:
             _database_access.logging.write_log(
@@ -111,6 +120,7 @@ def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _o
                     "uid": _uid,
                     "pid": _pid,
                     "occurredWhen": _occurred_when,
+                    "address": _address_param,
                     "category": _category,
                     "process_id": _process_id_param,
                     "node_id": _node_id,
@@ -119,9 +129,9 @@ def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _o
             )
         except Exception as e:
             log_locally("Failed to write to database, error: " + str(e), EC_UNCATEGORIZED, SEV_ERROR,
-                        _process_id_param, _user_id, _occurred_when, _node_id, _uid, _pid)
+                        _process_id_param, _user_id, _occurred_when, _address_param, _node_id, _uid, _pid)
 
-        log_locally(_data, _category, _severity, _process_id, _user_id, _occurred_when, _node_id, _uid, _pid)
+        log_locally(_data, _category, _severity, _process_id, _user_id, _occurred_when, _address_param, _node_id, _uid, _pid)
 
 
 def start_broker():
@@ -179,7 +189,7 @@ def start_broker():
     _plugins = CherryPyPlugins(_plugin_dir=_plugin_dir, _schema_tools=_schema_tools, _definitions=_definitions,
                                _process_id=_process_id)
 
-    write_srvc_dbg("===register signal handlers===")
+    write_srvc_dbg("===Register signal handlers===")
     register_signals(stop_broker)
     _plugins.call_hook("before_db_connect", _globals=globals())
     # Connect to the database
@@ -187,15 +197,15 @@ def start_broker():
     _user = _settings.get("broker/database/username", _default=None)
     _password = _settings.get("broker/database/password", _default=None)
     if _user:
-        write_srvc_dbg("===Connect to remote MongoDB backend " + _host + "===")
+        write_srvc_dbg("===Connecting to remote MongoDB backend " + _host + "===")
         # http://api.mongodb.org/python/current/examples/authentication.html
         _client = MongoClient("mongodb://" + _user + ":" + _password + "@" + _host)
     else:
-        write_srvc_dbg("===Connect to local MongoDB backend===")
+        write_srvc_dbg("===Connecting to local MongoDB backend===")
         _client = MongoClient()
 
     _database_name = _settings.get("broker/database/databaseName", _default="optimalframework")
-    write_srvc_dbg("to database name :" + _database_name)
+    write_srvc_dbg("Using database name :" + _database_name)
 
     _database = _client[_database_name]
     _database_access = DatabaseAccess(_database=_database, _schema_tools=_schema_tools)

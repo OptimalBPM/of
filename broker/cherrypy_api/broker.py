@@ -17,7 +17,7 @@ from of.common.security.groups import has_right, aop_has_right
 from of.broker.lib.node import sanitize_node
 from of.common.messaging.utils import get_environment_data
 from of.schemas.constants import peer_type_to_schema_id
-from qal.common.strings import empty_when_none
+
 
 __author__ = 'Nicklas Borjesson'
 

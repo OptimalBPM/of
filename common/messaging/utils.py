@@ -98,37 +98,54 @@ def register_at_broker(_address, _type, _server, _username, _password, _log_pref
         return False
 
 
-def call_api(_url, _session_id, _data, _timeout=None):
+def call_api(_url, _session_id, _data, _timeout=None, _print_log=None):
+    """
+
+    :param _url:
+    :param _session_id:
+    :param _data:
+    :param _timeout:
+    :param _print_log: Do not call write to log
+    :return:
+    """
+
+    def do_log(_error, _category=EC_NOTIFICATION, _severity=SEV_DEBUG):
+        if _print_log:
+            print(_error)
+        else:
+            write_to_log(_data, _category=_category, _severity=_severity)
+        return _error
+
     _cookie_jar = RequestsCookieJar()
     _cookie_jar.set(name="session_id", value=_session_id, secure=True)
 
     _headers = {'content-type': 'application/json'}
-    write_dbg_info("[" + str(datetime.datetime.utcnow()) + "] Calling API " + _url)
+    do_log("[" + str(datetime.datetime.utcnow()) + "] Calling API " + _url)
 
     _response = requests.post(_url, data=json.dumps(_data), headers=_headers, timeout=_timeout,
                               verify=False, cookies=_cookie_jar)
     _response_dict = None
 
     if _response.status_code != 200:
-        write_dbg_info("Response code :" + str(_response.status_code))
+        do_log("Response code :" + str(_response.status_code))
         try:
             _response.raise_for_status()
         except Exception as e:
-            raise Exception(write_to_log("Error in call_api:" + str(e), _category=EC_COMMUNICATION, _severity=SEV_ERROR))
+            raise Exception(do_log("Error in call_api:" + str(e), _category=EC_COMMUNICATION, _severity=SEV_ERROR))
     else:
         if _response.content:
             try:
                 _response_dict = _response.json()
             except Exception as e:
-                write_to_log("response.content didn't contain JSON data", _category=EC_COMMUNICATION, _severity=SEV_ERROR)
+                do_log("response.content didn't contain JSON data", _category=EC_COMMUNICATION, _severity=SEV_ERROR)
                 _response_dict = None
 
     if _response_dict is not None:
 
-        write_dbg_info("Got a response from " + _url + " :" + str(_response_dict))
+        do_log("Got a response from " + _url + " :" + str(_response_dict))
         return _response_dict
     else:
-        write_to_log("Got an empty response from server:" + str(_response.content), _category=EC_COMMUNICATION,
+        do_log("Got an empty response from server:" + str(_response.content), _category=EC_COMMUNICATION,
                      _severity=SEV_ERROR)
 
         return None

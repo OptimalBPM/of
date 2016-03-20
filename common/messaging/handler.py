@@ -112,8 +112,8 @@ class WebSocketHandler(Handler):
             _schema_id = _message_data["schemaRef"]
         except KeyError:
             # A proper running system should never encounter this error, so this is considered a concious probe
-            self.handle_error(_web_socket, "No schema id found in message",
-                _web_socket=_web_socket, _category=EC_PROBE, _severity=SEV_ERROR)
+            self.handle_error("No schema id found in message",
+                _category=EC_PROBE, _severity=SEV_ERROR, _web_socket = _web_socket)
             return
 
         _handler = self.get_handler(_web_socket, _schema_id)
@@ -121,8 +121,8 @@ class WebSocketHandler(Handler):
         try:
             _handler(_web_socket, _message_data)
         except Exception as e:
-            self.handle_error(_web_socket, "Error running handler " + str(_schema_id) + " Error: " + str(e),
-                _web_socket=_web_socket, _category=EC_INTERNAL, _severity=SEV_ERROR)
+            self.handle_error("Error running handler " + str(_schema_id) + " Error: " + str(e),
+                _category=EC_INTERNAL, _severity=SEV_ERROR, _web_socket = _web_socket)
 
 
     def shut_down(self, _user_id, _code=GOING_AWAY):

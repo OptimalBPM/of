@@ -13,11 +13,11 @@ from of.common.security.authentication import init_authentication
 
 
 # Test users uuids
-object_id_user_root = "000000010000010001e64c30"
-object_id_user_test = "000000010000010001e64c31"
-object_id_user_testagent = "000000010000010001e64c32"
+id_user_root = "000000010000010001e64c30"
+id_user_test = "000000010000010001e64c31"
+id_user_testagent = "000000010000010001e64c32"
 
-object_id_right_admin_nodes = "000000010000010001e64d01"
+id_right_admin_nodes = "000000010000010001e64d01"
 
 script_dir = os.path.dirname(__file__)
 

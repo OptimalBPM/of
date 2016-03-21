@@ -19,7 +19,6 @@ class BrokerWebSocket(OptimalWebSocket, WebSocket):
         self.log_prefix = ""
         self.write_dbg_info("BrokerWebSocket: Peer connected:" + str(cherrypy.request.remote.ip))
         super(BrokerWebSocket, self).__init__(sock, protocols, extensions, environ, heartbeat_freq)
-        # TODO: Will fail with many requests? It is claimed to be safe, but not very nice to rely on scope.(PROD-42)
 
         self.write_dbg_info("BrokerWebSocket: New peer session, init " + str(cherrypy.request.cookie['session_id'].value))
         self.init(_session_id=cherrypy.request.cookie['session_id'].value)

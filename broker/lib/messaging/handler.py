@@ -1,7 +1,7 @@
 """
 This module holds the BrokerWebSocketHandler class
 """
-from of.common.logging import write_to_log, EC_COMMUNICATION, SEV_INFO, SEV_DEBUG, EC_NOTIFICATION
+from of.common.logging import write_to_log, EC_COMMUNICATION, SEV_INFO, SEV_DEBUG, EC_NOTIFICATION, SEV_ERROR
 from of.common.messaging.constants import UNACCEPTABLE_DATA, BROKER_SHUTTING_DOWN
 from of.common.messaging.handler import WebSocketHandler
 from of.schemas.constants import intercept_schema_ids
@@ -57,10 +57,9 @@ class BrokerWebSocketHandler(WebSocketHandler):
 
         _destination = _message_data["destination"]
         if _destination == self.address:
-            # TODO: Figure out what should be done when the broker itself is the addressee.(PROD-42)
             # The reason for this is likely that something was instigated by the web client.
-            write_to_log("Broker was the addressee, doing nothing, likely something started by the web client.",
-                         _category=EC_COMMUNICATION, _severity=SEV_DEBUG, _process_id=self.process_id)
+            write_to_log("Broker was the addressee, the broker is never a destination for a plain message.",
+                         _category=EC_COMMUNICATION, _severity=SEV_ERROR, _process_id=self.process_id)
             return
 
         try:

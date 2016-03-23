@@ -13,6 +13,7 @@ import cherrypy
 
 
 from of.broker.cherrypy_api.node import aop_check_session
+from of.common.cumulative_dict import CumulativeDict
 from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG, SEV_ERROR, EC_SERVICE, SEV_INFO
 
 __author__ = 'Nicklas Borjesson'
@@ -44,7 +45,7 @@ class CherryPyPlugins(object):
     process_id = None
 
     def __init__(self, _plugin_dir, _schema_tools, _namespaces, _process_id):
-
+        # TODO: Create a dicts schema
         self.schema_tools = _schema_tools
         self.last_refresh_time = -31
         self.namespaces = _namespaces
@@ -156,7 +157,7 @@ class CherryPyPlugins(object):
 
         # Add definitions
         self.namespaces.add_cumulatively(_definitions_data["namespaces"])
-
+        self.plugins.add_cumulatively(_definitions_data["plugins"])
         return _plugin_data
 
     def refresh_plugins(self, _plugins_dir):
@@ -175,10 +176,10 @@ class CherryPyPlugins(object):
 
         # Loop plugins
         _plugin_names = os.listdir(_plugins_dir)
-        self.plugins = {}
+        self.plugins = CumulativeDict()
         for _plugin_name in _plugin_names:
             if _plugin_name != "__pycache__" and os.path.isdir(os.path.join(_plugins_dir, _plugin_name)):
-                self.plugins[_plugin_name] = self.load_plugin(_plugins_dir, _plugin_name)
+                self.load_plugin(_plugins_dir, _plugin_name)
                 self.write_debug_info("Loaded plugin " + _plugin_name)
 
         # Manually add the optimal framework ("of") namespace

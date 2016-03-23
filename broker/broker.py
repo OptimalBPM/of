@@ -10,7 +10,7 @@ from pymongo.mongo_client import MongoClient
 import of.common.logging
 from of.broker.lib.access import DatabaseAccess
 from of.broker.lib.auth_backend import MongoDBAuthBackend
-from of.broker.lib.schema_mongodb import mbe_object_id
+from of.common.cumulative_dict import CumulativeDict
 from of.common.logging import write_to_log, SEV_FATAL, EC_SERVICE, SEV_DEBUG, \
     EC_UNCATEGORIZED, SEV_ERROR, SEV_INFO, EC_INVALID, make_sparse_log_message, make_textual_log_message, make_event
 from of.common.security.authentication import init_authentication
@@ -35,7 +35,6 @@ from of.schemas.constants import zero_object_id
 from of.schemas.validation import of_uri_handler
 from of.broker.cherrypy_api.broker import CherryPyBroker
 from of.broker.cherrypy_api.plugins import CherryPyPlugins
-from of.broker.lib.namespaces import Namespaces
 from of.broker.cherrypy_api.admin import CherryPyAdmin
 from of.broker.lib.messaging.handler import BrokerWebSocketHandler
 from of.common.queue.monitor import Monitor
@@ -72,6 +71,7 @@ _plugins = None
 
 # All namespaces
 _namespaces = None
+
 
 # The severity when something is logged to the database
 _log_to_database_severity = None
@@ -170,7 +170,7 @@ def start_broker():
     _schema_tools = SchemaTools(_json_schema_folders=[os.path.join(script_dir, "../schemas/")],
                                 _uri_handlers={"of": of_uri_handler})
 
-    _namespaces = Namespaces()
+    _namespaces = CumulativeDict(_default = {"schemas": []})
 
     write_srvc_dbg("Load plugin data")
     # Find the plugin directory

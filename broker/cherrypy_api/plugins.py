@@ -38,16 +38,16 @@ class CherryPyPlugins(object):
     admin_systemjs_init = None
     """A list of the available menus"""
     admin_menus = None
-    """Reference to the definition"""
-    definitions = None
+    """Reference to the namespaces"""
+    namespaces = None
     """The process id (not pid)"""
     process_id = None
 
-    def __init__(self, _plugin_dir, _schema_tools, _definitions, _process_id):
+    def __init__(self, _plugin_dir, _schema_tools, _namespaces, _process_id):
 
         self.schema_tools = _schema_tools
         self.last_refresh_time = -31
-        self.definitions = _definitions
+        self.namespaces = _namespaces
         self.process_id = _process_id
 
         # Add the parent of plugins to sys path
@@ -82,7 +82,7 @@ class CherryPyPlugins(object):
                                 "An error occurred " + "Calling " + _hook_name + " in " + _curr_plugin_name + ":" + str(
                                     e),
                                 _category=EC_SERVICE, _severity=SEV_ERROR)
-                            if "FailOnError" in _curr_plugin and _curr_plugin["FailOnError"]:
+                            if "failOnError" in _curr_plugin and _curr_plugin["failOnError"]:
                                 write_to_log(
                                     "Setting " + _curr_plugin_name + " as Failed. No more hooks will be called for this plugin.",
                                     _category=EC_SERVICE, _severity=SEV_INFO)
@@ -107,8 +107,9 @@ class CherryPyPlugins(object):
         with open(_definitions_filename) as _f_def:
             _definitions_data = json.load(_f_def)
 
-        _definitions_data["baseDirectoryName"] = _dirname
-        self.write_debug_info("Loading plugin in " + _definitions_data["description"])
+        _plugin_data = _definitions_data["plugins"][_plugin_name]
+        _plugin_data["baseDirectoryName"] = _dirname
+        self.write_debug_info("Loading plugin in " + _plugin_data["description"])
 
         # Load schemas from /schema
         _schema_dir = os.path.join(_dirname, "schemas")
@@ -123,7 +124,7 @@ class CherryPyPlugins(object):
                         _curr_schema = json.load(_f_def)
                     if "namespace" in _curr_schema:
                         # Initiate the namespace (so this row has effect, but should instead be a call. For readability)
-                        self.definitions[_curr_schema["namespace"]]
+                        self.namespaces[_curr_schema["namespace"]]
                         # Store schema among the unresolved ones
                         self._unresolved_schemas[_curr_schema["namespace"] + "://" + _curr_file] = _curr_schema
                     else:
@@ -133,30 +134,30 @@ class CherryPyPlugins(object):
 
         # Add server side stuff
 
-        if "hooks" in _definitions_data:
-            _broker_definition = _definitions_data["hooks"]
+        if "hooks" in _plugin_data:
+            _broker_definition = _plugin_data["hooks"]
             _hooks_modulename = _broker_definition["hooks_module"]
 
             try:
                 _module = importlib.import_module("plugins." + _plugin_name + "." + _hooks_modulename)
                 _broker_definition["hooks_instance"] = _module
             except Exception as e:
-                write_to_log("An error occurred importing " + _hooks_modulename + " in " + _definitions_data[
+                write_to_log("An error occurred importing " + _hooks_modulename + " in " + _plugin_data[
                     "description"] + ":" + str(e),
                              _category=EC_SERVICE, _severity=SEV_ERROR)
-                if "FailOnError" in _definitions_data and _definitions_data["FailOnError"]:
+                if "failOnError" in _plugin_data and _plugin_data["failOnError"]:
                     write_to_log(
                         "Setting " + _hooks_modulename + " as Failed. No hooks will be called for this plugin.",
                         _category=EC_SERVICE, _severity=SEV_INFO)
-                    _definitions_data["failed"] = True
+                    _plugin_data["failed"] = True
                 else:
                     write_to_log("Ignores error, the plugin will continue to attempt initialization.",
                                  _category=EC_SERVICE, _severity=SEV_INFO)
 
         # Add definitions
-        self.definitions.add_cumulatively(_definitions_data["namespaces"])
+        self.namespaces.add_cumulatively(_definitions_data["namespaces"])
 
-        return _definitions_data
+        return _plugin_data
 
     def refresh_plugins(self, _plugins_dir):
         # If < 30 seconds since last refresh (or some other principle)
@@ -181,18 +182,18 @@ class CherryPyPlugins(object):
                 self.write_debug_info("Loaded plugin " + _plugin_name)
 
         # Manually add the optimal framework ("of") namespace
-        self.definitions["of"]["schemas"] = [_curr_ref for _curr_ref in self.schema_tools.json_schema_objects.keys()]
+        self.namespaces["of"]["schemas"] = [_curr_ref for _curr_ref in self.schema_tools.json_schema_objects.keys()]
         self.schema_tools.resolver.handlers = {"of": self.uri_handler}
 
         # Add same resolver for all the rest of the namespaces (these resolvers will persist throughout the system)
         self.schema_tools.resolver.handlers.update(
-            {_curr_namespace: self.uri_handler for _curr_namespace in self.definitions})
+            {_curr_namespace: self.uri_handler for _curr_namespace in self.namespaces})
 
         # Resolve all schemas
 
         for _curr_schema_key, _curr_schema in self._unresolved_schemas.items():
             _resolved_schema = self.schema_tools.resolveSchema(_curr_schema)
-            self.definitions[_resolved_schema["namespace"]]["schemas"].append(_curr_schema_key)
+            self.namespaces[_resolved_schema["namespace"]]["schemas"].append(_curr_schema_key)
             self.schema_tools.json_schema_objects[_curr_schema_key] = _resolved_schema
 
         self.write_debug_info("Schemas in " + str(", ").join(
@@ -277,7 +278,7 @@ class CherryPyPlugins(object):
                     _admin_menus += _curr_ui_def["menus"]
 
         _result = _imports + "\nexport function initPlugins(app){\n" + _controllers + "\n" + _directives + "\n};\n" + \
-                  "export function initRoutes($routeProvider) {\n$routeProvider" + _routes + "return $routeProvider }"
+                "export function initRoutes($routeProvider) {\n$routeProvider" + _routes + "return $routeProvider }"
 
         self.admin_ui_init = _result
         self.admin_systemjs_init = _systemjs

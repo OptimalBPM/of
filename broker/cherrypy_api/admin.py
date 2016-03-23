@@ -31,7 +31,7 @@ class CherryPyAdmin(object):
     #: Node management web service(MBE)
     node = None
 
-    def __init__(self, _database_access, _process_id, _address, _stop_broker, _definitions, _monitor, _root_object):
+    def __init__(self, _database_access, _process_id, _address, _stop_broker, _monitor, _root_object):
         write_to_log(_category=EC_SERVICE, _severity=SEV_DEBUG, _process_id=_process_id,
                      _data="Initializing administrative REST API.")
 

@@ -22,11 +22,8 @@ def general_uri_handler(_uri, _folder):
     _file_location = os.path.abspath(os.path.join(_folder, urlparse(_uri).netloc))
 
     # noinspection PyTypeChecker
-    _schema_file = open(_file_location, "r", encoding="utf-8")
-    _json = json.loads(_schema_file.read())
-    # Cumbersome, but needs to close the file properly
-    _schema_file.close()
-
+    with open(_file_location, "r", encoding="utf-8") as _schema_file:
+        _json = json.load(_schema_file)
     return _json
 
 def of_uri_handler(_uri):

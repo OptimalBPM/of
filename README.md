@@ -7,12 +7,12 @@ What differs it from many other frameworks is that it comes with a runnable serv
 The goal is to create something that not only provides the framework for solving, but actually has already implemented the most common problems in systems programming.
 A typical implementation would someone moving a traditional desktop client-based system to web based clients or apps.
 As the client side of Optimal Framework is Typescript, and the server side is Python, there are no restriction on what can be done.
-The backend is a MongoDB database, which covers a surprising range of usage scenarios, but there is no problems with additionally using a RDBMS backend.
+The backend is a MongoDB database, which covers a surprising range of usage scenarios, but there are no problems with additionally using a RDBMS backend.
 
 # Features
 
-* Messaging (messaging between different components in a multi-user system is not only a chat function)
-* Settings and resource management - Tree structure
+* Messaging (messaging between different components in a multi-user system is not merely a chat function)
+* Settings and resource management - Central tree structure
 * JSON Schema based integrity control
 * Centralized schema and input form management using [JSON Schema](http://json-schema.org/) and [Angular Schema Form](https://github.com/json-schema-form/angular-schema-form)
 * Users and groups
@@ -29,7 +29,7 @@ More features, commercial and non-commercial, ranging from  to actual extensive 
 
 # Support
 
-Outside github issues, there will be commercial support available.
+Outside Github issues, there will be commercial support available.
 
 # History
 

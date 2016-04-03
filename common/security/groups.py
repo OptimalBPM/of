@@ -80,7 +80,7 @@ def aop_has_right(_rights):
                     # Try and find _session_id
                     user_idx = _argument_specifications.args.index("_user")
                 except:
-                    raise Exception("Has right aspect for \"" + func.__name__ + "\": No _user parameter in function.")
+                    raise Exception("Has right aspect for \"" + func.__name__ + "\": No _user parameter in function, internal error.")
 
                 if user_idx > len(args) - 1:
                     raise Exception(

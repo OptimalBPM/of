@@ -27,18 +27,18 @@ class DictDiffer(object):
 
     """
 
-    def __init__(self, current_dict, past_dict):
+    def __init__(self, _old, _new):
         """
         Compares two dicts
 
-        :param current_dict: The correct dict
-        :param past_dict: The old dict
+        :param _old: The old dict
+        :param _new: The new dict
 
         """
 
-        self.current_dict, self.past_dict = current_dict, past_dict
+        self.current_dict, self.past_dict = _new, _old
         self.current_keys, self.past_keys = [
-            set(d.keys()) for d in (current_dict, past_dict)
+            set(d.keys()) for d in (_new, _old)
         ]
         self.intersect = self.current_keys.intersection(self.past_keys)
 
@@ -91,21 +91,21 @@ class Logging():
         self._log_collection = self.database["log"]
 
     @staticmethod
-    def _compare_documents(_left, _right):
+    def _compare_documents(_old, _new):
         # TODO: This must probably be using field xpaths or something. JSON XPaths might be useful
         # The problem is if a field is in a list of objects. Then fieldId will not be unique in the list of objects.
         # How about always using xpaths for a change? The problem is fieldIds in lists.
 
         _changes = []
-        _differ = DictDiffer(_left, _right)
+        _differ = DictDiffer(_old, _new)
         for _property in _differ.added():
-            _changes.append({"propertyId": _property, "before": None, "after": _right[_property]})
+            _changes.append({"propertyId": _property, "before": None, "after": _new[_property]})
 
         for _property in _differ.removed():
-            _changes.append({"propertyId": _property, "before": _left[_property], "after": None})
+            _changes.append({"propertyId": _property, "before": _old[_property], "after": None})
 
         for _property in _differ.changed():
-            _changes.append({"propertyId": _property, "before": _left[_property], "after": _right[_property]})
+            _changes.append({"propertyId": _property, "before": _old[_property], "after": _new[_property]})
 
         return _changes
 
@@ -174,7 +174,7 @@ class Logging():
                                                _document["_id"])
         if _old_document:
             # If so, compare and generate differences and save an "change" event to the "log" collection
-            _event["change"] = self._compare_documents(_old_document, _document)
+            _event["change"] = self._compare_documents(_old=_old_document, _new=_document)
             _event["category"] = "change"
 
         else:

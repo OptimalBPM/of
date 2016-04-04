@@ -190,7 +190,7 @@ class DatabaseAccess():
 
     def remove_documents(self, _documents, _user, _collection_name=None):
         """
-        Remove the documents in the documents lis
+        Remove the documents in the documents list
 
         :param _documents: The list of documents
         :param _user: A user object

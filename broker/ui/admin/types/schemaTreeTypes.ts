@@ -1,51 +1,50 @@
+/// <reference path="../typings/tsd.d.ts" />
 
-'use strict';
+import {SchemaTreeController} from "../controllers/schemaTreeController";
+import {NodeManagement} from "nodeManager";
 
-import {SchemaTreeController} from "../controllers/schemaTreeController"
-import {NodeManagement} from "nodeManager"
-
-export interface CustomRootScope  extends ng.IRootScopeService {
+export interface CustomRootScope extends ng.IRootScopeService {
     /* This is injected during the application initialization */
     BootstrapDialog: any;
 }
 
 interface CustomMBEScope extends ng.IScope {
-    $root : CustomRootScope;
+    $root: CustomRootScope;
 }
 /* This interface is to add typing to the scope */
 export interface TreeScope extends CustomMBEScope {
     /* The url of the angular html template that render each node(not including decoration and expander*/
-    itemRenderer:string;
+    itemRenderer: string;
 
     /* The top level of the tree will be children of the node with _id = topNodeId */
-    topNodeId:string;
+    topNodeId: string;
 
     /* The ObjectId given to a new node, that cannot collide with a another id */
-    newNodeObjectId:string;
+    newNodeObjectId: string;
 
     /* An array of the allowed child types of the top node, a angular expression */
-    topAllowedChildTypes:string[];
+    topAllowedChildTypes: string[];
 
     /* The tree controller */
-    tree : SchemaTreeController;
+    tree: SchemaTreeController;
 
     /* The node manager instance  */
-    nodeManager : NodeManagement;
+    nodeManager: NodeManagement;
 
     /* The position of the +-sign that is used to expand/collapse the tree */
-    expanderPosition : string;
+    expanderPosition: string;
 
     /* The angular-ui-tree settings that are passed on to the tree */
-    treeOptions : any;
+    treeOptions: any;
 
 }
 
 
 export interface NodesScope extends CustomMBEScope {
-    $root : CustomRootScope;
-    ngform : any;
+    $root: CustomRootScope;
+    ngform: any;
     nodeManager: any;
-    forms : any;
+    forms: any;
     selected_schema: any;
     selected_form: any;
     selected_data: any;
@@ -53,7 +52,7 @@ export interface NodesScope extends CustomMBEScope {
 }
 
 export interface NodeViewScope extends CustomMBEScope {
-    collapsed : boolean;
+    collapsed: boolean;
     remove(): void;
     toggle(): void;
 }
@@ -62,23 +61,23 @@ export interface Dict {
 }
 
 export class UISettings {
-    showAddBars:boolean;
-    downAddSiblingAfter:boolean;
-    downAddChildAfter:boolean;
-    strAllowedChildTypes:string;
+    showAddBars: boolean;
+    downAddSiblingAfter: boolean;
+    downAddChildAfter: boolean;
+    strAllowedChildTypes: string;
 }
 
 export class TreeNode {
-    id:string;
-    name:string;
-    title:string;
-    type:string;
-    children:TreeNode[];
-    allowedChildTypes:string[];
-    expanded : boolean;
-    parentItem:TreeNode;
-    ui:UISettings;
-    nodeViewScope : NodeViewScope;
+    id: string;
+    name: string;
+    title: string;
+    type: string;
+    children: TreeNode[];
+    allowedChildTypes: string[];
+    expanded: boolean;
+    parentItem: TreeNode;
+    ui: UISettings;
+    nodeViewScope: NodeViewScope;
 
     constructor() {
         this.ui = new UISettings();

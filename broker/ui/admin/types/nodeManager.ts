@@ -1,7 +1,7 @@
+/// <reference path="../typings/tsd.d.ts" />
+import {SchemaTreeController} from "../controllers/schemaTreeController";
+import {TreeNode, NodesScope, Dict} from "schemaTreeTypes";
 
-
-import {SchemaTreeController} from "../controllers/schemaTreeController"
-import {TreeNode, NodesScope, Dict} from "schemaTreeTypes"
 export interface NodeManagement {
 
     /**
@@ -19,7 +19,7 @@ export interface NodeManagement {
     /** Synchronous. Called when a node is selected
      * @param treeNode
      */
-    onSelectNode(treeNode:TreeNode): void;
+    onSelectNode(treeNode: TreeNode): void;
 
 
     /**
@@ -27,7 +27,7 @@ export interface NodeManagement {
      * @param {string} id - The ObjectId of the node to remove
      * @returns {ng.IPromise}
      */
-    onAsyncRemoveNode?(id:string): ng.IHttpPromise<any>;
+    onAsyncRemoveNode?(id: string): ng.IHttpPromise<any>;
 
 
     /**
@@ -35,7 +35,7 @@ export interface NodeManagement {
      * @param {string} parentId - an Id of a parent node, can be null
      * @returns {ng.IPromise}
      */
-    onAsyncLoadChildren?(parentId:string): ng.IHttpPromise<any>;
+    onAsyncLoadChildren?(parentId: string): ng.IHttpPromise<any>;
 
 
     /**
@@ -50,7 +50,7 @@ export interface NodeManagement {
      * @param {string} node - the tree item.
      * @returns {string}
      */
-    getClassFromItem(node:TreeNode): string;
+    getClassFromItem(node: TreeNode): string;
 
 
     /**
@@ -58,29 +58,29 @@ export interface NodeManagement {
      * @param {string} nodeType - the tree item.
      * @returns {string}
      */
-    getIconClass(nodeType:string): string;
+    getIconClass(nodeType: string): string;
 
 
 }
 /* Everyone inheriting from this class must implement the NodeManagement interface */
 
 export class NodeManager {
-    $q:ng.IQService;
-    $http:ng.IHttpService;
+    $q: ng.IQService;
+    $http: ng.IHttpService;
 
     /* An instance of the nodeScope */
-    nodeScope:NodesScope;
+    nodeScope: NodesScope;
 
     /* The forms that are used for each schema id*/
-    forms : Dict;
+    forms: Dict;
 
     /* The schema tree controller */
-    tree:SchemaTreeController;
+    tree: SchemaTreeController;
 
-    doSubmit = (submit_data:any) => {
+    doSubmit = (submit_data: any) => {
 
         // First we broadcast an event so all fields validate themselves
-        var result = this.nodeScope.$broadcast('schemaFormValidate');
+        let result: any = this.nodeScope.$broadcast("schemaFormValidate");
 
         this.tree.log(result.toString());
         if (this.nodeScope.ngform.$valid) {
@@ -93,11 +93,11 @@ export class NodeManager {
         }
     };
 
-    onSubmit = (submit_data : any): void  => {
-        console.log("onSubmit not implemented in NodeManager base class!")
+    onSubmit = (submit_data: any): void => {
+        console.log("onSubmit not implemented in NodeManager base class!");
     };
 
-    constructor(private $scope:NodesScope, $http:ng.IHttpService, $q:ng.IQService) {
+    constructor(private $scope: NodesScope, $http: ng.IHttpService, $q: ng.IQService) {
 
         console.log("Initiating the nodes manager base class" + $scope.toString());
         $scope.nodeManager = this;

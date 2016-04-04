@@ -1,6 +1,6 @@
 ///<reference path="../typings/angularjs/angular.d.ts" />
 interface MainScope extends ng.IScope {
-    controller : MainController;
+    controller: MainController;
 }
 
 
@@ -10,16 +10,16 @@ interface AdminSettings {
 
 export class MainController {
 
-    $http:ng.IHttpService;
-    $route:angular.route.IRouteService;
-    $scope:MainScope;
-    username:string;
+    $http: ng.IHttpService;
+    $route: angular.route.IRouteService;
+    $scope: MainScope;
+    username: string;
 
-    menus : any[];
+    menus: any[];
 
-    settings : AdminSettings;
+    settings: AdminSettings;
 
-    password:string;
+    password: string;
     login_status: string = "Logging in...";
 
 
@@ -39,25 +39,25 @@ export class MainController {
     };
     /* Return one class when selected and another when not */
     button_controller_selected_look = (routeName, unselected, selected) => {
-        if (this.$route.current && (this.$route.current.$$route.originalPath == routeName)) {
+        if (this.$route.current && (this.$route.current.$$route.originalPath === routeName)) {
             return selected;
         }
-        return unselected
+        return unselected;
     };
 
     loadMenus = () => {
-        return this.$http.get('/plugins/admin_menus.json')
-            .success((data):any => {
-                this.menus = data
-                console.log("loaded menus")
+        return this.$http.get("/plugins/admin_menus.json")
+            .success((data): any => {
+                this.menus = data;
+                console.log("loaded menus");
             })
-            .error((data, status, headers, config):any => {
+            .error((data, status, headers, config): any => {
 
                 this.bootstrapAlert("Loading menus failed: " + status);
             });
     };
 
-    constructor(private $scope:MainScope, $http:ng.IHttpService, $route: angular.route.IRouteService) {
+    constructor(private $scope: MainScope, $http: ng.IHttpService, $route: angular.route.IRouteService) {
 
         console.log("Initiating MainController" + $scope.toString());
         this.$route = $route;

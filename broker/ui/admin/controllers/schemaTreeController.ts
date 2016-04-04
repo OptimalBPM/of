@@ -3,10 +3,10 @@
 import "angular";
 import "jquery";
 import "bootstrap3-dialog";
-import "bootstrap3-dialog/dist/css/bootstrap-dialog.min.css!"
-import {Dict, TreeNode, TreeScope, NodeViewScope} from "../types/schemaTreeTypes"
+import "bootstrap3-dialog/dist/css/bootstrap-dialog.min.css!";
+import {Dict, TreeNode, TreeScope, NodeViewScope} from "../types/schemaTreeTypes";
+import {NodeManager} from "../types/nodeManager";
 
-'use strict';
 
 /* The SchemaTreeControl class is instantiated as a controller class in the typescript model */
 export class SchemaTreeController {
@@ -15,31 +15,31 @@ export class SchemaTreeController {
     /** An object whose properties are used as a key-value(dictionary) for to the actual data for the trees entities
      * These is
      * not held in the tree because of possible naming conflicts(id, title) and ordering.  */
-    data:Dict;
+    data: Dict;
 
     /* TODO: Data should likely not be in the tree, but should be broken out. Why has allowedChildTypes to be set in setItemUi?
      TODO: Break out BootstrapDialog dep
      */
 
     /* An object whose properties are used as a key-value(dictionary) for to the actual data for all schema */
-    schemas:Dict;
+    schemas: Dict;
 
     /* The top list of children, */
 
-    children:TreeNode[];
+    children: TreeNode[];
 
     /* The currently selected node. Used do track the color of the selected item, defined in HTML */
-    selectedItem:TreeNode;
+    selectedItem: TreeNode;
 
     /* The scope of the schemaTree controller */
-    treeScope:TreeScope;
+    treeScope: TreeScope;
 
-    selected_form:any[];
-    selected_data:Dict;
+    selected_form: any[];
+    selected_data: Dict;
     /* TODO: Use class, and add setting  for selectedItemClass */
 
-    $q:ng.IQService;
-    $timeout:ng.ITimeoutService;
+    $q: ng.IQService;
+    $timeout: ng.ITimeoutService;
 
     /* CALLBACKS */
 
@@ -51,7 +51,7 @@ export class SchemaTreeController {
 
         console.log("In doInit");
         this.treeScope = treeScope;
-        var nodeManager = this.treeScope.nodeManager;
+        let nodeManager: NodeManager = this.treeScope.nodeManager;
         if (nodeManager.onInit) {
             console.log("Scope before" + this.toString());
             nodeManager.onInit(this);
@@ -61,9 +61,9 @@ export class SchemaTreeController {
                 nodeManager.onAsyncInitTree().then(() => {
                     if (nodeManager.onAsyncLoadChildren) {
                         return nodeManager.onAsyncLoadChildren(null)
-                            .success((data:any) => {
-                                var _topNodes = this.childrenToArray(data, null);
-                                if (_topNodes.length != 1) {
+                            .success((data: any) => {
+                                let _topNodes: any[] = this.childrenToArray(data, null);
+                                if (_topNodes.length !== 1) {
                                     this.$scope.$root.BootstrapDialog.alert("Error: There can only be one top node!");
                                     return null;
                                 }
@@ -72,23 +72,23 @@ export class SchemaTreeController {
                                 return nodeManager.onAsyncLoadChildren(_topNodes[0].id)
                                     .success((data) => {
                                         this.children = this.childrenToArray(data, _topNodes[0]);
-                                        _topNodes[0].children = this.children
+                                        _topNodes[0].children = this.children;
                                     });
 
                             })
-                            .error((data:any, status:number, headers:ng.IHttpHeadersGetter, config:ng.IRequestConfig):any => {
+                            .error((data: any, status: number, headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig): any => {
 
                                 // TODO: Generalize this error parsing.
 
-                                var error:string = "Loading items failed: ";
+                                let error: string = "Loading items failed: ";
                                 if (data) {
                                     error += "\nResponse : " + data.toString();
                                     try {
-                                        var strData:string = JSON.stringify(data)
+                                        let strData: string = JSON.stringify(data);
                                         error += "\nJSON representation: " + strData;
                                     }
                                     catch (Exception) {
-                                        console.log("Failed to JSON-parse sever response: " + Exception.message)
+                                        console.log("Failed to JSON-parse sever response: " + Exception.message);
                                     }
 
 
@@ -114,29 +114,29 @@ export class SchemaTreeController {
      */
 
     /* Convenience wrapper for console.log (console isn't available in the template expression) */
-    log = (logText:string) => {
+    log = (logText: string) => {
         console.log(logText);
     };
 
     // Set ui settings for each new rendered node item, called from ng-init
-    setItemUi = (item:TreeNode, nodeScope:NodeViewScope) => {
+    setItemUi = (item: TreeNode, nodeScope: NodeViewScope) => {
         item.nodeViewScope = nodeScope;
         if (item.id !== this.treeScope.newNodeObjectId) {
             if (Object.keys(this.data).length > 0) {
-                var data:any = this.data[item.id];
+                let data: any = this.data[item.id];
                 item.allowedChildTypes = data["allowedChildTypes"];
                 item.ui.strAllowedChildTypes = "";
-                if (item.allowedChildTypes.length == 1) {
+                if (item.allowedChildTypes.length === 1) {
                     item.ui.strAllowedChildTypes = this.schemas[item.allowedChildTypes[0]]["title"].toLowerCase();
                 }
                 else {
-                    for (var currIdx = 0; currIdx < item.allowedChildTypes.length; currIdx++) {
+                    for (let currIdx = 0; currIdx < item.allowedChildTypes.length; currIdx++) {
 
-                        var shortName = this.schemas[item.allowedChildTypes[currIdx]]["title"].toLowerCase();
-                        if (currIdx == 0) {
+                        let shortName = this.schemas[item.allowedChildTypes[currIdx]]["title"].toLowerCase();
+                        if (currIdx === 0) {
                             item.ui.strAllowedChildTypes = item.ui.strAllowedChildTypes + shortName;
                         }
-                        else if (currIdx == item.allowedChildTypes.length - 1) {
+                        else if (currIdx === item.allowedChildTypes.length - 1) {
                             item.ui.strAllowedChildTypes = item.ui.strAllowedChildTypes + " or " + shortName;
                         }
                         else {
@@ -148,7 +148,7 @@ export class SchemaTreeController {
 
                 this.log(item.ui.strAllowedChildTypes);
                 // If the data should be expanded by default
-                if ((nodeScope) && ("expanded" in data) && (data["expanded"] == true)) {
+                if ((nodeScope) && ("expanded" in data) && (data["expanded"] === true)) {
                     this.$timeout(this.onAsyncToggleChildren.bind(null, nodeScope, item));
                 }
             }
@@ -165,16 +165,16 @@ export class SchemaTreeController {
      * @param {string} id - The id to be found
      * @returns {object} - If found, the child, otherwise null.
      */
-    findChild = (currChildren:TreeNode[], id:string) => {
-        for (var i = 0; i < currChildren.length; i++) {
-            if (currChildren[i].id == id) {
+    findChild = (currChildren: TreeNode[], id: string) => {
+        for (let i = 0; i < currChildren.length; i++) {
+            if (currChildren[i].id === id) {
                 return currChildren[i];
             }
             else {
                 if (currChildren[i].children) {
-                    var result = this.findChild(currChildren[i].children, id);
+                    let result = this.findChild(currChildren[i].children, id);
                     if (result) {
-                        return result
+                        return result;
                     }
                 }
             }
@@ -187,9 +187,9 @@ export class SchemaTreeController {
      */
     lookupChildNodeTypes = () => {
 
-        var items = [];
+        let items = [];
         Object.keys(this.schemas).forEach((schemaRef) => {
-            var item = this.schemas[schemaRef];
+            let item = this.schemas[schemaRef];
             if (item.collection = "node") {
                 items.push({value: schemaRef, name: item.title});
 
@@ -198,7 +198,7 @@ export class SchemaTreeController {
         return items;
     };
 
-    static closeAddBars(item:TreeNode) {
+    static closeAddBars(item: TreeNode) {
         item.ui.showAddBars = false;
         item.ui.downAddSiblingAfter = false;
         item.ui.downAddChildAfter = false;
@@ -220,10 +220,10 @@ export class SchemaTreeController {
      * @param parent - The parent node
      * @returns {Array}
      */
-    public childrenToArray = (inData:any, parent:TreeNode):TreeNode[] => {
-        var items:TreeNode[] = [];
+    public childrenToArray = (inData: any, parent: TreeNode): TreeNode[] => {
+        let items: TreeNode[] = [];
         inData.forEach((entry) => {
-            var _curr_item:TreeNode = new TreeNode();
+            let _curr_item: TreeNode = new TreeNode();
             _curr_item.id = entry["_id"];
             _curr_item.title = entry["name"];
             _curr_item.type = entry["schemaRef"];
@@ -232,24 +232,23 @@ export class SchemaTreeController {
             this.data[entry["_id"]] = entry;
             items.push(_curr_item);
         });
-        return items
+        return items;
     };
 
 
-
-    dataToLookups = (lookupData:any):any[] => {
-        var items = [];
+    dataToLookups = (lookupData: any): any[] => {
+        let items = [];
         lookupData.forEach((entry) => {
             items.push({value: entry["_id"], name: entry["name"]});
         });
-        return items
+        return items;
     };
 
     // TODO: Document this
 
-    addNode = (scope:NodeViewScope, item:TreeNode, isParent:boolean, schemaRef:string) => {
+    addNode = (scope: NodeViewScope, item: TreeNode, isParent: boolean, schemaRef: string) => {
 
-        var _add = (scope, item) => {
+        let _add = (scope, item) => {
 
             SchemaTreeController.closeAddBars(item);
 
@@ -262,7 +261,7 @@ export class SchemaTreeController {
             }
 
             // Create a new child, use a temporary
-            var _newChild:TreeNode = new TreeNode();
+            let _newChild: TreeNode = new TreeNode();
             _newChild.id = this.treeScope.newNodeObjectId;
             _newChild.title = "New " + this.schemas[schemaRef].title;
             _newChild.type = schemaRef;
@@ -271,11 +270,11 @@ export class SchemaTreeController {
                 item.children.unshift(_newChild);
             }
             else {
-                var self_idx = item.parentItem.children.indexOf(item);
+                let self_idx = item.parentItem.children.indexOf(item);
                 item.parentItem.children.splice(self_idx + 1, 0, _newChild);
             }
 
-            var curr_datetime = new Date();
+            let curr_datetime = new Date();
             this.data[this.treeScope.newNodeObjectId] = {
                 _id: this.treeScope.newNodeObjectId,
                 parent_id: isParent ? item.id : item.parentItem.id,
@@ -309,11 +308,11 @@ export class SchemaTreeController {
      * @param scope - the current scope.
      * @param id - The node id of the node to remove
      */
-    deleteNode = (scope:NodeViewScope, id:string) => {
+    deleteNode = (scope: NodeViewScope, id: string) => {
         this.log("removing");
 
         // The node is a new node that haven't been saved yet
-        if (id == this.treeScope.newNodeObjectId) {
+        if (id === this.treeScope.newNodeObjectId) {
 
             this.selected_form = [];
             this.selected_data = {};
@@ -323,7 +322,7 @@ export class SchemaTreeController {
         }
         else {
 
-            scope.$root.BootstrapDialog.confirm("Are you sure that you want to remove this node?", (result)  => {
+            scope.$root.BootstrapDialog.confirm("Are you sure that you want to remove this node?", (result) => {
                 if (result) {
                     if (this.treeScope.nodeManager.onAsyncRemoveNode) {
                         this.treeScope.nodeManager.onAsyncRemoveNode(id).then((data) => {
@@ -338,7 +337,7 @@ export class SchemaTreeController {
                         this.selected_data = null;
                     }
                 }
-            })
+            });
         }
     };
 
@@ -347,7 +346,7 @@ export class SchemaTreeController {
      * @param scope {NodeViewScope} the angular scope variable
      * @param item {TreeNode} - the item to load
      */
-    onAsyncToggleChildren = (scope:NodeViewScope, item:TreeNode) => {
+    onAsyncToggleChildren = (scope: NodeViewScope, item: TreeNode) => {
         this.log("in toggleChildren before promise");
         return new this.$q((resolve, reject) => {
             console.log("in toggleChildren");
@@ -381,7 +380,7 @@ export class SchemaTreeController {
         });
     };
 
-    constructor(private $scope:TreeScope, $q:ng.IQService, $timeout:ng.ITimeoutService) {
+    constructor(private $scope: TreeScope, $q: ng.IQService, $timeout: ng.ITimeoutService) {
 
         console.log("Initiating the schema controller" + $scope.toString());
         $scope.tree = this;

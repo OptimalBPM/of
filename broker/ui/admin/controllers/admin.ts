@@ -2,14 +2,14 @@
 
 export class AdminController {
 
-    $timeout : ng.ITimeoutService;
+    $timeout: ng.ITimeoutService;
 
 
     resizeNodes = () => {
-        $("#nodesContainer").height($(window).height() - $("#footerDiv").height() - $("#menuDiv").height() - 20)
+        $("#nodesContainer").height($(window).height() - $("#footerDiv").height() - $("#menuDiv").height() - 20);
     };
 
-    constructor(private $scope:ng.IScope, $timeout: ng.ITimeoutService) {
+    constructor(private $scope: ng.IScope, $timeout: ng.ITimeoutService) {
 
         console.log("Initiating AdminController" + $scope.toString());
         this.$timeout = $timeout;
@@ -19,7 +19,7 @@ export class AdminController {
             this.resizeNodes();
             $(window).resize(() => {
                 this.resizeNodes();
-            })
+            });
         });
         console.log("Initiated AdminController");
 

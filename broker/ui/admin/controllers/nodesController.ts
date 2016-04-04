@@ -8,7 +8,7 @@
  * @author Nicklas Börjesson
  * @link https://www.github.com/optimalbpm/mbe
  */
-'use strict';
+
 import "angular";
 import "angular-strap";
 import "angular-schema-form";
@@ -25,10 +25,9 @@ import "networknt/angular-schema-form-ui-ace";
 import "angular-schema-form-dynamic-select";
 
 import "bootstrap3-dialog";
-import "bootstrap3-dialog/dist/css/bootstrap-dialog.min.css!"
-import {NodeManager, NodeManagement} from "../types/nodeManager"
-import {TreeNode} from "../types/schemaTreeTypes"
-
+import "bootstrap3-dialog/dist/css/bootstrap-dialog.min.css!";
+import {NodeManager, NodeManagement} from "../types/nodeManager";
+import {TreeNode} from "../types/schemaTreeTypes";
 
 
 /* The SchemaTreeControl class is instantiated as a controller class in the typescript model */
@@ -41,7 +40,7 @@ export class NodesController extends NodeManager implements NodeManagement {
     groups: any[];
 
 
-    /* TODO: Unresolved bug, sometimes nodes aren't initialized correctly (undefined arrays) \n Possible to add nodes twice */
+    /* TODO: Unresolved bug, sometimes nodes aren"t initialized correctly (undefined arrays) \n Possible to add nodes twice */
     /* TODO: Add proper($timeout-based) animation delay to tree */
     /* TODO: Follow-up so that angular-strap select dropdown positioning on scroll is rectified */
 
@@ -54,9 +53,9 @@ export class NodesController extends NodeManager implements NodeManagement {
      */
     onAsyncLoadChildren = (parentId: string): ng.IHttpPromise<any> => {
         if (parentId != null) {
-            parentId = "ObjectId(" + parentId.toString() + ")"
+            parentId = "ObjectId(" + parentId.toString() + ")";
         }
-        return this.$http.post('node/find', {"parent_id": parentId});
+        return this.$http.post("node/find", {"parent_id": parentId});
     };
 
     /**
@@ -65,7 +64,7 @@ export class NodesController extends NodeManager implements NodeManagement {
      * @returns {IHttpPromise}
      */
     onAsyncRemoveNode = (nodeId: string): ng.IHttpPromise<any> => {
-        return this.$http.post('node/remove', {"_id": nodeId});
+        return this.$http.post("node/remove", {"_id": nodeId});
     };
 
     /**
@@ -74,7 +73,7 @@ export class NodesController extends NodeManager implements NodeManagement {
      * @returns {IHttpPromise}
      */
     loadHistory = (historyId: string): ng.IHttpPromise<any> => {
-        return this.$http.post('node/history', {"_id": historyId})
+        return this.$http.post("node/history", {"_id": historyId});
     };
 
     /**
@@ -93,26 +92,26 @@ export class NodesController extends NodeManager implements NodeManagement {
      */
     saveNode = (saveData): ng.IHttpPromise<any> => {
 
-        var id = saveData["_id"];
-        var _curr_child;
+        let id: string = saveData["_id"];
+        let _curr_child: any;
 
         _curr_child = this.tree.findChild(this.tree.children, id);
 
-        if (id == this.tree.treeScope.newNodeObjectId) {
+        if (id === this.tree.treeScope.newNodeObjectId) {
             // Delete the id so that a new item is saved.
             delete saveData["_id"];
         }
 
-        return this.$http.post('node/save', saveData)
+        return this.$http.post("node/save", saveData)
             .success((_id) => {
-                var strId: string = _id.toString();
+                let strId: string = _id.toString();
                 saveData["_id"] = strId;
                 this.tree.data[strId] = saveData;
                 _curr_child.id = saveData["_id"];
                 _curr_child.title = saveData["name"];
                 _curr_child.type = saveData["schemaRef"];
                 _curr_child.allowedChildTypes = saveData["allowedChildTypes"];
-                console.log("Data saved, _id: " + strId)
+                console.log("Data saved, _id: " + strId);
             })
             .error((data: any, status: number, headers: ng.IHttpHeadersGetter, config: ng.IRequestConfig) => {
                 this.nodeScope.$root.BootstrapDialog.alert("Saving node failed: " + status);
@@ -145,7 +144,7 @@ export class NodesController extends NodeManager implements NodeManagement {
      */
     onInitGroups = function () {
         return this.onAsyncLoadChildren("000000010000010001e64c24")
-            .success((_data)  => {
+            .success((_data) => {
                 this.groups = this.tree.dataToLookups(_data);
 
             })
@@ -158,7 +157,7 @@ export class NodesController extends NodeManager implements NodeManagement {
      * Load all schemas
      */
     onInitSchemas = (): ng.IHttpPromise<any> => {
-        return this.$http.get('node/get_schemas')
+        return this.$http.get("node/get_schemas")
             .success((data: any) => {
                 this.tree.schemas = data;
             })
@@ -172,25 +171,25 @@ export class NodesController extends NodeManager implements NodeManagement {
      */
     onInitForms = (): ng.IHttpPromise<any> => {
 
-        return this.$http.get('views/nodes/node_forms.js')
+        return this.$http.get("views/nodes/node_forms.js")
             .success((data: any) => {
-                var _nodeSchemaRef = 'of://node.json';
+                let _nodeSchemaRef: string = "of://node.json";
                 this.forms = {};
                 // Import the data, pass the tree scope to the function
-                var _data = new Function("scope", data.toString()).call(this, this.tree);
-                var _nodeForm = _data[_nodeSchemaRef];
+                let _data: Function = new Function("scope", data.toString()).call(this, this.tree);
+                let _nodeForm: any = _data[_nodeSchemaRef];
 
                 Object.keys(_data).forEach(
                     (_currSchemaRef) => {
-
-                        if (_currSchemaRef == _nodeSchemaRef) {
+                        let _newForm: any;
+                        if (_currSchemaRef === _nodeSchemaRef) {
                             // Do not concatenate with itself
-                            var _newForm = _nodeForm.slice(0)
+                            _newForm = _nodeForm.slice(0);
                         }
                         else {
                             // Insert form after nodename and description in base node form
-                            var _newForm = _nodeForm.slice(0);
-                            _newForm.splice.apply(_newForm, [2, 0].concat(_data[_currSchemaRef]))
+                            _newForm = _nodeForm.slice(0);
+                            _newForm.splice.apply(_newForm, [2, 0].concat(_data[_currSchemaRef]));
                         }
                         // Add submit and store the finished form.
                         this.forms[_currSchemaRef] = _newForm.concat(
@@ -217,8 +216,8 @@ export class NodesController extends NodeManager implements NodeManagement {
      * Set the currently edited schema form
      * @param node
      */
-    set_details = (node):void => {
-        var schemaRef = "";
+    set_details = (node): void => {
+        let schemaRef: string = "";
         this.nodeScope.selected_schema = null;
         if ("schemaRef" in node) {
             schemaRef = node["schemaRef"];
@@ -235,7 +234,7 @@ export class NodesController extends NodeManager implements NodeManagement {
 
     show_history = (id): ng.IHttpPromise<any> => {
 
-        if (id != this.tree.treeScope.newNodeObjectId) {
+        if (id !== this.tree.treeScope.newNodeObjectId) {
             return this.loadHistory(id)
                 .success((data: any) => {
                     this.history = data;

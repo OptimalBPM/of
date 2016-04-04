@@ -7,38 +7,32 @@ interface AboutScope extends ng.IScope {
 
 export class AboutController {
 
-    $http:ng.IHttpService;
-    $scope:AboutScope;
+    $http: ng.IHttpService;
+    $scope: AboutScope;
 
     get_about_data = () => {
-            this.$scope.broker_environment = "";
-            this.$http.get('/get_broker_environment').
-                success((data, status, headers, config) => {
-                    this.$scope.broker_environment = data;
+        this.$scope.broker_environment = "";
+        this.$http.get("/get_broker_environment").success((data, status, headers, config) => {
+            this.$scope.broker_environment = data;
 
-                }).
-                error((data, status, headers, config) => {
-                    this.$scope.broker_environment = "Failed to retrieve broker environment: " + status;
-                });
-        };
+        }).error((data, status, headers, config) => {
+            this.$scope.broker_environment = "Failed to retrieve broker environment: " + status;
+        });
+    };
     get_datatype = (value) => {
         if (angular.isObject(value)) {
             return "dict";
-        } else
-        if (angular.isArray(value)) {
+        } else if (angular.isArray(value)) {
             return "array";
-        } else
-        if (angular.isString(value)) {
-            return "string"
+        } else if (angular.isString(value)) {
+            return "string";
         } else {
             return null;
         }
     };
 
 
-
-
-    constructor(private $scope:AboutScope, $http:ng.IHttpService) {
+    constructor(private $scope: AboutScope, $http: ng.IHttpService) {
 
         console.log("Initiating AboutController" + $scope.toString());
 

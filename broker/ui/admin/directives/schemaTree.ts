@@ -1,50 +1,46 @@
-/// <reference path="../../typings/angularjs/angular.d.ts" />
-/// <reference path="../../typings/jquery/jquery.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 
 console.log("Before schemaTree definition");
 import "angular";
 import "jquery";
 import "angular-ui-tree";
-import "angular-ui-tree/angular-ui-tree.min.css!"
-import "../controllers/schemaTreeController"
-import {TreeScope} from "../types/schemaTreeTypes"
+import "angular-ui-tree/angular-ui-tree.min.css!";
+import "../controllers/schemaTreeController";
+import {TreeScope} from "../types/schemaTreeTypes";
 
-export function schemaTree():ng.IDirective {
+export function schemaTree(): ng.IDirective {
     return {
-        restrict: 'E',
+        restrict: "E",
         scope: {
             itemRenderer: "@",
             newNodeObjectId: "@",
-            nodeManager : "=",
+            nodeManager: "=",
             expanderPosition: "@",
-            treeOptions : "="
+            treeOptions: "="
         },
         controller: "SchemaTreeController",
-        link: ($scope:TreeScope, element:JQuery) => {
+        link: ($scope: TreeScope, element: JQuery) => {
             console.log("link function in schemaTree directive called ");
 
-            if (!($scope.expanderPosition))
-            {
+            if (!($scope.expanderPosition)) {
                 $scope.expanderPosition = "left";
             }
-            $scope.$watch('onInit', function (value) {
+            $scope.$watch("onInit", function (value) {
                 if ($scope.nodeManager) {
                     console.log("Before tree.doInit");
                     $scope.tree.doInit($scope);
                 }
-                else
-                {
-                    console.log("Initiating schemaTree $scope.nodeManager not set!")
+                else {
+                    console.log("Initiating schemaTree $scope.nodeManager not set!");
                 }
 
-            })
+            });
 
         },
-        templateUrl: 'views/schematree.html'
-    }
+        templateUrl: "views/schematree.html"
+    };
 
 }
-
 
 
 console.log("After schemaTree definition");

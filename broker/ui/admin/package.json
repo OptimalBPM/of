@@ -50,8 +50,6 @@
     "node": ""
   },
   "jspm": {
-    "directories": {},
-    "configFile": "jspm_config.js",
     "dependencies": {
       "OptimalBPM/angular-schema-form-complex-ui": "github:OptimalBPM/angular-schema-form-complex-ui@master",
       "ace": "github:ajaxorg/ace-builds@^1.2.0",
@@ -61,6 +59,7 @@
       "angular-cookies": "github:angular/bower-angular-cookies@^1.4.7",
       "angular-route": "github:angular/bower-angular-route@^1.4.4",
       "angular-sanitize": "github:angular/bower-angular-sanitize@^1.4.4",
+      "angular-schema-form-bootstrap": "npm:angular-schema-form-bootstrap@^0.2.0",
       "angular-schema-form-dynamic-select": "npm:angular-schema-form-dynamic-select@^0.12.1",
       "angular-strap": "github:mgcrea/angular-strap@^2.3.2",
       "angular-touch": "github:angular/bower-angular-touch@^1.4.4",

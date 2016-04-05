@@ -27,6 +27,7 @@ import "angular-touch";
 import "angular-sanitize";
 import "angular-animate";
 import "angular-schema-form";
+import "angular-schema-form-bootstrap";
 import "angular-ui-layout";
 import "angular-ui-layout/ui-layout.css!";
 import "font-awesome";

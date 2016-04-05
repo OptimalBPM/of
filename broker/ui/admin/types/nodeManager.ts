@@ -64,7 +64,7 @@ export interface NodeManagement {
 }
 /* Everyone inheriting from this class must implement the NodeManagement interface */
 
-export class NodeManager {
+export class NodeManager implements NodeManagement {
     $q: ng.IQService;
     $http: ng.IHttpService;
 
@@ -76,6 +76,10 @@ export class NodeManager {
 
     /* The schema tree controller */
     tree: SchemaTreeController;
+
+    getClassname = (): string => {
+        return this.constructor.toString().match(/\w+/g)[1];
+    };
 
     doSubmit = (submit_data: any) => {
 
@@ -94,7 +98,25 @@ export class NodeManager {
     };
 
     onSubmit = (submit_data: any): void => {
-        console.log("onSubmit not implemented in NodeManager base class!");
+        console.log("onSubmit not implemented in " + this.getClassname + " base class!");
+    };
+    onInit = (schemaTreeController: SchemaTreeController) => {
+        console.log("onInit not implemented in " + this.getClassname() + " base class!");
+    };
+    onSelectNode = (treeNode: TreeNode): void => {
+        console.log("onSelectNode not implemented in " + this.getClassname() + " base class!");
+    };
+    getClassFromItem = (node: TreeNode): string => {
+        console.log("onSelectNode not implemented in " + this.getClassname() + " base class!");
+        return "";
+    };
+    getIconClass = (nodeType: string): string => {
+        console.log("getIconClass not implemented in " + this.getClassname() + " base class!");
+        return "";
+    };
+    onAsyncInitTree = (): ng.IPromise<any> => {
+        console.log("onAsyncInitTree not implemented in " + this.getClassname() + " base class!");
+        return null;
     };
 
     constructor(private $scope: NodesScope, $http: ng.IHttpService, $q: ng.IQService) {

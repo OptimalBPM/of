@@ -1,4 +1,5 @@
-///<reference path="../typings/angularjs/angular.d.ts" />
+///<reference path="../typings/tsd.d.ts" />
+
 interface MainScope extends ng.IScope {
     controller: MainController;
 }
@@ -14,6 +15,7 @@ export class MainController {
     $route: angular.route.IRouteService;
     $scope: MainScope;
     username: string;
+    bootstrapAlert: Function;
 
     menus: any[];
 
@@ -39,7 +41,7 @@ export class MainController {
     };
     /* Return one class when selected and another when not */
     button_controller_selected_look = (routeName, unselected, selected) => {
-        if (this.$route.current && (this.$route.current.$$route.originalPath === routeName)) {
+        if (this.$route.current && ((this.$route.current as any).$$route.originalPath === routeName)) {
             return selected;
         }
         return unselected;

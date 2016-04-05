@@ -1,6 +1,7 @@
 ///<reference path="../typings/angularjs/angular.d.ts" />
 
 
+import IAugmentedJQueryStatic = angular.IAugmentedJQueryStatic;
 /**
  * @ngdoc overview
  * @name mainApp
@@ -33,13 +34,17 @@ import "font-awesome";
 import "bootstrap3-dialog";
 
 import {initNodes} from "./nodes";
+
+// These files are generated dynamically in runtime, ignore error
+// noinspection TypeScriptCheckImport
 import {initPlugins, initRoutes} from "../plugins/admin_init";
 
 import {AboutController} from "../controllers/about";
 import {AdminController} from "../controllers/admin";
 import {MainController} from "../controllers/main";
 import {CustomRootScope} from "../types/schemaTreeTypes";
-import {VerticalDraggableMenuController} from "../controllers/verticalDraggableMenuController";
+import IAugmentedJQuery = angular.IAugmentedJQuery;
+
 
 
 // BootstrapDialog ambient declaration as there is no type definition
@@ -103,7 +108,7 @@ function initApp() {
     });
 
     // Find the html angular element.
-    let $html: HTMLElement = angular.element(document.getElementsByTagName("html")[0]);
+    let $html: IAugmentedJQuery = angular.element(document.getElementsByTagName("html")[0]);
 
     angular.element().ready(() => {
         // bootstrap the app manually
@@ -111,8 +116,8 @@ function initApp() {
 
         angular.bootstrap($html, ["mainApp"]);
 
-        var $scope: CustomRootScope = <CustomRootScope>angular.element($html).scope();
-        declare var BootstrapDialog: any;
+        let $scope: CustomRootScope = angular.element($html).scope() as CustomRootScope;
+        let BootstrapDialog: any;
         $scope.BootstrapDialog = BootstrapDialog;
 
 

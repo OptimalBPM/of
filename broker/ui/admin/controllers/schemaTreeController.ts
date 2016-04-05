@@ -57,7 +57,7 @@ export class SchemaTreeController {
             nodeManager.onInit(this);
 
             /* Initializes an asyncronous (lazy loading) tree */
-            if (nodeManager.onAsyncInitTree) {
+            if ((typeof(nodeManager) !== "undefined") && (nodeManager.onAsyncInitTree)) {
                 nodeManager.onAsyncInitTree().then(() => {
                     if (nodeManager.onAsyncLoadChildren) {
                         return nodeManager.onAsyncLoadChildren(null)

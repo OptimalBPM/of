@@ -1,7 +1,7 @@
 /// <reference path="../typings/tsd.d.ts" />
 
 import {SchemaTreeController} from "../controllers/schemaTreeController";
-import {NodeManagement} from "nodeManager";
+import {NodeManager} from "nodeManager";
 
 export interface CustomRootScope extends ng.IRootScopeService {
     /* This is injected during the application initialization */
@@ -29,7 +29,7 @@ export interface TreeScope extends CustomMBEScope {
     tree: SchemaTreeController;
 
     /* The node manager instance  */
-    nodeManager: NodeManagement;
+    nodeManager: NodeManager;
 
     /* The position of the +-sign that is used to expand/collapse the tree */
     expanderPosition: string;

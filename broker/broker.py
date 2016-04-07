@@ -7,15 +7,7 @@ import cherrypy
 from bson.objectid import ObjectId
 from pymongo.mongo_client import MongoClient
 
-import of.common.logging
-from of.broker.lib.access import DatabaseAccess
-from of.broker.lib.auth_backend import MongoDBAuthBackend
-from of.common.cumulative_dict import CumulativeDict
-from of.common.logging import write_to_log, SEV_FATAL, EC_SERVICE, SEV_DEBUG, \
-    EC_UNCATEGORIZED, SEV_ERROR, SEV_INFO, EC_INVALID, make_sparse_log_message, make_textual_log_message, make_event
-from of.common.security.authentication import init_authentication
-from of.common.settings import JSONXPath
-from of.schemas.schema import SchemaTools
+
 from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
 
 __author__ = "Nicklas Borjesson"
@@ -27,6 +19,15 @@ script_dir = os.path.dirname(__file__)
 sys.path.append(os.path.join(script_dir, "../../"))
 
 # IMPORTANT: ALL OPTIMAL FRAMEWORK IMPORTS MUST BE AFTER ADDING THE PATH
+import of.common.logging
+from of.broker.lib.access import DatabaseAccess
+from of.broker.lib.auth_backend import MongoDBAuthBackend
+from of.common.cumulative_dict import CumulativeDict
+from of.common.logging import write_to_log, SEV_FATAL, EC_SERVICE, SEV_DEBUG, \
+    EC_UNCATEGORIZED, SEV_ERROR, SEV_INFO, EC_INVALID, make_sparse_log_message, make_textual_log_message, make_event
+from of.common.security.authentication import init_authentication
+from of.common.settings import JSONXPath
+from of.schemas.schema import SchemaTools
 from of.broker import run_broker
 from of.common.internal import register_signals, resolve_config_path
 from of.common.messaging.factory import store_process_system_document, log_process_state_message

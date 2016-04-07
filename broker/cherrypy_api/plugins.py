@@ -11,7 +11,6 @@ import sys
 
 import cherrypy
 
-
 from of.broker.cherrypy_api.node import aop_check_session
 from of.common.cumulative_dict import CumulativeDict
 from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG, SEV_ERROR, EC_SERVICE, SEV_INFO
@@ -69,8 +68,8 @@ class CherryPyPlugins(object):
         self.write_debug_info("Running hook " + _hook_name)
         for _curr_plugin_name, _curr_plugin in self.plugins.items():
             if ("failed" in _curr_plugin and _curr_plugin["failed"]):
-               self.write_debug_info("Plugin " + _curr_plugin_name+ " marked failed, will not call its hook.")
-               continue
+                self.write_debug_info("Plugin " + _curr_plugin_name + " marked failed, will not call its hook.")
+                continue
             if "hooks" in _curr_plugin:
                 if "hooks_instance" in _curr_plugin["hooks"]:
                     _hooks_instance = _curr_plugin["hooks"]["hooks_instance"]
@@ -212,6 +211,11 @@ class CherryPyPlugins(object):
         plugins.
         :param _web_config: An instance of the CherryPy web configuration
         """
+        if len(self.plugins) == 0:
+            self.admin_ui_init = "console.log('admin_ui_init.ts: No plugins installed, so no menus to initialize.');"
+            self.admin_systemjs_init = "console.log('admin_jspm_config.js: No plugins installed, so no packages to add overrides for.');"
+            self.admin_menus = "console.log('admin_menus.json: No plugins installed, so no menus to initialize.');"
+            return
 
         def make_deps(_controller):
             _result = "[" + str(",").join(['"' + _curr_dep + '"' for _curr_dep in _controller["dependencies"]])
@@ -279,7 +283,7 @@ class CherryPyPlugins(object):
                     _admin_menus += _curr_ui_def["menus"]
 
         _result = _imports + "\nexport function initPlugins(app){\n" + _controllers + "\n" + _directives + "\n};\n" + \
-                "export function initRoutes($routeProvider) {\n$routeProvider" + _routes + "return $routeProvider }"
+                  "export function initRoutes($routeProvider) {\n$routeProvider" + _routes + "return $routeProvider }"
 
         self.admin_ui_init = _result
         self.admin_systemjs_init = _systemjs

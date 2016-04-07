@@ -5,3 +5,4 @@ bson
 requests
 cherrypy
 pycrypto
+ws4py

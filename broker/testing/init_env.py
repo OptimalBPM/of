@@ -2,8 +2,13 @@
 The init_env module/script initializes an Optimal Framework testing environment.
 """
 import os
+import sys
 
 from bson.objectid import ObjectId
+
+script_dir = os.path.dirname(__file__)
+# Add relative optimal bpm path to be able to load the modules of this repository properly
+sys.path.append(os.path.join(script_dir, "../../../"))
 
 from of.broker.lib.auth_backend import MongoDBAuthBackend
 from of.common.security.authentication import init_authentication
@@ -12,7 +17,7 @@ from of.schemas.validation import of_uri_handler
 
 __author__ = 'nibo'
 
-script_dir = os.path.dirname(__file__)
+
 
 
 def init_env(_context=None, _data_files=[], _json_schema_folders=[], _uri_handlers={}):

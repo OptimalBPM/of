@@ -50,7 +50,7 @@ System.config({
     "css": "github:systemjs/plugin-css@0.1.20",
     "fatlinesofcode/ngDraggable": "github:fatlinesofcode/ngDraggable@0.1.8",
     "font-awesome": "npm:font-awesome@4.5.0",
-    "jquery": "github:components/jquery@2.2.1",
+    "jquery": "npm:jquery@2.2.2",
     "networknt/angular-schema-form-ui-ace": "github:networknt/angular-schema-form-ui-ace@0.1.2",
     "typescript": "npm:typescript@1.8.9",
     "github:angular-ui/ui-layout@1.4.2": {

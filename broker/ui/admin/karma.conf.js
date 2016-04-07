@@ -15,7 +15,7 @@ module.exports = function (config) {
 
         systemjs: {
             // Path to your SystemJS configuration file
-            configFile: 'jspm_config.js',
+            configFile: 'config.js',
 
             // SystemJS configuration specifically for tests, added after your config file.
             // Good for adding test libraries and mock modules

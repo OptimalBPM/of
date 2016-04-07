@@ -8,6 +8,7 @@ The goal is to create something that not only provides the framework for solving
 A typical implementation would someone moving a traditional desktop client-based system to web based clients or apps.
 As the client side of Optimal Framework is Typescript, and the server side is Python, there are no restriction on what can be done.
 The backend is a MongoDB database, which covers a surprising range of usage scenarios, but there are no problems with additionally using an RDBMS backend.
+It is like a CMS for systems development. One could call it a Function Management System. And FMS.
 
 # Features
 

@@ -58,6 +58,9 @@ class CumulativeDict:
     def values(self):
         return self._dicts.values()
 
+    def keys(self):
+        return self._dicts.keys()
+
     def items(self):
         return self._dicts.items()
 

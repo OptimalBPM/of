@@ -211,7 +211,7 @@ class CherryPyPlugins(object):
         plugins.
         :param _web_config: An instance of the CherryPy web configuration
         """
-        if len(self.plugins) == 0:
+        if len(self.plugins.keys()) == 0:
             self.admin_ui_init = "console.log('admin_ui_init.ts: No plugins installed, so no menus to initialize.');"
             self.admin_systemjs_init = "console.log('admin_jspm_config.js: No plugins installed, so no packages to add overrides for.');"
             self.admin_menus = "console.log('admin_menus.json: No plugins installed, so no menus to initialize.');"

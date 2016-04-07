@@ -212,9 +212,11 @@ class CherryPyPlugins(object):
         :param _web_config: An instance of the CherryPy web configuration
         """
         if len(self.plugins.keys()) == 0:
-            self.admin_ui_init = "console.log('admin_ui_init.ts: No plugins installed, so no menus to initialize.');"
+            # If there are no plugins add dummy functions that log the status
+            self.admin_ui_init = "export function initRoutes($routeProvider) { console.log('admin_ui_init.ts: No plugins installed, so no routes to add.'); return $routeProvider; }"
+            self.admin_ui_init+= "export function initPlugins(app) { console.log('admin_ui_init.ts: No plugins installed, so no menus to initialize.'); }"
             self.admin_systemjs_init = "console.log('admin_jspm_config.js: No plugins installed, so no packages to add overrides for.');"
-            self.admin_menus = "console.log('admin_menus.json: No plugins installed, so no menus to initialize.');"
+            self.admin_menus = "{}"
             return
 
         def make_deps(_controller):

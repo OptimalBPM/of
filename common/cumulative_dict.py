@@ -27,14 +27,14 @@ class CumulativeDict:
         :return:
         """
 
-        def recurse_dict(_left, _right):
-            if isinstance(_right, dict):
-                for _curr_right_key, _curr_right_value in _right.items():
-                    if _curr_right_key in _left and isinstance(_left[_curr_right_key], dict) and isinstance(
-                            _left[_curr_right_key], dict):
-                        recurse_dict(_left[_curr_right_key], _right[_curr_right_key])
+        def recurse_dict(_existing, _new):
+            if isinstance(_new, dict):
+                for _curr_new_key, _curr_new_value in _new.items():
+                    if _curr_new_key in _existing and isinstance(_existing[_curr_new_key], dict) \
+                            and isinstance(_existing[_curr_new_key], dict):
+                        recurse_dict(_existing[_curr_new_key], _curr_new_value)
                     else:
-                        _left[_curr_right_key] = _right[_curr_right_key]
+                        _existing[_curr_new_key] = _curr_new_value
 
             else:
                 raise Exception("Can only call cumulatively_add_definition with a dict")
@@ -45,7 +45,7 @@ class CumulativeDict:
 
     def __getitem__(self, item):
         if item not in self._dicts:
-            self._dicts[item] = self.default
+            self._dicts[item] = dict(self.default)
         return self._dicts[item]
 
     def __setitem__(self, key, value):

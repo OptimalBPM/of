@@ -33,13 +33,11 @@ class CherryPyBroker(object):
     #: A sessionId-indexed dictionary of logged in peers
     peers = None
 
-    #: Administrative web service
-    admin = None
 
     #: Plugin management
     plugins = None
 
-    #: An reference to an MBE nodes instance
+    #: An reference to a Nodes instance
     node = None
 
     def __init__(self, _process_id, _address):

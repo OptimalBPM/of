@@ -1,5 +1,0 @@
-{
-  "compilerOptions": {
-    "paths": {"../../": ["../../../of/of/broker/ui/admin/"]}
-  }
-}

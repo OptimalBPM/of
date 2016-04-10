@@ -1,6 +1,9 @@
 /.externalToolBuilders
 .project
 .pydevproject
+jspm_packages
+node_modules
+__pycache__
 /.settings
 /.git
 /.idea

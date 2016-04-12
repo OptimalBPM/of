@@ -36,6 +36,7 @@ The most important concepts of the Optimal Framework are the broker, plugins and
 In the conceptual middle of the system is the broker. 
 
 It is responsible for most cross-cutting concerns like messaging, security logging and keeping persistent data.
+For clients of a system built on the framework, its role is application server and messaging platform. 
 
 ## Schemas
 JSON Schema is used to define [all data structures](https://github.com/OptimalBPM/of/tree/master/schemas) in the system. 
@@ -57,6 +58,16 @@ Plugins add:
 * namespaces and definitions by simply placing the schemas in the [/schema folder](https://github.com/OptimalBPM/optimalbpm/tree/master/schemas), they are automatically imported into the system, to be used in the messaging and data validation.
 * functionality to the admin frontend by [listing the angular directives, controllers, menu items and routes](https://github.com/OptimalBPM/optimalbpm/tree/master/admin-ui) that one wished to include. 
 
+There are numerous advantages to being plugin-based like this.
+
+For all it becomes:
+* possible to create an and sustain an ecosystem among users of the framework
+* easy to separate ones own code from that of the ecosystem, making it easier to handle upgrades
+* possible for the system to degrade gracefully in case of failuse
+
+For commercial applications it becomes very easy to:
+* maintain several editions of a system (like community, enterprise).
+* add functionality in a modular way using plugins 
 
 
 # Support

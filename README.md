@@ -41,19 +41,22 @@ It is responsible for most cross-cutting concerns like messaging, security loggi
 JSON Schema is used to define [all data structures](https://github.com/OptimalBPM/of/tree/master/schemas) in the system. 
 
 It is not only used to validate and define the data in the MongoDB database backend, but also used in front end interfaces like the [administrative interface](https://github.com/OptimalBPM/of-admin), and to [handle messages](https://github.com/OptimalBPM/of/blob/master/common/messaging/handler.py#L115).
+
 All data in OF are required to have a valid schema reference that it adheres to, and are dictionaries that is turned back and forth into JSON when transmitted.
 
 
 ## Plugins
 All functionality is added via plugins. 
 
-In OF, a plugin is almost able to change everything about the system operates.
+In OF, a plugin is almost able to change everything about how the system operates.
 Developing plugins is simple and intuitive, they are simple GIT repositories that have a [definitions file](https://github.com/OptimalBPM/optimalbpm/blob/master/definitions.json) that describes them.
 
 Plugins add:
-* functionality to the backend by defining [Python classes](https://github.com/OptimalBPM/optimalbpm/blob/master/broker/cherrypy/process.py) that are mounted by the built-in web server and dynamically incorporated into the backend via [hooks](https://github.com/OptimalBPM/optimalbpm/blob/master/hooks_broker.py)
-* new namespaces and definitions by simply placing the schemas in the [/schema folder](https://github.com/OptimalBPM/optimalbpm/tree/master/schemas), they are automatically imported into the system, to be used in the messaging and data validation.
+* functionality to the backend by defining [CherryPy-exposed classes](https://github.com/OptimalBPM/optimalbpm/blob/master/broker/cherrypy/process.py) that are mounted by the built-in web server and dynamically
+ incorporated into the backend via [hooks](https://github.com/OptimalBPM/optimalbpm/blob/master/hooks_broker.py). Hooks are run at [different points of the broker initialisation](https://github.com/OptimalBPM/of/blob/master/broker/broker.py#L185), which allow for extensive control. Implementing a hook is simply to define a function in a module.
+* namespaces and definitions by simply placing the schemas in the [/schema folder](https://github.com/OptimalBPM/optimalbpm/tree/master/schemas), they are automatically imported into the system, to be used in the messaging and data validation.
 * functionality to the admin frontend by [listing the angular directives, controllers, menu items and routes](https://github.com/OptimalBPM/optimalbpm/tree/master/admin-ui) that one wished to include. 
+
 
 
 # Support

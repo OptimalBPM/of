@@ -28,6 +28,34 @@ It is like a CMS for systems development. One could call it a Function Managemen
 
 More features, commercial and non-commercial, ranging from  to actual extensive commercial systems like Optimal BPM and will be available through a plug-in ecosystem.
 
+# How does it work?
+
+The most important concepts of the Optimal Framework are the broker, plugins and schemas.
+
+## Broker
+In the conceptual middle of the system is the broker. 
+
+It is responsible for most cross-cutting concerns like messaging, security logging and keeping persistent data.
+
+## Schemas
+JSON Schema is used to define [all data structures](https://github.com/OptimalBPM/of/tree/master/schemas) in the system. 
+
+It is not only used to validate and define the data in the MongoDB database backend, but also used in front end interfaces like the [administrative interface](https://github.com/OptimalBPM/of-admin), and to [handle messages](https://github.com/OptimalBPM/of/blob/master/common/messaging/handler.py#L115).
+All data in OF are required to have a valid schema reference that it adheres to, and are dictionaries that is turned back and forth into JSON when transmitted.
+
+
+## Plugins
+All functionality is added via plugins. 
+
+In OF, a plugin is almost able to change everything about the system operates.
+Developing plugins is simple and intuitive, they are simple GIT repositories that have a [definitions file](https://github.com/OptimalBPM/optimalbpm/blob/master/definitions.json) that describes them.
+
+Plugins add:
+* functionality to the backend by defining [Python classes](https://github.com/OptimalBPM/optimalbpm/blob/master/broker/cherrypy/process.py) that are mounted by the built-in web server and dynamically incorporated into the backend via [hooks](https://github.com/OptimalBPM/optimalbpm/blob/master/hooks_broker.py)
+* new namespaces and definitions by simply placing the schemas in the [/schema folder](https://github.com/OptimalBPM/optimalbpm/tree/master/schemas), they are automatically imported into the system, to be used in the messaging and data validation.
+* functionality to the admin frontend by [listing the angular directives, controllers, menu items and routes](https://github.com/OptimalBPM/optimalbpm/tree/master/admin-ui) that one wished to include. 
+
+
 # Support
 
 Outside Github issues, there will be commercial support available.

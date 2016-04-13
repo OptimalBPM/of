@@ -1,6 +1,6 @@
 # Optimal Framework
 
-***THIS SOFTWARE IS STILL UNRELEASED. IT IS UNDER ITS FINAL PHASES OF DEVELOPMENT AND NOT YET RECOMMENDED FOR PRODUCTION, ONLY RESEARCH!***
+***THIS SOFTWARE IS STILL UNRELEASED. IT IS IN ITS FINAL PHASES OF DEVELOPMENT AND NOT YET RECOMMENDED FOR PRODUCTION, ONLY RESEARCH!***
 
 The Optimal Framework is a modern, and running, multi-user system, it differs from many other frameworks because it comes with a runnable server as-is.
 The goal is to create something that not only provides the framework for solving, but actually has already implemented the most common problems in systems programming.

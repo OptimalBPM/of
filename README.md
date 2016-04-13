@@ -53,8 +53,8 @@ Currently, there is no real API documentation, however the code is pretty well c
 
 ## Installing
 
-Installation is currently a little bit cumbersome. 
-But this is how it is done on unix flavors. 
+Installation is currently a little bit cumbersome, will become scripted later.    
+But this is how it is done on unix flavors.   
 If it is on windows, do not use sudo and change the commands appropriately.
 
 System requirements:
@@ -73,7 +73,7 @@ The configuration folder optimalbpm of the framework is by default located in th
 
 Install the :
 
-* ```cd ~```go to your home directory
+* ```cd ~``` go to your home directory
 * ```git clone https://github.com/OptimalBPM/of-config.git optimalframework```
 * ```cd optimalframework```
 * ```mkdir plugins``` (if it is not there)
@@ -93,7 +93,7 @@ Now just add your own functionality.
 
 
 ## Developers
-For those wanting to contribute to OF itself, feel free to make pull requests.
+For those wanting to contribute to OF itself, feel free to make pull requests.  
 However, please try and not include too much in each, and work against the development branch unless it is a brief and non-breaking bug fix.
 
 OF strictly follows semantic versioning.
@@ -101,6 +101,7 @@ OF strictly follows semantic versioning.
 ## Source
 
 The structure of the Optimal Framework source:
+
 * /broker - The Optimal Framework broker
 * /broker/ui - The ui of the broker, by default just a holding page, easily replaced by plugins. 
 * /common - Libraries used by the broker and those interacting with it

@@ -1,3 +1,22 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Optimal Framework](#optimal-framework)
+- [Features](#features)
+- [Help](#help)
+  - [Support](#support)
+- [Documentation](#documentation)
+  - [Concepts](#concepts)
+  - [Examples](#examples)
+  - [API](#api)
+  - [Installing](#installing)
+  - [Developers](#developers)
+  - [Source](#source)
+- [History](#history)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Optimal Framework
 
 ***THIS SOFTWARE IS STILL UNRELEASED. IT IS UNDER HEAVY DEVELOPMENT AND NOT RECOMMENDED FOR PRODUCTION, ONLY RESEARCH!***

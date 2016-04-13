@@ -20,7 +20,7 @@ __author__ = 'nibo'
 
 
 
-def init_env(_context=None, _data_files=[], _json_schema_folders=[], _uri_handlers={}):
+def init_env(_database_name = "test_of", _context=None, _data_files=[], _json_schema_folders=[], _uri_handlers={}):
     """
     Initiates the test_broker database
     :param _context: If set, logs in and adds db_access, auth, session_id and peer_process_id properties
@@ -30,7 +30,7 @@ def init_env(_context=None, _data_files=[], _json_schema_folders=[], _uri_handle
     _json_schema_folders += [os.path.abspath(os.path.join(script_dir, "..", "..", "schemas"))]
     _uri_handlers.update({"of": of_uri_handler})
 
-    _db_access = init_database("test_broker", _data_files=_data_files,
+    _db_access = init_database(_database_name, _data_files=_data_files,
                                _json_schema_folders=_json_schema_folders,
                                _uri_handlers=_uri_handlers)
 

@@ -51,6 +51,47 @@ There will be a repository with an example plugin shortly, meanwhile, look at [O
 
 Currently, there is no real API documentation, however the code is pretty well commented. 
 
+## Installing
+
+Installation is currently a little bit cumbersome. 
+But this is how it is done on unix flavors. 
+If it is on windows, do not use sudo and change the commands appropriately.
+
+System requirements:
+
+* install mongodb
+* install python3.4 or newer
+* install python3-pip
+
+
+Install the framework:
+
+* ```sudo pip3 install of``` (of is the Optimal Framework pypi package)
+
+
+The configuration folder optimalbpm of the framework is by default located in the home folder of the user running the system.
+
+Install the :
+
+* ```cd ~```go to your home directory
+* ```git clone https://github.com/OptimalBPM/of-config.git optimalframework```
+* ```cd optimalframework```
+* ```mkdir plugins``` (if it is not there)
+* ```cd plugins```
+* ```git clone https://github.com/OptimalBPM/of-admin admin``` - install the admin interface
+* ```cd admin/ui```
+* ```npm install```   (add --production if you want to install without dev stuff)
+* ```node_modules/jspm/jspm.js install```  (installs the web dependencies)
+* ```cd ../../```
+* ```sh broker.sh```  - run the system (or python3 broker.py)
+
+The interface should now be reachable on:
+https://127.0.0.1:8080/admin/#/process
+
+Which is sort of the point. You now have a running system that already have all these features from the get go.  
+Now just add your own functionality.
+
+
 ## Developers
 For those wanting to contribute to OF itself, feel free to make pull requests.
 However, please try and not include too much in each, and work against the development branch unless it is a brief and non-breaking bug fix.

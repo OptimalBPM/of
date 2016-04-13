@@ -28,51 +28,44 @@ It is like a CMS for systems development. One could call it a Function Managemen
 
 More features, commercial and non-commercial, ranging from  to actual extensive commercial systems like Optimal BPM and will be available through a plug-in ecosystem.
 
-# How does it work?
+# Help
 
-The most important concepts of the Optimal Framework are the broker, plugins and schemas.
+If you have questions or problems, please create an issue.
 
-## Broker
-In the conceptual middle of the system is the broker. 
+If you just wan't to reach out and discuss, please check out the gitter room.
 
-It is responsible for most cross-cutting concerns like messaging, security logging and keeping persistent data.
-For clients of a system built on the framework, its role is application server and messaging platform. 
+## Support
 
-## Schemas
-JSON Schema is used to define [all data structures](https://github.com/OptimalBPM/of/tree/master/schemas) in the system. 
+Outside the Github community, there will be commercial grade support packages available.
 
-It is not only used to validate and define the data in the MongoDB database backend, but also used in front end interfaces like the [administrative interface](https://github.com/OptimalBPM/of-admin), and to [handle messages](https://github.com/OptimalBPM/of/blob/master/common/messaging/handler.py#L115).
+# Documentation
 
-All data in OF are required to have a valid schema reference that it adheres to, and are dictionaries that is turned back and forth into JSON when transmitted.
+## Concepts
+There are three major concepts in the Optimal Framework: [broker, plugins and schemas](https://github.com/OptimalBPM/of/wiki/Concepts).
 
+## Examples
 
-## Plugins
-All functionality is added via plugins. 
+There will be a repository with an example plugin shortly, meanwhile, look at [Optimal BPM](https://github.com/OptimalBPM/optimalbpm).
 
-In OF, a plugin is almost able to change everything about how the system operates.
-Developing plugins is simple and intuitive, they are simple GIT repositories that have a [definitions file](https://github.com/OptimalBPM/optimalbpm/blob/master/definitions.json) that describes them.
+## API
 
-Plugins add:
-* functionality to the backend by defining [CherryPy-exposed classes](https://github.com/OptimalBPM/optimalbpm/blob/master/broker/cherrypy/process.py) that are mounted by the built-in web server and dynamically
- incorporated into the backend via [hooks](https://github.com/OptimalBPM/optimalbpm/blob/master/hooks_broker.py). Hooks are run at [different points of the broker initialisation](https://github.com/OptimalBPM/of/blob/master/broker/broker.py#L185), which allow for extensive control. Implementing a hook is simply to define a function in a module.
-* namespaces and definitions by simply placing the schemas in the [/schema folder](https://github.com/OptimalBPM/optimalbpm/tree/master/schemas), they are automatically imported into the system, to be used in the messaging and data validation.
-* functionality to the admin frontend by [listing the angular directives, controllers, menu items and routes](https://github.com/OptimalBPM/optimalbpm/tree/master/admin-ui) that one wished to include. 
+Currently, there is no real API documentation, however the code is pretty well commented. 
 
-There are numerous advantages to being plugin-based like this.
+## Developers
+For those wanting to contribute to OF itself, feel free to make pull requests.
+However, please try and not include too much in each, and work against the development branch unless it is a brief and non-breaking bug fix.
 
-For all it becomes:
-* possible to create an and sustain an ecosystem among users of the framework
-* easy to separate ones own code from that of the ecosystem, making it easier to handle upgrades
-* possible for the system to degrade gracefully in case of failuse
+OF strictly follows semantic versioning.
 
-For commercial applications it becomes very easy to:
-* maintain several editions of a system (like community, enterprise).
-* add functionality in a modular way using plugins 
+## Source
+
+The structure of the Optimal Framework source:
+* /broker - The Optimal Framework broker
+* /broker/ui - The ui of the broker, by default just a holding page, easily replaced by plugins. 
+* /common - Libraries used by the broker and those interacting with it
+* /schemas - The JSON schemas, and functionality to resolve the of:// scheme
 
 
-# Support
-
-Outside Github issues, there will be commercial support available.
 
 # History
 
@@ -91,10 +84,4 @@ It is not primarily thought of as something to build a web site, but rather for 
 
 
 
-# Source
 
-The structure of the Optimal Framework source:
-* /broker - The Optimal Framework broker
-* /broker/ui - The ui:s of the broker
-* /common - Libraries used by the broker and those interacting with it
-* /schemas - The JSON schemas, and functionality to resolve the of:// scheme

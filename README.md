@@ -13,9 +13,8 @@ It is like a CMS for systems development. One could call it a Function Managemen
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-## Table of Contents
+# Table of Contents
 
-- [Optimal Framework](#optimal-framework)
 - [Features](#features)
 - [Help](#help)
   - [Support](#support)
@@ -42,10 +41,13 @@ It is like a CMS for systems development. One could call it a Function Managemen
 * Rights
 * Authentication and session management
 * Logging, auditing (categories, severities, local, remote)
-* Locking
-* Installers
 * Administrative User interface 
 * Dependency-aware plug-in framework
+
+Upcoming:
+
+* Locking
+* Installers
 
 More features, commercial and non-commercial, ranging from  to actual extensive commercial systems like Optimal BPM and will be available through a plug-in ecosystem.
 
@@ -119,7 +121,7 @@ However, please try and not include too much in each, and work against the devel
 
 OF strictly follows semantic versioning.
 
-## Source
+## Source structure
 
 The structure of the Optimal Framework source:
 

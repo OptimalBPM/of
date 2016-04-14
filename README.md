@@ -64,7 +64,7 @@ Outside the Github community, there will be commercial grade support packages av
 # Documentation
 
 ## Concepts
-There are three major concepts in the Optimal Framework: [broker, plugins and schemas](https://github.com/OptimalBPM/of/wiki/Concepts).
+There are three major concepts in the Optimal Framework: [broker, nodes, plugins and schemas](https://github.com/OptimalBPM/of/wiki/Concepts).
 
 ## Examples
 

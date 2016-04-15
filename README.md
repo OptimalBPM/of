@@ -99,7 +99,6 @@ Install the :
 * ```cd ~``` go to your home directory
 * ```git clone https://github.com/OptimalBPM/of-config.git optimalframework```
 * ```cd optimalframework```
-* ```mkdir plugins``` (if it is not there)
 * ```cd plugins```
 * ```git clone https://github.com/OptimalBPM/of-admin admin``` - install the admin interface
 * ```cd admin/ui```

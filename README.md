@@ -111,7 +111,8 @@ The interface should now be reachable on:
 https://127.0.0.1:8080/admin/#/process
 
 Which is sort of the point. You now have a running system that already have all these features from the get go.  
-Now just add your own functionality.
+Now just add your own functionality in a [plugin](https://github.com/OptimalBPM/of/wiki/Concepts#plugins) that you simply add next to the admin interface plugin.
+If there is a folder there, and a definitions.json-file, it is a plugin and will be loaded by the framework.
 
 
 ## Developers

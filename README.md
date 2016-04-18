@@ -5,11 +5,11 @@
 The Optimal Framework is a modern, and running, multi-user system, it differs from many other frameworks because it comes with a runnable server as-is.
 The goal is to create something that not only provides the framework for solving, but actually has already implemented the most common problems in systems programming.
 
-As the client side of Optimal Framework is Typescript, and the server side is Python, there are no restriction on what can be done.
+As the client side of Optimal Framework is Typescript, and the server side is Python, there are no restrictions on what can be done.
 The backend is a MongoDB database, which covers a surprising range of usage scenarios, but there are no problems with additionally using an RDBMS backend.
 
 A typical implementation would someone moving a traditional desktop client-based system to web based clients or apps.
-It is like a CMS for systems development. One could call it a Function Management System. And FMS.
+It is like a CMS for systems development. One could call it a Function Management System. An FMS.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->

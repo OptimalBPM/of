@@ -62,7 +62,7 @@ class DatabaseAccess():
 
             if _curr_schema["collection"] != _collection_name:
                 raise Exception(
-                    _caller_name + ": Invalid schemaRef. " + _caller_name + " is restricted to the   \"" +
+                    _caller_name + ": Invalid schemaRef: \"" + _curr_schema["collection"] +"\". " + _caller_name + " is restricted to the \"" +
                     _collection_name + "\"-collection.")
         else:
             # An MBE document must *always* have a schemaRef property

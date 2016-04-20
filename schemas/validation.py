@@ -1,5 +1,5 @@
 """
-This module holds Optimal BPM-specific JSON schema functionality
+This module holds Optimal Framework-specific JSON schema functionality
 """
 import json
 import os

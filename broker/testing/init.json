@@ -101,7 +101,7 @@
     "allowedChildTypes": [
       "of://node_broker.json",
       "of://node_admin.json",
-      "of://peer.json",
+      "of://node_peer.json",
       "bpm://node_agent.json"
     ]
   },

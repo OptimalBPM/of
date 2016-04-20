@@ -1,10 +1,10 @@
 """
-The constants module holds constants for all the schemas defined in Optimal BPM
+The constants module holds constants for all the schemas defined in Optimal Framework
 """
 __author__ = 'Nicklas Borjesson'
 
 """
-Constants for _ids in the Optimal BPM database
+Constants for _ids in the Optimal Framework database
 TODO: These are only constant for this instance of the database (perhaps XOR-them together with environment Id?)
 """
 # Hard coded locations of always present nodes
@@ -39,6 +39,7 @@ schema_categories = {
     # Node category - Nodes in the node tree, cannot be messages
     "of://node_broker.json": "node",
     "of://node_admin.json": "node",
+    "of://node_peer.json": "node",
     # Log category - Log messages - written to the log collection by the broker
     "of://log_progression.json": "log",
     "of://log_process_state.json": "log",
@@ -55,7 +56,8 @@ intercept_schema_ids = []
 peer_type__schema_id = {
 
     "broker": "of://node_broker.json",
-    "admin": "of://node_admin.json"
+    "admin": "of://node_admin.json",
+    "peer": "of://node_peer.json"
 }
 
 

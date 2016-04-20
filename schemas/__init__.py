@@ -1,4 +1,4 @@
 """
-The schemas package holds all Optimal BPM json schemas.
+The schemas package holds all Optimal Framework json schemas.
 """
 __author__ = 'Nicklas Borjesson'

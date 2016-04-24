@@ -175,14 +175,19 @@ def start_broker():
     write_srvc_dbg("Load plugin data")
     # Find the plugin directory
     _plugin_dir = _settings.get_path("broker/pluginFolder", _default="plugins")
-
+    # Find the plugin directory
+    repository_parent_folder = _settings.get_path("broker/repositoryFolder", _default="broker_repositories")
     # Load all plugin data
     plugins = CherryPyPlugins(_plugin_dir=_plugin_dir, _schema_tools=schema_tools, _namespaces=namespaces,
                                _process_id=process_id)
 
+    # Plugins may want to initialize or add globals
+    plugins.call_hook("init_globals", _broker_scope=globals())
+
+
     write_srvc_dbg("===Register signal handlers===")
     register_signals(stop_broker)
-    plugins.call_hook("before_db_connect", _globals=globals())
+    plugins.call_hook("before_db_connect", _broker_scope=globals())
     # Connect to the database
     _host = _settings.get("broker/database/host", _default="127.0.0.1")
     _user = _settings.get("broker/database/username", _default=None)
@@ -205,7 +210,7 @@ def start_broker():
                                                        _name="Broker instance(" + address + ")"),
                          _user=None,
                          _allow_save_id=True)
-    plugins.call_hook("after_db_connect", _globals=globals())
+    plugins.call_hook("after_db_connect", _broker_scope=globals())
     # TODO: It is possible that one would like to initialize, or at least read the plugins *before* trying to connect to the database
 
     # Must have a valid CherryPy version
@@ -235,6 +240,7 @@ def start_broker():
         # https://bitbucket.org/cherrypy/cherrypy/issue/1341/autoreloader-also-fails-if-six-is-present
         "engine.autoreload.on": False,
         'server.socket_host': '0.0.0.0',
+        "server.ssl_certificate": os.path.join(ssl_path(), "optimalframework_test_cert.pem"),
         "server.ssl_certificate": os.path.join(ssl_path(), "optimalframework_test_cert.pem"),
         "server.ssl_private_key": os.path.join(ssl_path(), "optimalframework_test_privkey.pem")
     })
@@ -268,7 +274,7 @@ def start_broker():
     init_authentication(MongoDBAuthBackend(database_access))
 
     # Initialize root UI
-    web_root = CherryPyBroker(_process_id=process_id, _address=address)
+    web_root = CherryPyBroker(_process_id=process_id, _address=address, _database_access=database_access)
     # Initialize messaging
     of.common.messaging.websocket.monitor = Monitor(_handler=BrokerWebSocketHandler(process_id, _peers=web_root.peers,
                                                                                     _database_access=database_access,

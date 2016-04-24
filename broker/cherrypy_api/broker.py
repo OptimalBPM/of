@@ -12,7 +12,7 @@ import cherrypy
 from of.common.logging import EC_SERVICE, write_to_log, SEV_DEBUG, EC_NOTIFICATION, EC_PROBE, SEV_WARNING, \
     severity_identifiers, category_identifiers
 from of.common.messaging.constants import UNEXPECTED_CONDITION
-from of.broker.cherrypy_api.node import aop_login_json, aop_check_session
+from of.broker.cherrypy_api.node import aop_login_json, aop_check_session, CherryPyNode
 from of.schemas.constants import id_right_admin_everything
 from of.common.security.groups import has_right, aop_has_right
 from of.broker.lib.node import sanitize_node
@@ -37,10 +37,10 @@ class CherryPyBroker(object):
     #: Plugin management
     plugins = None
 
-    #: An reference to a Nodes instance
+    #: A reference to a Nodes instance
     node = None
 
-    def __init__(self, _process_id, _address):
+    def __init__(self, _process_id, _address, _database_access):
         """
         Initializes the broker web service and includes and initiates the other parts of the API as well
         :param _database_access: A DatabaseAccess instance for database connectivity
@@ -53,6 +53,8 @@ class CherryPyBroker(object):
         self.peers = {}
         self.process_id = _process_id
         self.address = _address
+
+        self.node = CherryPyNode(_database_access=_database_access)
 
     def write_debug_info(self, _data):
         write_to_log(_data=_data, _category=EC_NOTIFICATION, _severity=SEV_DEBUG, _process_id=self.process_id)

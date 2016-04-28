@@ -225,7 +225,7 @@ def start_broker():
     def ssl_path():
         # Figure out the path to the ssl-certificates
         # TODO: Load from database instead. Or not? (PROD-19)
-        return os.path.join(os.path.expanduser("~"), "optimalframework")
+        return os.path.dirname(_cfg_filename)
 
     # Initialize CherryPy:s global configuration; note that this could be moved into a configuration file
     cherrypy.config.update({

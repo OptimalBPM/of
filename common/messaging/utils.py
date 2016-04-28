@@ -8,6 +8,7 @@ import platform
 import datetime
 import json
 import logging
+import urllib3
 
 
 import requests
@@ -20,11 +21,11 @@ from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG, SEV_FATA
     EC_COMMUNICATION
 from of.common.messaging.factory import get_current_login
 import requests
-from requests.packages.urllib3.exceptions import InsecureRequestWarning, SSLError
+from urllib3.exceptions import InsecureRequestWarning, SSLError
 
 # Suppress insecure request
 # TODO: However, this cho
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+urllib3.disable_warnings(InsecureRequestWarning)
 
 # TODO: get_python_versions should be duplicated into of.common.* (PROD-94)
 

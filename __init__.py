@@ -5,6 +5,6 @@ __author__ = 'Nicklas Borjesson'
 
 # Version and release information used by Sphinx for documentation and setuptools for package generation.
 __version__ = '0.9'
-__release__ = '0.9.4'
+__release__ = '0.9.5'
 __copyright__ = '2010-2016, Optimal BPM'
 

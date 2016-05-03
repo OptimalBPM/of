@@ -100,14 +100,15 @@ Install the :
 * ```git clone https://github.com/OptimalBPM/of-config.git optimalframework```
 * ```cd optimalframework```
 * ```cd plugins```
-* ```git clone https://github.com/OptimalBPM/of-admin admin``` - install the admin interface
+* ```git clone https://github.com/OptimalBPM/of-admin admin``` - install the admin interface plugin
 * ```cd admin/ui```
-* ```npm install```   (add --production if you want to install without dev stuff)
-* ```node_modules/jspm/jspm.js install```  (installs the web dependencies)
+* ```npm install```   (add --production if you want to install without dev stuff, may need sudo)
+* ```node_modules/jspm/jspm.js install```  (installs the web dependencies, may need sudo)
 * ```cd ../../```
+* ```sh initdb.sh```  - initialize the database (or python3 initdb.py)
 * ```sh broker.sh```  - run the system (or python3 broker.py)
 
-The interface should now be reachable on:
+The admin interface should now be reachable on:
 https://127.0.0.1:8080/admin/#/process
 
 Which is sort of the point. You now have a running system that already have all these features from the get go.  

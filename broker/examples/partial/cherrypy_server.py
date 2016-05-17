@@ -1,6 +1,7 @@
 """
     A test server in CherryPy that demonstrates how to use MBE from CherryPy.
 """
+from of.broker.cherrypy_api.authentication import aop_login_json, aop_check_session, cherrypy_logout
 from of.broker.lib.auth_backend import MongoDBAuthBackend
 from of.common.security.authentication import init_authentication
 from of.schemas.validation import of_uri_handler
@@ -12,9 +13,10 @@ import os
 
 # Add MBE path
 script_dir = os.path.dirname(__file__)
-sys.path.append(os.path.join(script_dir, "../"))
+
 
 import cherrypy
+
 from of.broker.cherrypy_api.node import CherryPyNode
 from of.broker.testing.init import init_database
 
@@ -36,6 +38,24 @@ class Server(object):
                                               _data_files=[os.path.join(script_dir, "../../testing/data_struct.json")],
                                               _json_schema_folders=[os.path.join(script_dir, "../../../schemas")],
                                               _uri_handlers={"of": of_uri_handler})
+
+    @cherrypy.expose
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out(content_type='application/json')
+    @aop_login_json
+    def login(self, **kwargs):
+        return {}
+
+
+    @cherrypy.expose
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out(content_type='application/json')
+    @aop_check_session
+    def logout(self, **kwargs):
+        cherrypy.response.cookie = cherrypy_logout(kwargs["_session_id"])
+        return {}
+
+
 
     @cherrypy.expose
     @cherrypy.tools.json_out(content_type='application/json')

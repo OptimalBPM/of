@@ -38,7 +38,7 @@ function callMethod(method, data, callback) {
 
 function login() {
     callMethod(
-        "node/login",
+        "login",
         {credentials: {usernamePassword: {username: "root", password: "root"}}},
         function (response) {
             $("#session_status")[0].textContent = "Logged in";
@@ -53,7 +53,7 @@ function login() {
 
 function logout() {
     callMethod(
-        "node/logout",
+        "logout",
         {},
         function (response) {
             $("#session_status")[0].textContent = "Logged out";

@@ -10,7 +10,7 @@ from multiprocessing import Queue
 import cherrypy
 
 from of.common.logging import EC_SERVICE, write_to_log, SEV_DEBUG, EC_NOTIFICATION, EC_PROBE, SEV_WARNING, \
-    severity_identifiers, category_identifiers
+    severity_identifiers, category_identifiers, SEV_ERROR, EC_COMMUNICATION
 from of.common.messaging.constants import UNEXPECTED_CONDITION
 from of.broker.cherrypy_api.node import CherryPyNode
 from of.broker.cherrypy_api.authentication import aop_login_json, aop_check_session, logout, cherrypy_logout
@@ -145,6 +145,29 @@ class CherryPyBroker(object):
 
             return None
 
+
+    @cherrypy.expose
+    @cherrypy.tools.json_out(content_type='application/json')
+    @aop_check_session
+    def unregister(self, **kwargs):
+        _session_id = kwargs["_session_id"]
+        if "session_id" in cherrypy.request.cookie:
+            cherrypy.response.cookie = cherrypy_logout(_session_id)
+
+
+        _peer = self.peers[_session_id]
+        if "websocket" in _peer:
+            try:
+                _peer["websocker"].close()
+                write_to_log(_data="Unregister: Closed websocket for address " + _peer["address"] + ".",
+                             _category=EC_COMMUNICATION, _severity=SEV_DEBUG)
+            except:
+                write_to_log(_data="Unregister: Failed closing websocket for address " + _peer["address"] + ".",
+                             _category=EC_COMMUNICATION, _severity=SEV_ERROR)
+
+        del self.peers[_session_id]
+        return {}
+
     @cherrypy.expose
     def socket(self):
         """
@@ -189,13 +212,5 @@ class CherryPyBroker(object):
                      _node_id=_message.get("node_id")
                      )
         return "{}"
-
-    # noinspection PyUnusedLocal
-    @cherrypy.expose
-    @cherrypy.tools.json_out(content_type='application/json')
-    def logout(self, **kwargs):
-        if "session_id" in cherrypy.request.cookie:
-            cherrypy.response.cookie["session_id"] = cherrypy_logout(cherrypy.request.cookie["session_id"].value)
-        return {}
 
 

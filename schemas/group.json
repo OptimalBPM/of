@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "MBE Group Schema",
+  "description": "Optimal Framework Group Schema",
   "title": "Group",
   "type": "object",
   "version": "0.1",

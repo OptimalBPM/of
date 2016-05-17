@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "MBE type definitions",
+  "description": "Optimal Framework Type definitions",
   "title": "Type",
   "version": 0.1,
   "type": "string",

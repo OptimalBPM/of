@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "MBE User Schema",
+  "description": "Optimal Framework User Schema",
   "title": "User",
   "type": "object",
   "version": "0.1",

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "Process instance schema",
+  "description": "Optimal Framework Process instance schema",
   "title": "Process Instance",
   "type": "object",
   "version": "0.1",

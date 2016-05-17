@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "MBE Right Schema",
+  "description": "Optimal Framework Right Schema",
   "title": "Right",
   "type": "object",
   "version": "0.1",

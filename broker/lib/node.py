@@ -102,9 +102,9 @@ class Node():
     def save(self, _document, _user):
         """save(self, _document, _user)
 
-        Saves an MBE node descendant to the database.
+        Saves an of-node descendant to the database.
 
-        :param _document: The MBE node document to save.
+        :param _document: The node document to save.
         :param _user: The current user
         :return: A structure detailing the save result
 
@@ -139,7 +139,7 @@ class Node():
     @aop_has_right(get_node_rights)
     def find(self, _conditions, _user, _error_prefix_if_not_allowed=None):
         """find(_conditions,_user)
-        Returns a list of nodes matching the MBE condition.
+        Returns a list of nodes matching the condition.
         Note: This method is literate, it takes ObjectId instances when comparing to ObjectId instances.
         But JSON doesn't handle ObjectId. So instead it supports an ObjectId(000000010000010001ee3214)-syntax
         and when it encounters those values, it converts them into ObjectId instances.

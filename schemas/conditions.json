@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "MBE Conditions schema",
+  "description": "Optimal Framework Conditions schema",
   "title": "Conditions",
   "type": "object",
   "version": "0.1",

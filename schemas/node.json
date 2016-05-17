@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "MBE Node Schema",
+  "description": "Optimal Framework Node Schema",
   "title": "Node",
   "type": "object",
   "version": "0.1",

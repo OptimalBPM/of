@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "MBE Event Schema",
+  "description": "Optimal Framework Event Schema",
   "title": "Event",
   "type": "object",
   "version": "0.1",

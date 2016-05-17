@@ -1,7 +1,7 @@
 
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "The properties associated with an Optimal Framework peer",
+  "description": "Optimal Framework Peer",
   "title": "A peer",
   "type": "object",
   "version": "0.1",

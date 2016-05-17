@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "System process instance",
+  "description": "Optimal Framework System process instance",
   "title": "System process instance",
   "type": "object",
   "version": "0.1",

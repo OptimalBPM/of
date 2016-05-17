@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "MBE Session Schema",
+  "description": "Optimal Framework Session Schema",
   "title": "Session",
   "type": "object",
   "version": "0.1",

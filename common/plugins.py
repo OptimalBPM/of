@@ -1,17 +1,13 @@
 """
-This module handles the plugin structure of the  the Optimal BPM Admin API as a web service through a CherryPy module
+This module handles the plugin structure of the  the Optimal BPM Admin API
 """
 import importlib
 import json
 import os
 import time
-from urllib.parse import urlparse
 from uuid import UUID
 import sys
 
-import cherrypy
-
-from of.broker.cherrypy_api.node import aop_check_session
 from of.common.cumulative_dict import CumulativeDict
 from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG, SEV_ERROR, EC_SERVICE, SEV_INFO
 

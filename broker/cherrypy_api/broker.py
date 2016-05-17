@@ -12,11 +12,12 @@ import cherrypy
 from of.common.logging import EC_SERVICE, write_to_log, SEV_DEBUG, EC_NOTIFICATION, EC_PROBE, SEV_WARNING, \
     severity_identifiers, category_identifiers
 from of.common.messaging.constants import UNEXPECTED_CONDITION
-from of.broker.cherrypy_api.node import aop_login_json, aop_check_session, CherryPyNode
+from of.broker.cherrypy_api.node import CherryPyNode
+from of.broker.cherrypy_api.authentication import aop_login_json, aop_check_session, logout, cherrypy_logout
 from of.schemas.constants import id_right_admin_everything
 from of.common.security.groups import has_right, aop_has_right
 from of.broker.lib.node import sanitize_node
-from of.common.messaging.utils import get_environment_data
+
 from of.schemas.constants import peer_type_to_schema_id
 
 
@@ -59,13 +60,7 @@ class CherryPyBroker(object):
     def write_debug_info(self, _data):
         write_to_log(_data=_data, _category=EC_NOTIFICATION, _severity=SEV_DEBUG, _process_id=self.process_id)
 
-    @cherrypy.expose
-    @cherrypy.tools.json_out(content_type='application/json')
-    @aop_check_session
-    @aop_has_right([id_right_admin_everything])
-    def get_broker_environment(self, **kwargs):
-        self.write_debug_info("Request for broker information")
-        return get_environment_data()
+
 
     @cherrypy.expose
     @cherrypy.tools.json_in()
@@ -194,3 +189,13 @@ class CherryPyBroker(object):
                      _node_id=_message.get("node_id")
                      )
         return "{}"
+
+    # noinspection PyUnusedLocal
+    @cherrypy.expose
+    @cherrypy.tools.json_out(content_type='application/json')
+    def logout(self, **kwargs):
+        if "session_id" in cherrypy.request.cookie:
+            cherrypy.response.cookie["session_id"] = cherrypy_logout(cherrypy.request.cookie["session_id"].value)
+        return {}
+
+

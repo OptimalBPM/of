@@ -76,8 +76,10 @@ def logout(_session_id):
     if _authentication is None:
         raise AuthenticationError('session logout: No authentication object initialized. Call init_authentication.')
 
-    # Check if the session is valid.
+
+    # Logout the session
     return _authentication.logout(_session_id)
+
 
 
 def check_session_aspect(func, *args, **kwargs):

@@ -1,8 +1,8 @@
 pymongo
 jsonschema
 decorator
-bson
 requests
 cherrypy
 pycrypto
 ws4py
+urllib3

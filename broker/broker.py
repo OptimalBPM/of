@@ -34,7 +34,7 @@ from of.broker.lib.messaging.websocket import BrokerWebSocket
 from of.schemas.constants import zero_object_id
 from of.schemas.validation import of_uri_handler
 from of.broker.cherrypy_api.broker import CherryPyBroker
-from of.broker.cherrypy_api.plugins import CherryPyPlugins
+from of.common.plugins import CherryPyPlugins
 
 from of.broker.lib.messaging.handler import BrokerWebSocketHandler
 from of.common.queue.monitor import Monitor
@@ -175,15 +175,14 @@ def start_broker():
     write_srvc_dbg("Load plugin data")
     # Find the plugin directory
     _plugin_dir = _settings.get_path("broker/pluginFolder", _default="plugins")
-    # Find the plugin directory
-    repository_parent_folder = _settings.get_path("broker/repositoryFolder", _default="broker_repositories")
+
     # Load all plugin data
     plugins = CherryPyPlugins(_plugin_dir=_plugin_dir, _schema_tools=schema_tools, _namespaces=namespaces,
                                _process_id=process_id)
 
-    # Plugins may want to initialize or add globals
-    plugins.call_hook("init_globals", _broker_scope=globals())
 
+    # Plugins may want to load settings or add globals
+    plugins.call_hook("init_broker_scope", _broker_scope=globals(), _settings=_settings)
 
     write_srvc_dbg("===Register signal handlers===")
     register_signals(stop_broker)

@@ -28,7 +28,7 @@ class CherryPyBroker(object):
     """
     The root web server class of the Optimal BPM Broker.
     It exposes the web services of the broker.
-    Note: The web application admin UI is served statically from the /admin folder.
+    Note: The web application admin UI is served statically from the /admin folder by the of-admin plugin.
     """
 
     #: A sessionId-indexed dictionary of logged in peers
@@ -103,7 +103,7 @@ class CherryPyBroker(object):
 
             # Load the matching node for the address
             _condition = {"schemaRef": peer_type_to_schema_id(_peer_type), "address": _address}
-            _settings = sanitize_node(self.admin.node._node.find(_condition, kwargs["_user"]))
+            _settings = sanitize_node(self.node._node.find(_condition, kwargs["_user"]))
             _session_id = kwargs["_session_id"]
             self.write_debug_info("New _session_id : " + str(_session_id))
 

@@ -1,5 +1,5 @@
 """
-    Initialization for MBE tests.
+    Initialization for OF broker tests.
 """
 import os
 

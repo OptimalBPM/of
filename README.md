@@ -2,14 +2,20 @@
 
 ***THIS SOFTWARE IS STILL UNRELEASED. IT IS IN ITS FINAL PHASES OF DEVELOPMENT AND NOT YET RECOMMENDED FOR PRODUCTION, ONLY RESEARCH!***
 
-The Optimal Framework is a modern, and running, multi-user system, it differs from many other frameworks because it comes with a runnable server as-is.
+The Optimal Framework is the equivalent of a CMS for systems development. 
+One could call it a Function Management System. An FMS.
+
+It is a modern, and running, plugin-based, multi-user system, and it differs from many other frameworks because it comes with a runnable server as-is.
 The goal is to create something that not only provides the framework for solving, but actually has already implemented the most common problems in systems programming.
+Adding functionality to the Python backend is just to add classes and properties to the system, it is a highly intuitive approach.
 
-As the client side of Optimal Framework is Typescript, and the server side is Python, there are no restrictions on what can be done.
-The backend is a MongoDB database, which covers a surprising range of usage scenarios, but there are no problems with additionally using an RDBMS backend.
+There is also an optional [administrative UI-plugin](https://github.com/OptimalBPM/of-admin), written in typescript and angular and easily extensible.
+If one want to add an application UI, any client-side framework that can work against the backend will work.
 
-A typical implementation would someone moving a traditional desktop client-based system to web based clients or apps.
-It is like a CMS for systems development. One could call it a Function Management System. An FMS.
+Behind the backend reside a MongoDB database, which covers a surprising range of usage scenarios, but there are no problems with additionally using an RDBMS backend.
+
+A typical implementation would be someone moving a traditional desktop client-based system to web based clients or apps.
+
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->

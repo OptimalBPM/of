@@ -255,3 +255,20 @@ def step_impl(context, prefix):
     :type context: behave.runner.Context
     """
     pass
+
+
+@step("the user requests a list of templates")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    context.loaded_templates = context.node.get_templates("of://node_broker.json", context.user)
+    ok_(True)
+
+
+@then("it should return a list of templates")
+def step_impl(context):
+    """
+    :type context: behave.runner.Context
+    """
+    ok_(context.loaded_templates[0]["description"] == "Broker template")

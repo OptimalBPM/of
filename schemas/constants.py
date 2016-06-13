@@ -17,9 +17,8 @@ id_right_admin_everything = "000000010000010001e64c27"
 id_group_administrators = "000000010000010001e64c28"
 id_group_users = "000000010000010001e64c29"
 
-id_users = "000000010000010001e64c25"
 id_peers = "000000010000010002e64d03"
-
+id_templates = "000000010000010002e64d04"
 # Shorthand for a valid 24-digit zero object id
 zero_object_id = "000000000000000000000000"
 

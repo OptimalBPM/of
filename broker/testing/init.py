@@ -62,7 +62,7 @@ def init_database(_database_name="test_database", _data_files=None, _json_schema
         _data_files = []
 
     _da = get_empty_db_da(_database_name, _json_schema_folders = _json_schema_folders, _uri_handlers= _uri_handlers)
-    # Init by loading the MBE base structure
+    # Init by loading the OF base structure
     _import_init_file(os.path.join(script_dir, 'init.json'), _da)
 
     # Import the rest of the data

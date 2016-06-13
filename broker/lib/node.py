@@ -17,7 +17,7 @@ from of.common.security.permission import filter_by_group
 
 
 # TODO: Separate or classify all MongoDB-specific querying
-from of.schemas.constants import id_right_admin_everything
+from of.schemas.constants import id_right_admin_everything, id_templates
 
 __author__ = 'nibo'
 
@@ -190,6 +190,22 @@ class Node():
             {"conditions": {"_id": mbe_object_id(_id["_id"])}, "collection": "node"}),
             "canRead", _user, self.database_access,
             _error_prefix_if_not_allowed="Node.load_node: Not permissioned to load this node. _id: " + _id["_id"])[0]
+
+    @aop_has_right(get_node_rights)
+    def get_templates(self, _schema_ref, _user):
+        """
+        Returns a template.
+
+        :param _schema_ref: The schemaRef if the wanted templates
+        :return: A list of nodes matching the schema that the user have rights to
+
+        """
+
+        # Filter result by canRead groups
+        return filter_by_group(self.database_access.find(
+            {"conditions": {"parent_id": mbe_object_id(id_templates), "schemaRef": _schema_ref}, "collection": "node"}),
+            "canRead", _user, self.database_access)
+
 
     @aop_has_right(get_node_rights)
     def lookup(self, _conditions, _user):

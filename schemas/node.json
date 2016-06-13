@@ -70,6 +70,11 @@
         "format": "uri",
         "propertyId": "9161503f-a3fe-4b7e-8c0a-8553bd3f8043"
       }
+    },
+    "templateName": {
+      "description": "The name of the template used when creating the node",
+      "type": "string",
+      "propertyId": "5126fa0e-b258-4ac4-935a-c6d15a2e3681"
     }
   },
   "required": [

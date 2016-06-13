@@ -252,6 +252,25 @@
     "canRead": ["000000010000010001e64c28"],
     "canWrite": ["000000010000010001e64c28"],
     "allowedChildTypes": []
+  },
+  {
+    "_id": "000000010000010002e64d42",
+    "parent_id": "000000010000010002e64d04",
+    "name": "new_broker",
+    "description": "Broker template",
+    "createdWhen": "2014-11-13T01:00:00+00:00",
+    "schemaRef": "of://node_broker.json",
+    "address": "",
+    "repositoriesLocation": "~/optimalframework/broker_repositories",
+    "canRead": [
+      "000000010000010001e64c28",
+      "000000010000010001e64d02"
+    ],
+    "canWrite": [
+      "000000010000010001e64c28",
+      "000000010000010001e64d02"
+    ],
+    "allowedChildTypes": []
   }
 
 ]

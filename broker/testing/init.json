@@ -84,6 +84,23 @@
     ]
   },
   {
+    "_id": "000000010000010002e64d04",
+    "parent_id": "000000010000010001e64c23",
+    "name": "Templates",
+    "description": "All templates",
+    "createdWhen": "2014-11-13T01:00:00+00:00",
+    "schemaRef": "of://node.json",
+    "canRead": [
+      "000000010000010001e64c28"
+    ],
+    "canWrite": [
+      "000000010000010001e64c28"
+    ],
+    "allowedChildTypes": [
+      "of://node.json"
+    ]
+  },
+  {
     "_id": "000000010000010002e64d03",
     "parent_id": "000000010000010001e64c00",
     "name": "Peers",

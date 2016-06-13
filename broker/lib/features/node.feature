@@ -55,3 +55,8 @@ Feature: Node management
     Given the user logs in with username root and password root
     And a request to the API is made
     Then it should return a list of schema
+
+  Scenario: Load templates
+    Given the user logs in with username root and password root
+    And the user requests a list of templates
+    Then it should return a list of templates

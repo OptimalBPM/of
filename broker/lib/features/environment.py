@@ -26,7 +26,7 @@ id_user_test = "000000010000010001e64c31"
 id_right_admin_nodes = "000000010000010001e64d01"
 
 def before_all(context):
-    init_env(context)
+    init_env("test_db", context)
 
 
 def init_low_level(context, feature):

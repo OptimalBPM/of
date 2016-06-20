@@ -80,6 +80,13 @@ class CherryPyNode(object):
         return self._node.history(cherrypy.request.json, kwargs["_user"])
 
 
+    @cherrypy.expose
+    @cherrypy.tools.json_in()
+    @cherrypy.tools.json_out(content_type='application/json')
+    @aop_check_session
+    def get_templates(self, **kwargs):
+        return self._node.get_templates(cherrypy.request.json["schemaRef"], kwargs["_user"])
+
 
     @cherrypy.expose
     @cherrypy.tools.json_out(content_type='application/json')

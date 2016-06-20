@@ -11,7 +11,7 @@ import os
 SEV_DEBUG = 0  # Debugging message
 SEV_INFO = 1  # Informational message
 SEV_WARNING = 2  # A warning
-SEV_ALERT = 3  # Action must be taken immidiately
+SEV_ALERT = 3  # Action must be taken immediately
 SEV_USER = 4  # A user error or error that can be corrected by the user
 SEV_ERROR = 5  # A problem but doesn't stop execution
 SEV_FATAL = 6  # A problem that causes something to stop functioning
@@ -26,8 +26,8 @@ EC_INVALID = 2  # A validation error, some information failed to validate, inval
 EC_COMMUNICATION = 3  # A communications error
 EC_SERVICE = 4 # A service level error, such as a failure to start or configuration errors
 EC_RESOURCE = 5  # A resource error indicating a lack of memory, space or time/cpu or other resource
-EC_RIGHT = 6  # A security related error, insufficient permissions or rights
-EC_PERMISSION = 7  # A security related error, insufficient permissions or rights
+EC_RIGHT = 6  # A security related error, insufficient rights
+EC_PERMISSION = 7  # A security related error, insufficient permissions
 EC_UNCATEGORIZED = 8  # Uncategorized error
 
 # Node change categories
@@ -36,9 +36,9 @@ EC_REMOVE = 10  # Something was removed
 EC_CHANGE = 11  # Something was changed
 
 # Attack categories
-EC_PROBE = 12  # The system consider itself being probed
-EC_DOS = 13  # The system consider itself being under a denial-of-service attack
-EC_BREAKIN = 14  # The system consider itself being broken in to
+EC_PROBE = 12  # The system considers itself being probed
+EC_DOS = 13  # The system considers itself being under a denial-of-service attack
+EC_BREAKIN = 14  # The system considers itself being broken in to
 
 # Human representations
 

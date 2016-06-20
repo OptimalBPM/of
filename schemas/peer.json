@@ -13,6 +13,7 @@
     },
     "peerType": {
       "description": "The peer type",
+      "type": "string",
       "enum": ["agent", "broker", "admin", "application"],
       "propertyId": "de5a8e20-5554-4746-a94b-7ab12c005b29"
     },

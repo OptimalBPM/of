@@ -261,6 +261,7 @@
     "createdWhen": "2014-11-13T01:00:00+00:00",
     "schemaRef": "of://node_broker.json",
     "address": "",
+    "templateName": "New broker template",
     "repositoriesLocation": "~/optimalframework/broker_repositories",
     "canRead": [
       "000000010000010001e64c28",

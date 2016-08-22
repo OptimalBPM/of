@@ -6,15 +6,15 @@
   "version": "0.1",
   "properties": {
     "_id": {
-      "$ref": "of://type.json#/properties/objectId",
+      "$ref": "ref://of.type.json#/properties/objectId",
       "description": "The object _id of the event, an object id.",
       "propertyId": "dcf7fb13-f934-4121-90ec-c8992203a299",
       "objectId": "true"
     },
     "user_id": {
-      "$ref": "of://type.json#/properties/objectId",
+      "$ref": "ref://of.type.json#/properties/objectId",
       "description": "The user involved in the event.",
-      "refSchemaRef": "of://user.json",
+      "refSchemaRef": "ref://of.node.user.json",
       "propertyId": "d1714064-a023-4d54-b801-4e6385cf6975",
       "isObjectId": "true"
     },
@@ -75,7 +75,7 @@
       "additionalProperties": false
     },
     "node_id": {
-      "$ref": "of://type.json#/properties/objectId",
+      "$ref": "ref://of.type.json#/properties/objectId",
       "description": "If applicable, the relevant _id in the node-collection, used for tracking changes to a node or identifying reporting functionality.",
       "propertyId": "a062bbc2-1f61-4237-a41f-c16482d5c196",
       "isObjectId": "true"

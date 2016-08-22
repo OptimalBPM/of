@@ -215,7 +215,7 @@ def make_event(_data, _category=None, _severity=None, _process_id=None, _user_id
             "pid": _pid,
             "occurredWhen": _occurred_when,
             "process_id": _process_id,
-            "schemaRef": "of://event.json"
+            "schemaRef": "ref://of.event.json"
         }
     )
     if _node_id is not None:

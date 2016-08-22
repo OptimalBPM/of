@@ -6,8 +6,8 @@
   "version": "0.1",
   "properties": {
     "peerType": {
-      "description": "The type of perr",
-      "$ref": "of://peer.json#/properties/peerType"
+      "description": "The type of peer",
+      "$ref": "ref://of.peer.json#/properties/peerType"
     },
     "address": {
       "type": "string",

@@ -43,7 +43,7 @@ def step_impl(context):
     :type context behave.runner.Context
 
     """
-    ok_("of://node.json" in context.schema_tools.json_schema_objects and
+    ok_("ref://of.node.node.json" in context.schema_tools.json_schema_objects and
         "cust://car.json" in context.schema_tools.json_schema_objects)
 
 
@@ -151,7 +151,7 @@ def step_impl(context):
     """
 
 
-    context.resolvedGroupSchema = context.schema_tools.resolveSchema(context.schema_tools.json_schema_objects["of://group.json"])
+    context.resolvedGroupSchema = context.schema_tools.resolveSchema(context.schema_tools.json_schema_objects["ref://of.node.group.json"])
 
 
 

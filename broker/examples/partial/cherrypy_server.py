@@ -1,14 +1,14 @@
 """
     A test server in CherryPy that demonstrates how to use MBE from CherryPy.
 """
-from of.broker.cherrypy_api.authentication import aop_login_json, aop_check_session, cherrypy_logout
-from of.broker.lib.auth_backend import MongoDBAuthBackend
-from of.common.security.authentication import init_authentication
 from of.schemas.validation import of_uri_handler
+
+from of.broker.cherrypy_api.authentication import aop_login_json, aop_check_session, cherrypy_logout
+from of.broker.lib.mongodb.auth_backend import MongoDBAuthBackend
+from of.common.security.authentication import init_authentication
 
 __author__ = 'Nicklas Boerjesson'
 
-import sys
 import os
 
 # Add MBE path

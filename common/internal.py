@@ -2,7 +2,7 @@
 Created on Nov 6, 2012
 
 @author: Nicklas Boerjesson
-@note: This decorator raises an NotImplemented error if a certain method is decorated
+
 """
 import os
 import sys
@@ -12,7 +12,8 @@ import signal
 from decorator import decorator
 
 
-# TODO: BPMSettings should probably not be used by QAL(use only resources)optimalbpm.common.* (PROD-94)
+
+
 from of.common.logging import write_to_log, EC_SERVICE, SEV_INFO
 
 stop_handler = None
@@ -120,3 +121,4 @@ def make_log_prefix(_address):
     Create the log prefix for a broker, used in log texts.
     """
     return str(os.getpid()) + "-" + _address + ":"
+

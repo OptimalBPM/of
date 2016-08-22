@@ -108,7 +108,7 @@ class DatabaseAccess():
                     e) + ". Data: \n" + str(_input))
 
         # In a condition, the input data is under the conditions-field
-        if _schema_ref == "of://conditions.json":
+        if _schema_ref == "ref://of.conditions.json":
             _data = copy.deepcopy(_input["conditions"])
             _collection = _input["collection"]
         else:
@@ -223,7 +223,7 @@ class DatabaseAccess():
             _user_id = _user["_id"]
         else:
             _user_id = None
-        _raw_condition, _collection = self.manage_input(_condition, "of://conditions.json")
+        _raw_condition, _collection = self.manage_input(_condition, "ref://of.conditions.json")
         _removed_documents_cursor = _collection.find(_raw_condition)
 
         _documents = [x for x in _removed_documents_cursor]
@@ -261,7 +261,7 @@ class DatabaseAccess():
             else:
                 return _data
 
-        _raw_conditions, _collection = self.manage_input(_conditions, "of://conditions.json")
+        _raw_conditions, _collection = self.manage_input(_conditions, "ref://of.conditions.json")
         _result = list(_collection.find(_raw_conditions))
         if not _do_not_fix_object_ids:
             return _recurse_object_ids(_result)

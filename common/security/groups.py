@@ -134,7 +134,7 @@ class Groups():
         """
         self._groups.clear()
         _cursor = self._database_access.find(
-            {"collection": "node", "conditions": {"schemaRef": "of://group.json"}})
+            {"collection": "node", "conditions": {"schemaRef": "ref://of.node.group.json"}})
         for _curr_group in _cursor:
             self._groups[_curr_group["_id"]] = _curr_group
 

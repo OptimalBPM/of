@@ -1,25 +1,25 @@
 
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "A Broker",
-  "title": "Broker node",
+  "description": "Settings for an instance of the admin user interface",
+  "title": "An admin ui",
   "type": "object",
   "version": "0.1",
   "allOf": [
     {
       "properties": {
-        "$ref": "of://node.json#/properties"
+        "$ref": "ref://of.node.node.json#/properties"
       }
     },
     {
       "properties": {
-        "$ref": "of://peer.json#/properties"
+        "$ref": "ref://of.peer.json#/properties"
       }
     },
     {
       "properties": {
-        "repositories_location": {
-          "description": "The parent folder of all source repositories.",
+        "theme": {
+          "description": "The theme of the admin user interface",
           "type": "string"
         }
       }

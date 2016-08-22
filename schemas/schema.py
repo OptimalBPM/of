@@ -5,21 +5,18 @@ Created on Mar 6, 2015
 @note: The schema tools
 
 """
-from copy import deepcopy
-import os
 import json
+import os
+from copy import deepcopy
 
-
-from jsonschema.validators import RefResolver
 from jsonschema.exceptions import SchemaError
-
-
+from jsonschema.validators import RefResolver
 
 # strict-rfc3339
 
 
 from of.broker.lib.schema_mongodb import MongodbValidator
-from of.common.logging import EC_NOTIFICATION, SEV_INFO, SEV_DEBUG, write_to_log
+from of.common.logging import EC_NOTIFICATION, SEV_DEBUG, write_to_log
 
 
 class SchemaTools():
@@ -92,10 +89,8 @@ class SchemaTools():
 
         if "version" not in _curr_schema_obj:
             raise_field_error("version")
-        if "namespace" not in _curr_schema_obj:
-            raise_field_error("namespace")
 
-    def load_schema_from_file(self, _file_name):
+    def load_schema_from_file(self, _file_name, _as_ref):
         """
         Loads a specified schema from a file, checks it and stores it in the schema cache.
 
@@ -123,20 +118,30 @@ class SchemaTools():
                 scherr.path) + "\nMessage:\n" + str(scherr.message))
         except Exception as e:
             raise Exception("load_schema_from_file: schema validation in " + _file_name + ", error :" + str(e))
-        _schemaRef = _json_schema_obj["namespace"] + "://" + os.path.split(_file_name)[1]
-        self.json_schema_objects[_schemaRef] = _json_schema_obj
+        if not _as_ref:
+            _as_ref = _json_schema_obj["namespace"] + "://" + os.path.split(_file_name)[1]
+        self.json_schema_objects[_as_ref] = _json_schema_obj
 
     def load_schemas_from_directory(self, _schema_folder):
         """
-        Load and validate all schemas in a folder, add to json_schema_objects
+        Load and validate all schemas in a folder structure, add to json_schema_objects
 
         :param _schema_folder: Where to look
 
         """
-        _only_files = [f for f in os.listdir(_schema_folder) if
-                       os.path.isfile(os.path.join(_schema_folder, f)) and f[-5:].lower() == ".json"]
-        for _file in _only_files:
-            self.load_schema_from_file(os.path.join(_schema_folder, _file))
+
+        def _recurse(_folder):
+            for _root, _dirs, _files in os.walk(_schema_folder):
+                for _file in _files:
+                    if _file[-5:].lower() == ".json":
+                       self.load_schema_from_file(os.path.join(_root, _file),
+                                                  _as_ref="ref://" + ".".join(os.path.relpath(_root, _schema_folder).split("/") + [_file]))
+
+            for _dir in _dirs:
+                _recurse(_dir)
+
+        _recurse(_schema_folder)
+
 
     def apply(self, _data, _schema_ref=None):
         """

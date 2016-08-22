@@ -27,8 +27,8 @@ def init_env(_database_name = "test_of", _context=None, _data_files=[], _json_sc
     :return:
     """
     _data_files += [os.path.join(script_dir, "data_struct.json")]
-    _json_schema_folders += [os.path.abspath(os.path.join(script_dir, "..", "..", "schemas"))]
-    _uri_handlers.update({"of": of_uri_handler})
+    _json_schema_folders += [os.path.abspath(os.path.join(script_dir, "..", "..", "schemas", "namespaces"))]
+    _uri_handlers.update({"ref": of_uri_handler})
 
     _db_access = init_database(_database_name, _data_files=_data_files,
                                _json_schema_folders=_json_schema_folders,

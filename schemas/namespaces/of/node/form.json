@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "MBE Form for angular-schema-form",
+  "description": "An instance of a json-schema-form (prototype)",
   "title": "Schema form",
   "type": "object",
   "version": "0.1",
@@ -8,7 +8,7 @@
     {
       "properties":
       {
-        "$ref": "of://node.json#/properties"
+        "$ref": "ref://of.node.node.json#/properties"
 
       }
     },
@@ -18,9 +18,9 @@
           "description": "The form definition",
           "propertyId": "6833a3c9-6ef6-4f74-9207-31d20174b1f0"
         },
-        "formSchemaRef": {
-          "description": "The description of the right",
-          "$ref": "of://type.json#/properties/uuid",
+        "formRef": {
+          "description": "The form reference of the form",
+          "$ref": "ref://of.type.json#/properties/uuid",
           "propertyId": "47edf1f9-89be-42bb-8868-2b4df50173d4"
         }
       }

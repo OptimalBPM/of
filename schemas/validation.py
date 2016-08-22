@@ -17,9 +17,12 @@ def general_uri_handler(_uri, _folder):
     :return: The schema
     """
     # TODO: If there ever was a typical function to memoize, this would be it.(ORG-112)
-
+    # Parse the schema file reference
+    _netloc = urlparse(_uri).netloc
+    # Translate into file name
+    _filename = _netloc.replace(".", "/", _netloc.count(".")-1)
     # Use urlparse to parse the file location from the URI
-    _file_location = os.path.abspath(os.path.join(_folder, urlparse(_uri).netloc))
+    _file_location = os.path.abspath(os.path.join(_folder, "namespaces", _filename))
 
     # noinspection PyTypeChecker
     with open(_file_location, "r", encoding="utf-8") as _schema_file:
@@ -37,3 +40,12 @@ def of_uri_handler(_uri):
 
 def of_schema_folder():
     return script_dir
+
+def parse_name_parts(_import):
+    """
+    Parses a string of the namespace.namespace.localname structure and returns a tuple with the namespace and the local name.
+    :param _import: The string to parse
+    :return: a tuple with the namespace and the local name
+    """
+    _scheme, _netloc, _path = urlparse(_import)
+    netloc.split(".")

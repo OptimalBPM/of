@@ -6,15 +6,15 @@
   "version": "0.1",
   "properties": {
     "_id": {
-      "$ref": "of://type.json#/properties/objectId",
+      "$ref": "ref://of.type.json#/properties/objectId",
       "description": "The objectId of the node.",
       "propertyId": "e9487ec8-dfce-440a-a5d5-e65e89bc84aa",
       "objectId": "true"
     },
     "parent_id": {
-      "$ref": "of://type.json#/properties/objectId",
+      "$ref": "ref://of.type.json#/properties/objectId",
       "description": "The parent objectId of the node. Empty if top node.",
-      "refSchemaRef": "of://node.json",
+      "refSchemaRef": "ref://of.node.node.json",
       "propertyId": "aaf26d75-480a-4176-b4c6-ee544a325ac2",
       "objectId": "true"
     },
@@ -44,8 +44,8 @@
       "description": "A list of the groups that can read the value of the node.",
       "type": "array",
       "items": {
-        "$ref": "of://type.json#/properties/objectId",
-        "refSchemaRef": "of://group.json",
+        "$ref": "ref://of.type.json#/properties/objectId",
+        "refSchemaRef": "ref://of.node.group.json",
         "propertyId": "5ede11e9-ccbe-425f-98ac-66d5136ed58b",
         "objectId": "true"
       },
@@ -55,8 +55,8 @@
       "description": "A list of the groups that can write to the node(and create/delete subnodes).",
       "type": "array",
       "items": {
-        "$ref": "of://type.json#/properties/objectId",
-        "refSchemaRef": "of://group.json",
+        "$ref": "ref://of.type.json#/properties/objectId",
+        "refSchemaRef": "ref://of.node.group.json",
         "propertyId": "98286b6b-8cba-4086-8a71-2d754ac023b2",
         "objectId": "true"
       },

@@ -6,7 +6,7 @@
   "version": "0.1",
   "allOf": [
     {
-      "$ref": "of://node.json/properties"
+      "$ref": "ref://of.node.node.json/properties"
     },
     {
       "properties": {
@@ -33,7 +33,7 @@
       }
     },
     {
-      "$ref": "of://node.json/required"
+      "$ref": "ref://of.node.node.json/required"
     }
   ],
   "required": [

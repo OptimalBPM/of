@@ -240,13 +240,13 @@ def step_impl(context):
     """
     ok_(type(context.loaded_schemas) is dict, "Get schema did not return a disctionary")
 
-    _file = json_load_file(os.path.join(script_location, "../../../../schemas/user.json"))
+    _file = json_load_file(os.path.join(script_location, "../../../../schemas/namespaces/of/node/user.json"))
 
     _resolved = context.node.database_access.schema_tools.resolveSchema(_file)
 
 
-    ok_("of://user.json" in context.loaded_schemas, "The user schema is missing from schema list")
-    ok_(context.loaded_schemas["of://user.json"]  == _resolved, "The resolved user schema doesn't match")
+    ok_("ref://of.node.user.json" in context.loaded_schemas, "The user schema is missing from schema list")
+    ok_(context.loaded_schemas["ref://of.node.user.json"]  == _resolved, "The resolved user schema doesn't match")
 
 
 @then("Test (?P<prefix>.+)")
@@ -262,7 +262,7 @@ def step_impl(context):
     """
     :type context: behave.runner.Context
     """
-    context.loaded_templates = context.node.get_templates("of://node_broker.json", context.user)
+    context.loaded_templates = context.node.get_templates("ref://of.node.broker.json", context.user)
     ok_(True)
 
 

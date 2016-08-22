@@ -8,7 +8,7 @@
     {
       "properties":
       {
-        "$ref": "of://node.json#/properties"
+        "$ref": "ref://of.node.node.json#/properties"
 
       }
     },

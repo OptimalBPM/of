@@ -12,7 +12,7 @@ test_user_data = {
     "name": "TestUser",
     "credentials": test_credential,
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "of://user.json",
+    "schemaRef": "ref://of.node.user.json",
     "canRead": ["5492cfb0a5cb641288b66c28"],
     "canWrite": ["5492cfb0a5cb641288b66c28"],
     "groups": ["5492cfb0a5cb641288b66c29"]
@@ -24,7 +24,7 @@ test_hashed_user_data = {
     "name": "TestUser",
     "credentials": test_hashed_credential,
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "of://user.json",
+    "schemaRef": "ref://of.node.user.json",
     "canRead": ["5492cfb0a5cb641288b66c28"],
     "canWrite": ["5492cfb0a5cb641288b66c28"],
     "groups": ["5492cfb0a5cb641288b66c29"]
@@ -40,7 +40,7 @@ test_node = {
     "name": "test_node",
     "createdWhen": "2014-11-13T01:00:00+00:00",
     "parent_id": "000000010000010001e64d40",
-    "schemaRef": "of://node.json",
+    "schemaRef": "ref://of.node.node.json",
     "canRead": ["000000010000010001e64c28", "000000010000010001e64d02"],
     "canWrite": ["000000010000010001e64c28", "000000010000010001e64d02"]
 }

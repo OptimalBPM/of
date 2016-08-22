@@ -4,15 +4,7 @@ Session data is saved in the Session collection.
 """
 from abc import ABCMeta
 
-from of.broker.lib.schema_mongodb import mbe_object_id
-
 __author__ = "Nicklas Boerjesson"
-
-import hashlib
-
-
-
-import datetime
 
 from decorator import decorator
 from of.common.aspect_utilities import alter_function_parameter_and_call

@@ -110,7 +110,7 @@ class BrokerWebSocketHandler(WebSocketHandler):
         write_to_log("handle_logging succeeded", _category=EC_NOTIFICATION, _severity=SEV_DEBUG,
                      _process_id=self.process_id)
         # Store states
-        if _log_data["schemaRef"] == "of://log_process_state.json":
+        if _log_data["schemaRef"] == "ref://of.log.process_state.json":
             # Handle the objectIds
             _log_data["_id"] = str(_log_data["_id"])
             _log_data["processId"] = str(_log_data["processId"])

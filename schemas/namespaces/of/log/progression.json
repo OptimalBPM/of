@@ -6,13 +6,13 @@
   "version": "0.1",
   "properties": {
     "processId": {
-      "$ref": "of://type.json#/properties/objectId",
+      "$ref": "ref://of.type.json#/properties/objectId",
       "description": "The object _id of the process, an object id.",
       "propertyId": "e9b714fa-9f9f-4bd0-9500-3638ba2154e2",
       "objectId": "true"
     },
     "progressionId": {
-      "$ref": "of://type.json#/properties/objectId",
+      "$ref": "ref://of.type.json#/properties/objectId",
       "description": "The object _id of the process, an object id.",
       "propertyId": "489aed92-d5a6-4884-b842-953dd836e27b",
       "objectId": "true"
@@ -28,9 +28,9 @@
       "propertyId": "b383bfe3-3a7c-4449-9322-ca0dbab710b9"
     },
     "userId": {
-      "$ref": "of://type.json#/properties/objectId",
+      "$ref": "ref://of.type.json#/properties/objectId",
       "description": "The user that initiated the state change.",
-      "refSchemaRef": "of://user.json",
+      "refSchemaRef": "ref://of.node.user.json",
       "propertyId": "55e937b7-9e58-49ad-9b42-c6557ca23d0a",
       "isObjectId": "true"
     },

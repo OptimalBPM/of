@@ -6,15 +6,15 @@
   "version": "0.1",
   "properties": {
     "_id": {
-      "$ref": "of://type.json#/properties/objectId",
+      "$ref": "ref://of.type.json#/properties/objectId",
       "description": "The object id of the session, an object id.",
       "propertyId": "03fd685a-a98b-408b-b9a3-e3877564f611",
       "objectId": true
     },
     "user_id": {
-      "$ref": "of://type.json#/properties/objectId",
+      "$ref": "ref://of.type.json#/properties/objectId",
       "description": "The logged-in user.",
-      "refSchemaRef": "of://user.json",
+      "refSchemaRef": "ref://of.node.user.json",
       "propertyId": "03fd685a-a98b-408b-b9a3-e3877564f611",
       "objectId": true
     },

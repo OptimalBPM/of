@@ -7,6 +7,7 @@ import os
 import time
 from uuid import UUID
 import sys
+from urllib.parse import urlparse
 
 from of.common.cumulative_dict import CumulativeDict
 from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG, SEV_ERROR, EC_SERVICE, SEV_INFO
@@ -122,6 +123,26 @@ class CherryPyPlugins(object):
         else:
             self.write_debug_info("No schema folder, not loading schemas.")
 
+        # Load schemas from /schema
+        _schema_dir = os.path.join(_dirname, "schemas")
+        if os.path.exists(_schema_dir):
+
+            _schema_dir_list = os.listdir(_schema_dir)
+
+            for _curr_file in _schema_dir_list:
+                if os.path.splitext(_curr_file)[1] == ".json":
+                    self.write_debug_info("Loading schema " + _curr_file)
+                    with open(os.path.join(_schema_dir, _curr_file)) as _f_def:
+                        _curr_schema = json.load(_f_def)
+                    if "namespace" in _curr_schema:
+                        # Initiate the namespace (so this row has effect, but should instead be a call. For readability)
+                        self.namespaces[_curr_schema["namespace"]]
+                        # Store schema among the unresolved ones
+                        self._unresolved_schemas[_curr_schema["namespace"] + "://" + _curr_file] = _curr_schema
+                    else:
+                        self.write_debug_info("No namespace defined in " + _curr_file + ", ignoring.")
+        else:
+            self.write_debug_info("No schema folder, not loading schemas.")
         # Add server side stuff
 
         if "hooks_module" in _plugin_data:
@@ -207,3 +228,11 @@ class CherryPyPlugins(object):
             return self.schema_tools.json_schema_objects[uri]
         else:
             return self._unresolved_schemas[uri]
+
+def parseNameParts(_import):
+    """
+    Parses a string of the namespace.namespace.localname structure and returns a tuple with the namespace and the local name.
+    :param _import: The string to parse
+    :return: a tuple with the namespace and the local name
+    """
+    _import.split(")

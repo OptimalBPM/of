@@ -19,8 +19,9 @@ sys.path.append(os.path.join(script_dir, "../../"))
 
 # IMPORTANT: ALL OPTIMAL FRAMEWORK IMPORTS MUST BE AFTER ADDING THE PATH
 import of.common.logging
+import logging
 from of.broker.lib.access import DatabaseAccess
-from of.broker.lib.auth_backend import MongoDBAuthBackend
+from of.broker.lib.mongodb.auth_backend import MongoDBAuthBackend
 from of.common.cumulative_dict import CumulativeDict
 from of.common.logging import write_to_log, SEV_FATAL, EC_SERVICE, SEV_DEBUG, \
     EC_UNCATEGORIZED, SEV_ERROR, SEV_INFO, EC_INVALID, make_sparse_log_message, make_textual_log_message, make_event
@@ -75,6 +76,10 @@ namespaces = None
 # The severity when something is logged to the database
 log_to_database_severity = None
 
+# A unix file handler
+
+x_logger = None
+fh = logging.FileHandler('/var/log/of.log')
 
 def write_srvc_dbg(_data):
     global process_id
@@ -94,10 +99,17 @@ def log_locally(_data, _category, _severity, _process_id_param, _user_id, _occur
                                                     _occurred_when, _address_param, _node_id, _uid, _pid),
                            "Application", _category, _severity)
     else:
-        print(
-            make_sparse_log_message(_data, _category, _severity, _process_id_param, _user_id, _occurred_when,
-                                    _address_param, _node_id, _uid,
-                                    _pid))
+        _message = make_sparse_log_message(_data, _category, _severity, _process_id_param, _user_id, _occurred_when,
+                                _address_param, _node_id, _uid,
+                                _pid))
+        try:
+            x_logger.emit(_message)
+        except:
+
+            print(
+                make_sparse_log_message("FAILED TO WRITE TO FILE, PRINTING ERROR: "+ _message, EC_, _severity, _process_id_param, _user_id, _occurred_when,
+                                        _address_param, _node_id, _uid,
+                                        _pid))
         # TODO: Add support for /var/log/message
 
 
@@ -135,6 +147,7 @@ def start_broker():
 
     process_id = str(ObjectId())
 
+
     of.common.logging.callback = log_locally
 
     write_srvc_dbg("=====Starting broker=============================")
@@ -148,6 +161,9 @@ def start_broker():
             write_to_log(_data="Error loading settings from " + _cfg_filename,
                          _category=EC_SERVICE, _severity=SEV_FATAL)
         raise Exception("Error loading settings:" + str(e))
+
+    if os.name != "nt":
+        x_logger = logging.FileHandler("/var/log")
 
     of.common.logging.severity = of.common.logging.severity_identifiers.index(
         _settings.get("broker/logging/severityLevel", _default="warning"))

@@ -1,19 +1,27 @@
 
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "Settings node for an a Optimal Framework peer",
-  "title": "A peer",
+  "description": "A Broker",
+  "title": "Broker node",
   "type": "object",
   "version": "0.1",
   "allOf": [
     {
       "properties": {
-        "$ref": "of://node.json#/properties"
+        "$ref": "ref://of.node.node.json#/properties"
       }
     },
     {
       "properties": {
-        "$ref": "of://peer.json#/properties"
+        "$ref": "ref://of.peer.json#/properties"
+      }
+    },
+    {
+      "properties": {
+        "repositories_location": {
+          "description": "The parent folder of all source repositories.",
+          "type": "string"
+        }
       }
     }
   ],

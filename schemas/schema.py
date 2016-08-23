@@ -84,7 +84,7 @@ class SchemaTools():
         """
 
         def raise_field_error(_collection):
-            raise Exception("MongoBackend.load_schemas_from_directory: The \"" + _collection + "\"" +
+            raise Exception("Schematools.check_schema_fields: The \"" + _collection + "\"" +
                             " field is not in the schema-\"" + _curr_file + "\"")
 
         if "version" not in _curr_schema_obj:

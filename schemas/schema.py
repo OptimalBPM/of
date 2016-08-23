@@ -131,14 +131,15 @@ class SchemaTools():
         """
 
         def _recurse(_folder):
-            for _root, _dirs, _files in os.walk(_schema_folder):
+            for _root, _dirs, _files in os.walk(_folder):
                 for _file in _files:
                     if _file[-5:].lower() == ".json":
                        self.load_schema_from_file(os.path.join(_root, _file),
                                                   _as_ref="ref://" + ".".join(os.path.relpath(_root, _schema_folder).split("/") + [_file]))
 
-            for _dir in _dirs:
-                _recurse(_dir)
+
+                for _dir in _dirs:
+                    _recurse(os.path.join(_folder, _dir))
 
         _recurse(_schema_folder)
 

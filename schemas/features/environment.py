@@ -31,6 +31,6 @@ def before_feature(context, feature):
     :return:
 
     """
-    context.schema_tools = SchemaTools(_json_schema_folders=[os.path.join(script_dir, "..")], _uri_handlers={"of": of_uri_handler})
+    context.schema_tools = SchemaTools(_json_schema_folders=[os.path.join(script_dir, "..", "namespaces")], _uri_handlers={"ref": of_uri_handler})
 
 

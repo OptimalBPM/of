@@ -34,7 +34,7 @@ def step_impl(context):
     :type context behave.runner.Context
 
     """
-    context.schema_tools.load_schemas_from_directory(os.path.join(script_location, "../schemas"))
+    context.schema_tools.load_schemas_from_directory(os.path.join(script_location, "..", "schemas"))
 
 @then("the list of schemas should contain the node and custom schema")
 def step_impl(context):
@@ -44,7 +44,7 @@ def step_impl(context):
 
     """
     ok_("ref://of.node.node.json" in context.schema_tools.json_schema_objects and
-        "cust://car.json" in context.schema_tools.json_schema_objects)
+        "ref://cust.car.json" in context.schema_tools.json_schema_objects)
 
 
 @given("a schema with missing data is presented")
@@ -170,19 +170,19 @@ def step_impl(context):
 
     # Completely manually resolve the group schema (this for the test to work better even if minor changes to the schemas are made)
 
-    type_schema = json_load_file(os.path.join(script_location, "../../type.json"))
+    type_schema = json_load_file(os.path.join(script_location, "../../namespaces/of/type.json"))
     objectId_def = type_schema["properties"]["objectId"]
     uuid_def = type_schema["properties"]["uuid"]
     datetime_def = type_schema["properties"]["datetime"]
 
-    node_schema = json_load_file(os.path.join(script_location, "../../node.json"))
+    node_schema = json_load_file(os.path.join(script_location, "../../namespaces/of/node/node.json"))
     manually_resolved_node_properties = node_schema["properties"]
     replace_attribute(manually_resolved_node_properties["_id"],"$ref", objectId_def)
     replace_attribute(manually_resolved_node_properties["parent_id"],"$ref", objectId_def)
     replace_attribute(manually_resolved_node_properties["canRead"]["items"],"$ref", objectId_def)
     replace_attribute(manually_resolved_node_properties["canWrite"]["items"],"$ref", objectId_def)
 
-    group_schema = json_load_file(os.path.join(script_location, "../../group.json"))
+    group_schema = json_load_file(os.path.join(script_location, "../../namespaces/of/node/group.json"))
     manually_resolved_group = deepcopy(group_schema)
     del manually_resolved_group["allOf"]
     manually_resolved_group["properties"] = node_schema["properties"]

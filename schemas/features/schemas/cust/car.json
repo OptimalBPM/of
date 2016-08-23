@@ -31,15 +31,11 @@
           "description": "The engine torgue in Newton meter."
         }
       }
-    },
-    {
-      "$ref": "ref://of.node.node.json/required"
     }
   ],
   "required": [
     "formDefinition",
     "formschemaRef"
   ],
-  "collection": "node",
-  "namespace": "cust"
+  "collection": "node"
 }

@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+from logging import CRITICAL
 from multiprocessing import Process
 
 import cherrypy
@@ -21,7 +22,7 @@ sys.path.append(os.path.join(script_dir, "../../"))
 import of.common.logging
 import logging
 from of.broker.lib.access import DatabaseAccess
-from of.broker.lib.mongodb.auth_backend import MongoDBAuthBackend
+from of.broker.lib.auth_backend import MongoDBAuthBackend
 from of.common.cumulative_dict import CumulativeDict
 from of.common.logging import write_to_log, SEV_FATAL, EC_SERVICE, SEV_DEBUG, \
     EC_UNCATEGORIZED, SEV_ERROR, SEV_INFO, EC_INVALID, make_sparse_log_message, make_textual_log_message, make_event
@@ -78,9 +79,9 @@ log_to_database_severity = None
 
 # A unix file handler
 
-x_logger = None
+x_logger = logging.Logger("default")
 fh = logging.FileHandler('/var/log/of.log')
-
+x_logger.addHandler(fh)
 def write_srvc_dbg(_data):
     global process_id
     write_to_log(_data, _category=EC_SERVICE, _severity=SEV_DEBUG, _process_id=process_id)
@@ -101,13 +102,13 @@ def log_locally(_data, _category, _severity, _process_id_param, _user_id, _occur
     else:
         _message = make_sparse_log_message(_data, _category, _severity, _process_id_param, _user_id, _occurred_when,
                                 _address_param, _node_id, _uid,
-                                _pid))
+                                _pid)
         try:
-            x_logger.emit(_message)
-        except:
+            x_logger.log(msg=_message, level=CRITICAL)
+        except Exception as e:
 
             print(
-                make_sparse_log_message("FAILED TO WRITE TO FILE, PRINTING ERROR: "+ _message, EC_, _severity, _process_id_param, _user_id, _occurred_when,
+                make_sparse_log_message("FAILED TO WRITE TO FILE, PRINTING ERROR: "+ str(e) + _message, EC_SERVICE, SEV_ERROR, _process_id_param, _user_id, _occurred_when,
                                         _address_param, _node_id, _uid,
                                         _pid))
         # TODO: Add support for /var/log/message
@@ -163,7 +164,7 @@ def start_broker():
         raise Exception("Error loading settings:" + str(e))
 
     if os.name != "nt":
-        x_logger = logging.FileHandler("/var/log")
+        x_logger = logging.FileHandler("/var/log/of.log")
 
     of.common.logging.severity = of.common.logging.severity_identifiers.index(
         _settings.get("broker/logging/severityLevel", _default="warning"))
@@ -183,8 +184,8 @@ def start_broker():
     # TODO: Reorganize. It is likely that almost everything but external database credentials should be stored in the db PROD-105
 
     # Initialize schema tools (of_uri_handler is later replaced by the general one)
-    schema_tools = SchemaTools(_json_schema_folders=[os.path.join(script_dir, "../schemas/")],
-                               _uri_handlers={"of": of_uri_handler})
+    schema_tools = SchemaTools(_json_schema_folders=[os.path.join(script_dir, "../schemas/namespaces/")],
+                               _uri_handlers={"ref": of_uri_handler})
 
     namespaces = CumulativeDict(_default={"schemas": []})
 

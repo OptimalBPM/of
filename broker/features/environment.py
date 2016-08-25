@@ -18,8 +18,8 @@ script_dir = os.path.dirname(__file__)
 
 def before_all(context):
 
-    os.environ["OPTIMAL_FW_CFG"] = os.path.join(script_dir, "steps", "config.json")
-    init_env(context)
+    os.environ["OPTIMAL_FW_CFG"] = os.path.join(script_dir, "../../../", "config", "config.json")
+    init_env(_database_name = "test_of", _context = context)
 
 
 def init_broker_cycles(context, feature):

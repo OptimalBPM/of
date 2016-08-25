@@ -7,7 +7,7 @@ import sys
 from bson.objectid import ObjectId
 
 script_dir = os.path.dirname(__file__)
-# Add relative optimal bpm path to be able to load the modules of this repository properly
+# Add relative optimal framework path to be able to load the modules of this repository properly
 sys.path.append(os.path.join(script_dir, "../../../"))
 
 from of.broker.lib.auth_backend import MongoDBAuthBackend

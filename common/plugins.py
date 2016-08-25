@@ -194,7 +194,7 @@ class CherryPyPlugins(object):
 
         # Manually add the optimal framework ("of") namespace
         self.namespaces["of"]["schemas"] = [_curr_ref for _curr_ref in self.schema_tools.json_schema_objects.keys()]
-        self.schema_tools.resolver.handlers = {"of": self.uri_handler}
+        self.schema_tools.resolver.handlers = {"ref": self.uri_handler}
 
         # Add same resolver for all the rest of the namespaces (these resolvers will persist throughout the system)
         self.schema_tools.resolver.handlers.update(
@@ -229,10 +229,3 @@ class CherryPyPlugins(object):
         else:
             return self._unresolved_schemas[uri]
 
-def parseNameParts(_import):
-    """
-    Parses a string of the namespace.namespace.localname structure and returns a tuple with the namespace and the local name.
-    :param _import: The string to parse
-    :return: a tuple with the namespace and the local name
-    """
-    _import.split(")

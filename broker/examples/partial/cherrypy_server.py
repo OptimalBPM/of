@@ -36,8 +36,8 @@ class Server(object):
     def _reset_database(self):
         self._database_access = init_database("test_skeleton_of",
                                               _data_files=[os.path.join(script_dir, "../../testing/data_struct.json")],
-                                              _json_schema_folders=[os.path.join(script_dir, "../../../schemas")],
-                                              _uri_handlers={"of": of_uri_handler})
+                                              _json_schema_folders=[os.path.join(script_dir, "../../../schemas/namespaces")],
+                                              _uri_handlers={"ref": of_uri_handler})
 
     @cherrypy.expose
     @cherrypy.tools.json_in()

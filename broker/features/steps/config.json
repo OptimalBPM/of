@@ -1,8 +1,7 @@
 {
   "broker": {
     "address": "broker01",
-    "repositoryFolder": "~/optimalframework/broker_repositories",
-    "pluginFolder": "~/optimalframework/plugins",
+    "pluginFolder": "../../../../config/plugins",
     "database": {
       "databaseName": "test_broker"
     },

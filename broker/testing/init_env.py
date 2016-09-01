@@ -6,6 +6,8 @@ import sys
 
 from bson.objectid import ObjectId
 
+from of.common.plugins import CherryPyPlugins
+
 script_dir = os.path.dirname(__file__)
 # Add relative optimal framework path to be able to load the modules of this repository properly
 sys.path.append(os.path.join(script_dir, "../../../"))
@@ -27,12 +29,17 @@ def init_env(_database_name = "test_of", _context=None, _data_files=[], _json_sc
     :return:
     """
     _data_files += [os.path.join(script_dir, "data_struct.json")]
-    _json_schema_folders += [os.path.abspath(os.path.join(script_dir, "..", "..", "schemas", "namespaces"))]
-    _uri_handlers.update({"ref": of_uri_handler})
+
+
+
+    _json_schema_folders = [os.path.abspath(os.path.join(script_dir, "..", "..", "schemas", "namespaces"))] + _json_schema_folders
+    _uri_handlers.update({"ref": None})
 
     _db_access = init_database(_database_name, _data_files=_data_files,
                                _json_schema_folders=_json_schema_folders,
                                _uri_handlers=_uri_handlers)
+
+
 
     if _context:
         _context.db_access = _db_access

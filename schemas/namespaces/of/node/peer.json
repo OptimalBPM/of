@@ -25,6 +25,5 @@
     "canWrite",
     "address"
   ],
-  "collection": "node",
-  "namespace": "of"
+  "collection": "node"
 }

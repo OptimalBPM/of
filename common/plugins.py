@@ -9,6 +9,9 @@ from uuid import UUID
 import sys
 from urllib.parse import urlparse
 
+from os import urandom
+from pymongo import uri_parser
+
 from of.common.cumulative_dict import CumulativeDict
 from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG, SEV_ERROR, EC_SERVICE, SEV_INFO
 
@@ -102,47 +105,31 @@ class CherryPyPlugins(object):
         _plugin_data["baseDirectoryName"] = _dirname
         self.write_debug_info("Loading plugin in " + _plugin_data["description"])
 
+        # Add definitions
+        if "namespaces" in _definitions_data:
+            for _curr_namespace in _definitions_data["namespaces"]:
+                self.namespaces[_curr_namespace]
+            self.namespaces.add_cumulatively(_definitions_data["namespaces"])
+            # Add same resolver for the namespaces (these resolvers will persist throughout the system)
+            self.schema_tools.resolver.handlers.update(
+                {_curr_namespace: self.uri_handler for _curr_namespace in _definitions_data["namespaces"]})
+
+        self.plugins.add_cumulatively(_definitions_data["plugins"])
+
+
         # Load schemas from /schema
-        _schema_dir = os.path.join(_dirname, "schemas")
+        _schema_dir = os.path.join(_dirname, "schemas", "namespaces")
         if os.path.exists(_schema_dir):
 
-            _schema_dir_list = os.listdir(_schema_dir)
+            _refs = self.schema_tools.load_schemas_from_directory(_schema_dir, self._unresolved_schemas)
+            for _curr_schema_key in _refs:
+                _resolved_schema = self.schema_tools.resolveSchema(self._unresolved_schemas[_curr_schema_key])
+                self.namespaces[urlparse(_curr_schema_key).netloc.split(".")[0]]["schemas"].append(_curr_schema_key)
+                self.schema_tools.json_schema_objects[_curr_schema_key] = _resolved_schema
 
-            for _curr_file in _schema_dir_list:
-                if os.path.splitext(_curr_file)[1] == ".json":
-                    self.write_debug_info("Loading schema " + _curr_file)
-                    with open(os.path.join(_schema_dir, _curr_file)) as _f_def:
-                        _curr_schema = json.load(_f_def)
-                    if "namespace" in _curr_schema:
-                        # Initiate the namespace (so this row has effect, but should instead be a call. For readability)
-                        self.namespaces[_curr_schema["namespace"]]
-                        # Store schema among the unresolved ones
-                        self._unresolved_schemas[_curr_schema["namespace"] + "://" + _curr_file] = _curr_schema
-                    else:
-                        self.write_debug_info("No namespace defined in " + _curr_file + ", ignoring.")
         else:
             self.write_debug_info("No schema folder, not loading schemas.")
 
-        # Load schemas from /schema
-        _schema_dir = os.path.join(_dirname, "schemas")
-        if os.path.exists(_schema_dir):
-
-            _schema_dir_list = os.listdir(_schema_dir)
-
-            for _curr_file in _schema_dir_list:
-                if os.path.splitext(_curr_file)[1] == ".json":
-                    self.write_debug_info("Loading schema " + _curr_file)
-                    with open(os.path.join(_schema_dir, _curr_file)) as _f_def:
-                        _curr_schema = json.load(_f_def)
-                    if "namespace" in _curr_schema:
-                        # Initiate the namespace (so this row has effect, but should instead be a call. For readability)
-                        self.namespaces[_curr_schema["namespace"]]
-                        # Store schema among the unresolved ones
-                        self._unresolved_schemas[_curr_schema["namespace"] + "://" + _curr_file] = _curr_schema
-                    else:
-                        self.write_debug_info("No namespace defined in " + _curr_file + ", ignoring.")
-        else:
-            self.write_debug_info("No schema folder, not loading schemas.")
         # Add server side stuff
 
         if "hooks_module" in _plugin_data:
@@ -164,10 +151,7 @@ class CherryPyPlugins(object):
                     write_to_log("Ignores error, the plugin will continue to attempt initialization.",
                                  _category=EC_SERVICE, _severity=SEV_INFO)
 
-        # Add definitions
-        if "namespaces" in _definitions_data:
-            self.namespaces.add_cumulatively(_definitions_data["namespaces"])
-        self.plugins.add_cumulatively(_definitions_data["plugins"])
+
         return _plugin_data
 
     def refresh_plugins(self, _plugins_dir):
@@ -184,28 +168,19 @@ class CherryPyPlugins(object):
         if not os.path.exists(_plugins_dir):
             raise Exception("Plugin initialisation failed, no plugin directory where expected(" + _plugins_dir + ")")
 
-        # Loop plugins
-        _plugin_names = os.listdir(_plugins_dir)
-        self.plugins = CumulativeDict()
-        for _plugin_name in _plugin_names:
-            if _plugin_name != "__pycache__" and os.path.isdir(os.path.join(_plugins_dir, _plugin_name)):
-                self.load_plugin(_plugins_dir, _plugin_name)
-                self.write_debug_info("Loaded plugin " + _plugin_name)
-
         # Manually add the optimal framework ("of") namespace
         self.namespaces["of"]["schemas"] = [_curr_ref for _curr_ref in self.schema_tools.json_schema_objects.keys()]
         self.schema_tools.resolver.handlers = {"ref": self.uri_handler}
 
-        # Add same resolver for all the rest of the namespaces (these resolvers will persist throughout the system)
-        self.schema_tools.resolver.handlers.update(
-            {_curr_namespace: self.uri_handler for _curr_namespace in self.namespaces})
+        # Loop plugins
+        _plugin_names = os.listdir(_plugins_dir)
+        self.plugins = CumulativeDict()
+        for _plugin_name in _plugin_names:
+            # Only look att non-hidden and non system directories
+            if os.path.isdir(os.path.join(_plugins_dir, _plugin_name)) and _plugin_name[0:2] != "__" and _plugin_name[0] != ".":
+                self.load_plugin(_plugins_dir, _plugin_name)
+                self.write_debug_info("Loaded plugin " + _plugin_name)
 
-        # Resolve all schemas
-
-        for _curr_schema_key, _curr_schema in self._unresolved_schemas.items():
-            _resolved_schema = self.schema_tools.resolveSchema(_curr_schema)
-            self.namespaces[_resolved_schema["namespace"]]["schemas"].append(_curr_schema_key)
-            self.schema_tools.json_schema_objects[_curr_schema_key] = _resolved_schema
 
         self.write_debug_info("Schemas in " + str(", ").join(
             [_curr_plugin["description"] for _curr_plugin in self.plugins.values()]) + " loaded and resolved:  " +

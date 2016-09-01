@@ -39,7 +39,7 @@ def of_uri_handler(_uri):
 
 
 def of_schema_folder():
-    return script_dir
+    return os.path.join(script_dir, "namespaces")
 
 def parse_name_parts(_import):
     """
@@ -47,5 +47,4 @@ def parse_name_parts(_import):
     :param _import: The string to parse
     :return: a tuple with the namespace and the local name
     """
-    _scheme, _netloc, _path = urlparse(_import)
-    netloc.split(".")
+    _scheme, _netloc, _path = urlparse(_import).netloc.split(".")

@@ -67,7 +67,7 @@ class CumulativeDict:
 
     def load_dicts(self, _definition_files, _top_attribute=None):
         """
-        Load namespaces from files
+        Load dicts from files
         :param _definition_files: A list of _definition_files
         """
 

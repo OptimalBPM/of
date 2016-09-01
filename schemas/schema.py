@@ -37,6 +37,14 @@ class SchemaTools():
     mongodb_validator = None
 
 
+    # Default handler, will only look at the cache
+    def cache_handler(self, _uri):
+        print ("fetching " + _uri)
+        if _uri in self.json_schema_objects:
+            return self.json_schema_objects[_uri]
+        else:
+            return None
+
     # noinspection PyDefaultArgument
     def __init__(self, _json_schema_folders=[], _uri_handlers=None):
         """
@@ -55,6 +63,12 @@ class SchemaTools():
         else:
             self.uri_handlers = _uri_handlers
 
+
+        # All methods that have no handlers should use the cache handler.
+        for _curr_key, _curr_value  in _uri_handlers.items():
+            if _curr_value is None:
+                _uri_handlers[_curr_key] = self.cache_handler
+
         self.resolver = RefResolver(base_uri="",
                                 handlers=self.uri_handlers, referrer=None, cache_remote=True)
 
@@ -64,11 +78,11 @@ class SchemaTools():
 
         # Load application specific schemas
         for _curr_folder in _json_schema_folders:
-            self.load_schemas_from_directory(os.path.abspath(_curr_folder))
+            _loaded_uris = self.load_schemas_from_directory(os.path.abspath(_curr_folder))
 
-        # Resolve all the schemas
-        for curr_schemaRef, curr_schema in self.json_schema_objects.items():
-            self.json_schema_objects[curr_schemaRef] = self.resolveSchema(curr_schema)
+            # Resolve all the schemas
+            for _curr_uri in _loaded_uris:
+                self.json_schema_objects[_curr_uri] = self.resolveSchema(self.json_schema_objects[_curr_uri])
 
         write_to_log("Schemas loaded and resolved: " +
                      str.join(", ",  ["\"" +_curr_schema["title"] + "\""  for _curr_schema in self.json_schema_objects.values()])
@@ -90,7 +104,7 @@ class SchemaTools():
         if "version" not in _curr_schema_obj:
             raise_field_error("version")
 
-    def load_schema_from_file(self, _file_name, _as_ref):
+    def load_schema_from_file(self, _file_name):
         """
         Loads a specified schema from a file, checks it and stores it in the schema cache.
 
@@ -118,30 +132,36 @@ class SchemaTools():
                 scherr.path) + "\nMessage:\n" + str(scherr.message))
         except Exception as e:
             raise Exception("load_schema_from_file: schema validation in " + _file_name + ", error :" + str(e))
-        if not _as_ref:
-            _as_ref = _json_schema_obj["namespace"] + "://" + os.path.split(_file_name)[1]
-        self.json_schema_objects[_as_ref] = _json_schema_obj
 
-    def load_schemas_from_directory(self, _schema_folder):
+        return _json_schema_obj
+
+    def load_schemas_from_directory(self, _schema_folder, _destination = None):
         """
         Load and validate all schemas in a folder structure, add to json_schema_objects
 
         :param _schema_folder: Where to look
 
         """
+        _loaded_uris = []
+        if _destination == None:
+            _destination = self.json_schema_objects
 
         def _recurse(_folder):
             for _root, _dirs, _files in os.walk(_folder):
                 for _file in _files:
                     if _file[-5:].lower() == ".json":
-                       self.load_schema_from_file(os.path.join(_root, _file),
-                                                  _as_ref="ref://" + ".".join(os.path.relpath(_root, _schema_folder).split("/") + [_file]))
+                        _ref = "ref://" + ".".join(os.path.relpath(_root, _schema_folder).split("/") + [_file])
+                        _destination[_ref] = self.load_schema_from_file (os.path.join(_root, _file))
+                        _loaded_uris.append(_ref)
+
 
 
                 for _dir in _dirs:
                     _recurse(os.path.join(_folder, _dir))
 
         _recurse(_schema_folder)
+
+        return  _loaded_uris
 
 
     def apply(self, _data, _schema_ref=None):

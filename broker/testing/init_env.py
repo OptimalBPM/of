@@ -15,7 +15,7 @@ sys.path.append(os.path.join(script_dir, "../../../"))
 from of.broker.lib.auth_backend import MongoDBAuthBackend
 from of.common.security.authentication import init_authentication
 from of.broker.testing.init import init_database
-from of.schemas.validation import of_uri_handler
+from of.schemas.validation import of_schema_folder
 
 __author__ = 'nibo'
 
@@ -32,7 +32,7 @@ def init_env(_database_name = "test_of", _context=None, _data_files=[], _json_sc
 
 
 
-    _json_schema_folders = [os.path.abspath(os.path.join(script_dir, "..", "..", "schemas", "namespaces"))] + _json_schema_folders
+    _json_schema_folders = [of_schema_folder()] + _json_schema_folders
     _uri_handlers.update({"ref": None})
 
     _db_access = init_database(_database_name, _data_files=_data_files,

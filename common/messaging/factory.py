@@ -43,7 +43,7 @@ def reply_with_error_message(_runtime_instance, _message, _error_message):
 
     if "destination" in _message or _message["source"] == "":
         _struct["source"] = _message["destination"]
-    if "sourceProcessId" in _message or _message["sourceProcessId"] == "":
+    if "sourceProcessId" in _message and _message["sourceProcessId"] == "":
         _struct["destinationProcessId"] = _message["sourceProcessId"]
 
     return _struct

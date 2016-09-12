@@ -1,0 +1,175 @@
+[
+  {
+    "key": "name",
+    "type": "text",
+    "title": "Name",
+    "readonly": false
+  },
+  {
+    "key": "description",
+    "type": "textarea",
+    "title": "Description",
+    "readonly": false
+  },
+  {
+    "title": "Credentials",
+    "type": "fieldset",
+    "items": [
+      {
+        "type": "tabs",
+        "tabs": [
+          {
+            "title": "Username/Password",
+            "items": [
+              {
+                "key": "credentials['usernamePassword']['username']",
+                "title": "Username",
+                "description": "The username.",
+                "type": "text",
+                "readonly": false
+              },
+              {
+                "key": "credentials['usernamePassword']['password']",
+                "type": "password",
+                "title": "Password",
+                "description": "The password.",
+                "readonly": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "key": "groups",
+    "title": "Groups",
+    "description": "The groups the user belongs to.",
+    "placeholder": "No groups selected",
+    "startEmpty": false,
+    "type": "strapselect",
+    "options": {
+      "httpPost": {
+        "url": "/node/lookup",
+        "parameter": {
+          "conditions": {
+            "parent_id": "ObjectId(000000010000010001e64c24)"
+          },
+          "collection": "node"
+        }
+      }
+    }
+  },
+  {
+    "type": "fieldset",
+    "title": "",
+    "items": [
+      {
+        "type": "tabs",
+        "tabs": [
+          {
+            "title": "Access",
+            "items": [
+              {
+                "key": "canWrite",
+                "title": "Write",
+                "type": "strapselect",
+                "description": "The groups that have write access.",
+                "placeholder": "No groups selected",
+                "startEmpty": false,
+                "options": {
+                  "multiple": "true",
+                  "httpPost": {
+                    "url": "/node/lookup",
+                    "parameter": {
+                      "conditions": {
+                        "parent_id": "ObjectId(000000010000010001e64c24)"
+                      },
+                      "collection": "node"
+                    }
+                  }
+                }
+              },
+              {
+                "key": "canRead",
+                "title": "Read",
+                "type": "strapselect",
+                "description": "The groups that have read access.",
+                "placeholder": "No groups selected",
+                "startEmpty": false,
+                "options": {
+                  "multiple": "true",
+                  "httpPost": {
+                    "url": "/node/lookup",
+                    "parameter": {
+                      "conditions": {
+                        "parent_id": "ObjectId(000000010000010001e64c24)"
+                      },
+                      "collection": "node"
+                    }
+                  }
+                }
+              },
+              {
+                "key": "allowedChildTypes",
+                "title": "Allowed child type",
+                "type": "strapselect",
+                "description": "The child types that can be added to this node.",
+                "placeholder": "No child types selected",
+                "startEmpty": true,
+                "options": {
+                  "multiple": "true",
+                  "callback": "this.nodeManager.tree.lookupChildNodeTypes"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Metadata",
+            "items": [
+              {
+                "key": "_id",
+                "title": "Id",
+                "description": "The Id of the node. A <a href=\"http://docs.mongodb.org/manual/reference/object-id/\" target='_blank'>MongoDB objectId</a>.",
+                "type": "text",
+                "readonly": true
+              },
+              {
+                "key": "parent_id",
+                "title": "Parent Id",
+                "description": "The Id of the parent node. A <a href=\"http://docs.mongodb.org/manual/reference/object-id/\" target='_blank'>MongoDB objectId</a>.",
+                "type": "text",
+                "readonly": true
+              },
+              {
+                "key": "schemaRef",
+                "type": "text",
+                "title": "Schema Id",
+                "description": "The Id of the schema. A <a href=\"http://http://en.wikipedia.org/wiki/Universally_unique_identifier/\" target='_blank'>UUID(GUID)</a>.",
+                "readonly": true
+              },
+              {
+                "key": "createdWhen",
+                "type": "text",
+                "title": "Created when",
+                "description": "The date and time the node was created.",
+                "readonly": true
+              },
+              {
+                "key": "templateName",
+                "type": "text",
+                "title": "Template name",
+                "description": "The template used when the node was created.",
+                "readonly": true
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "submit",
+    "title": "Save"
+  }
+]

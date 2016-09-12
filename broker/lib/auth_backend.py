@@ -29,7 +29,7 @@ class MongoDBAuthBackend(AuthenticationBackend):
 
     def get_user(self, _user_id):
         _user_condition = {
-            "conditions": {"_id": mbe_object_id(_user_id), "schemaRef": "ref://of.node.user.json"},
+            "conditions": {"_id": mbe_object_id(_user_id), "schemaRef": "ref://of.node.user"},
             "collection": "node"
         }
         _users = list(self.db_access.find(_user_condition))
@@ -65,7 +65,7 @@ class MongoDBAuthBackend(AuthenticationBackend):
             _session_data = {
                 "createdWhen": str(datetime.datetime.utcnow()),
                 "user_id": str(_user["_id"]),
-                "schemaRef": "ref://of.session.json"
+                "schemaRef": "ref://of.session"
             }
 
             _session_id = self.db_access.save(_session_data, _user)

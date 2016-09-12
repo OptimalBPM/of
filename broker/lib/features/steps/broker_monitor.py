@@ -16,7 +16,7 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    context.message = {"destination": "destination_peer", "schemaRef": "ref://of.message.message.json", "sourceProcessId": str(ObjectId()), "source": "source_peer", "messageId": 1}
+    context.message = {"destination": "destination_peer", "schemaRef": "ref://of.message.message", "sourceProcessId": str(ObjectId()), "source": "source_peer", "messageId": 1}
 
     context.sender.received_message(json.dumps(context.message))
 
@@ -45,7 +45,7 @@ def step_impl(context):
         "spawnedWhen": str(datetime.datetime.utcnow()),
         "name": "Test_process_name",
         "systemPid": 10000,
-        "schemaRef": "ref://of.process.system.json"
+        "schemaRef": "ref://of.process.system"
     }
 
     context.sender.received_message(json.dumps(context.message))
@@ -78,7 +78,7 @@ def step_impl(context):
         "name": "Test_process_name",
         "state": "running",
         "processId": str(context.process_instance["_id"]),
-        "schemaRef": "ref://of.log.process_state.json"
+        "schemaRef": "ref://of.log.process_state"
     }
     context.sender.received_message(json.dumps(context.message))
 

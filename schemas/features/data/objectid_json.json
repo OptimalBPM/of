@@ -3,8 +3,8 @@
   "name": "Top",
   "description": "All system wide settings, users, permissions, rights ",
   "createdWhen": "2014-11-13T01:00:00+00:00",
-  "schemaRef": "ref://of.node.node.json",
+  "schemaRef": "ref://of.node.node",
   "canRead": ["000000010000010001e64c28"],
   "canWrite": ["000000010000010001e64c28"],
-  "allowedChildTypes": ["ref://of.node.node.json"]
+  "allowedChildTypes": ["ref://of.node.node"]
 }

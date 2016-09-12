@@ -7,7 +7,7 @@
   "properties": {
     "peerType": {
       "description": "The type of peer",
-      "$ref": "ref://of.peer.json#/properties/peerType"
+      "$ref": "ref://of.peer#/properties/peerType"
     },
     "address": {
       "type": "string",

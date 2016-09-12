@@ -8,7 +8,7 @@
     {
       "properties":
       {
-        "$ref": "ref://of.node.node.json#/properties"
+        "$ref": "ref://of.node.node#/properties"
       }
     },
     {
@@ -91,8 +91,8 @@
           "description": "The groups this user belongs to.",
           "type": "array",
           "items": {
-            "$ref": "ref://of.type.json#/properties/objectId",
-            "refSchemaRef": "ref://of.node.group.json",
+            "$ref": "ref://of.type#/properties/objectId",
+            "refSchemaRef": "ref://of.node.group",
             "propertyId": "17404cf6-6120-49dc-b07a-1f223a2e005f",
             "objectId": "true"
           }

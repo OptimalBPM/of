@@ -33,18 +33,18 @@ Note: A new schema must be both given schemaRef and be added to category
 # Schema category map. Used by handlers.
 schema_categories = {
     # Message category - Messages between peers - forwarded by the broker to the destination if not itself
-    "ref://of.message.message.json": "message",
-    "ref://of.message.error.json": "message",
+    "ref://of.message.message": "message",
+    "ref://of.message.error": "message",
     # Node category - Nodes in the node tree, cannot be messages
-    "ref://of.node.broker.json": "node",
-    "ref://of.node.admin.json": "node",
-    "ref://of.node.peer.json": "node",
+    "ref://of.node.broker": "node",
+    "ref://of.node.admin": "node",
+    "ref://of.node.peer": "node",
     # Log category - Log messages - written to the log collection by the broker
-    "ref://of.log.progression.json": "log",
-    "ref://of.log.process_state.json": "log",
-    "ref://of.event.json": "log",
+    "ref://of.log.progression": "log",
+    "ref://of.log.process_state": "log",
+    "ref://of.event": "log",
     # Process category - Process instance data - written to the process collection by the broker
-    "ref://of.process.system.json": "process"
+    "ref://of.process.system": "process"
     # Control category - Control messages for runtime entities
     # None for broker yet.
 }
@@ -54,9 +54,9 @@ intercept_schema_ids = []
 
 peer_type__schema_id = {
 
-    "broker": "ref://of.node.broker.json",
-    "admin": "ref://of.node.admin.json",
-    "peer": "ref://of.node.peer.json"
+    "broker": "ref://of.node.broker",
+    "admin": "ref://of.node.admin",
+    "peer": "ref://of.node.peer"
 }
 
 

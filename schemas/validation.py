@@ -20,9 +20,9 @@ def general_uri_handler(_uri, _folder):
     # Parse the schema file reference
     _netloc = urlparse(_uri).netloc
     # Translate into file name
-    _filename = _netloc.replace(".", "/", _netloc.count(".")-1)
+    _filename = _netloc.replace(".", "/")
     # Use urlparse to parse the file location from the URI
-    _file_location = os.path.abspath(os.path.join(_folder, "namespaces", _filename))
+    _file_location = os.path.abspath(os.path.join(_folder, "namespaces", _filename + ".json"))
 
     # noinspection PyTypeChecker
     with open(_file_location, "r", encoding="utf-8") as _schema_file:

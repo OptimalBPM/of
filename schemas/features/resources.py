@@ -12,7 +12,7 @@ test_user_data = {
     "name": "TestUser",
     "credentials": test_credential,
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "mbe://user.json",
+    "schemaRef": "mbe://user",
     "canRead": ["000000010000010001e64c28"],
     "canWrite": ["000000010000010001e64c28"],
     "groups": ["000000010000010001e64d02"]
@@ -25,7 +25,7 @@ test_hashed_user_data = {
     "name": "TestUser",
     "credentials": test_hashed_credential,
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "mbe://user.json",
+    "schemaRef": "mbe://user",
     "canRead": ["000000010000010001e64c28"],
     "canWrite": ["000000010000010001e64c28"],
     "groups": ["000000010000010001e64d02"]
@@ -40,7 +40,7 @@ test_node = {
     "name": "test_node",
     "createdWhen": "2014-11-13T01:00:00+00:00",
     "parent_id": "000000010000010001e64d40",
-    "schemaRef": "mbe://node.json",
+    "schemaRef": "mbe://node",
     "canRead": ["000000010000010001e64c28", "000000010000010001e64d02"],
     "canWrite": ["000000010000010001e64c28", "000000010000010001e64d02"]
 }
@@ -58,5 +58,5 @@ test_find_node_log_query = {
 
 test_session_id = None
 
-schemaRef_custom = "cust://car.json"
+schemaRef_custom = "cust://car"
 

@@ -8,12 +8,12 @@
   "allOf": [
     {
       "properties": {
-        "$ref": "ref://of.node.node.json#/properties"
+        "$ref": "ref://of.node.node#/properties"
       }
     },
     {
       "properties": {
-        "$ref": "ref://of.peer.json#/properties"
+        "$ref": "ref://of.peer#/properties"
       }
     },
     {

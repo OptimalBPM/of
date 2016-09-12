@@ -4,7 +4,7 @@
     "name": "Top",
     "description": "All system wide settings, users, permissions, rights ",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.node.json",
+    "schemaRef": "ref://of.node.node",
     "canRead": [
       "000000010000010001e64c28"
     ],
@@ -12,7 +12,7 @@
       "000000010000010001e64c28"
     ],
     "allowedChildTypes": [
-      "ref://of.node.node.json"
+      "ref://of.node.node"
     ]
   },
   {
@@ -21,7 +21,7 @@
     "name": "Administration",
     "description": "All system wide settings, users, permissions, rights ",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.node.json",
+    "schemaRef": "ref://of.node.node",
     "canRead": [
       "000000010000010001e64c28"
     ],
@@ -29,7 +29,7 @@
       "000000010000010001e64c28"
     ],
     "allowedChildTypes": [
-      "ref://of.node.node.json"
+      "ref://of.node.node"
     ]
   },
   {
@@ -38,7 +38,7 @@
     "name": "Groups",
     "description": "All groups and their settings",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.node.json",
+    "schemaRef": "ref://of.node.node",
     "canRead": [
       "000000010000010001e64c28"
     ],
@@ -46,7 +46,7 @@
       "000000010000010001e64c28"
     ],
     "allowedChildTypes": [
-      "ref://of.node.group.json"
+      "ref://of.node.group"
     ]
   },
   {
@@ -55,7 +55,7 @@
     "name": "Users",
     "description": "All users and their settings",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.node.json",
+    "schemaRef": "ref://of.node.node",
     "canRead": [
       "000000010000010001e64c28"
     ],
@@ -63,7 +63,7 @@
       "000000010000010001e64c28"
     ],
     "allowedChildTypes": [
-      "ref://of.node.user.json"
+      "ref://of.node.user"
     ]
   },
   {
@@ -72,7 +72,7 @@
     "name": "Rights",
     "description": "All the defined rights and their settings",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.node.json",
+    "schemaRef": "ref://of.node.node",
     "canRead": [
       "000000010000010001e64c28"
     ],
@@ -80,7 +80,7 @@
       "000000010000010001e64c28"
     ],
     "allowedChildTypes": [
-      "ref://of.node.right.json"
+      "ref://of.node.right"
     ]
   },
   {
@@ -89,7 +89,7 @@
     "name": "Templates",
     "description": "All templates",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.node.json",
+    "schemaRef": "ref://of.node.node",
     "canRead": [
       "000000010000010001e64c28"
     ],
@@ -97,7 +97,7 @@
       "000000010000010001e64c28"
     ],
     "allowedChildTypes": [
-      "ref://of.node.node.json"
+      "ref://of.node.node"
     ]
   },
   {
@@ -106,7 +106,7 @@
     "name": "Peers",
     "description": "The peers in the Optimal BPM system",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.node.json",
+    "schemaRef": "ref://of.node.node",
     "canRead": [
       "000000010000010001e64c28",
       "000000010000010001e64d02"
@@ -116,10 +116,10 @@
       "000000010000010001e64d02"
     ],
     "allowedChildTypes": [
-      "ref://of.node.broker.json",
-      "ref://of.node.admin.json",
-      "ref://of.node.peer.json",
-      "bpm://node_agent.json"
+      "ref://of.node.broker",
+      "ref://of.node.admin",
+      "ref://of.node.peer",
+      "bpm://node_agent"
     ]
   },
   {
@@ -128,7 +128,7 @@
     "name": "admin_root",
     "description": "The settings of the web admin interface for the user root",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.admin.json",
+    "schemaRef": "ref://of.node.admin",
     "address": "admin_root",
     "canRead": [
       "000000010000010001e64c28",

@@ -8,7 +8,7 @@
     {
       "properties":
       {
-        "$ref": "ref://of.node.node.json#/properties"
+        "$ref": "ref://of.node.node#/properties"
 
       }
     },
@@ -20,7 +20,7 @@
         },
         "formRef": {
           "description": "The form reference of the form",
-          "$ref": "ref://of.type.json#/properties/uuid",
+          "$ref": "ref://of.type#/properties/uuid",
           "propertyId": "47edf1f9-89be-42bb-8868-2b4df50173d4"
         }
       }

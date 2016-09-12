@@ -291,5 +291,9 @@ class Node():
 
 
     def get_schemas(self, _user):
-        print("Request for a list of schemas")
+        print("Request the schema database")
         return self.database_access.schema_tools.json_schema_objects
+
+    def get_jsf_forms(self, _user):
+        print("Request the JSF form database")
+        return self.jsf_objects

@@ -35,7 +35,7 @@ def reply_with_error_message(_runtime_instance, _message, _error_message):
         "sourceProcessId": _runtime_instance.process_id,
         "messageId": _message["messageId"],
         "errorMessage": _error_message,
-        "schemaRef": "ref://of.message.error.json"
+        "schemaRef": "ref://of.message.error"
     }
 
     if "source" in _message or _message["source"] == "":
@@ -60,7 +60,7 @@ def store_process_system_document(_process_id, _name, _parent_id=None):
         "name": _name,
         "host": socket.getfqdn(),
         "spawnedWhen": str(datetime.datetime.utcnow()),
-        "schemaRef": "ref://of.process.system.json"
+        "schemaRef": "ref://of.process.system"
     }
     if _parent_id:
         _struct["parent_id"] = _parent_id,
@@ -78,6 +78,6 @@ def log_process_state_message(_changed_by, _state, _process_id, _reason):
         "state": _state,
         "reason": _reason,
         "processId": _process_id,
-        "schemaRef": "ref://of.log.process_state.json"
+        "schemaRef": "ref://of.log.process_state"
     }
 

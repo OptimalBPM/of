@@ -43,8 +43,8 @@ def step_impl(context):
     :type context behave.runner.Context
 
     """
-    ok_("ref://of.node.node.json" in context.schema_tools.json_schema_objects and
-        "ref://cust.car.json" in context.schema_tools.json_schema_objects)
+    ok_("ref://of.node.node" in context.schema_tools.json_schema_objects and
+        "ref://cust.car" in context.schema_tools.json_schema_objects)
 
 
 @given("a schema with missing data is presented")
@@ -151,7 +151,7 @@ def step_impl(context):
     """
 
 
-    context.resolvedGroupSchema = context.schema_tools.resolveSchema(context.schema_tools.json_schema_objects["ref://of.node.group.json"])
+    context.resolvedGroupSchema = context.schema_tools.resolveSchema(context.schema_tools.json_schema_objects["ref://of.node.group"])
 
 
 

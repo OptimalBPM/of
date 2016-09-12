@@ -5,7 +5,7 @@
     "name": "Administer everything",
     "description": "The Administer everything right",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.right.json",
+    "schemaRef": "ref://of.node.right",
     "canRead": [
       "000000010000010001e64c28"
     ],
@@ -19,7 +19,7 @@
     "parent_id": "000000010000010001e64c24",
     "name": "Administrators",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.group.json",
+    "schemaRef": "ref://of.node.group",
     "rights": [
       "000000010000010001e64c27"
     ],
@@ -37,7 +37,7 @@
     "name": "Users",
     "description": "The users group",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.group.json",
+    "schemaRef": "ref://of.node.group",
     "rights": [],
     "canRead": [
       "000000010000010001e64c28"
@@ -58,7 +58,7 @@
       }
     },
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.user.json",
+    "schemaRef": "ref://of.node.user",
     "groups": [
       "000000010000010001e64c28"
     ],
@@ -76,7 +76,7 @@
     "name": "Administer nodes",
     "description": "The Administer nodes right",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.right.json",
+    "schemaRef": "ref://of.node.right",
     "canRead": [
       "000000010000010001e64c28",
       "000000010000010001e64d02"
@@ -92,7 +92,7 @@
     "parent_id": "000000010000010001e64c24",
     "name": "Node administrators group",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.group.json",
+    "schemaRef": "ref://of.node.group",
     "rights": [
       "000000010000010001e64d01"
     ],
@@ -117,7 +117,7 @@
       }
     },
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.user.json",
+    "schemaRef": "ref://of.node.user",
     "groups": [
       "000000010000010001e64d02",
       "000000010000010001e64c28"
@@ -137,7 +137,7 @@
     "parent_id": "000000010000010001e64c24",
     "name": "The Guests group",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.group.json",
+    "schemaRef": "ref://of.node.group",
     "rights": [
       "000000010000010001e64d01"
     ],
@@ -162,7 +162,7 @@
       }
     },
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.user.json",
+    "schemaRef": "ref://of.node.user",
     "groups": [
       "000000010000010001e64d12"
     ],
@@ -187,7 +187,7 @@
       }
     },
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.user.json",
+    "schemaRef": "ref://of.node.user",
     "groups": [],
     "canRead": [
       "000000010000010001e64c28",
@@ -205,7 +205,7 @@
     "name": "broker01",
     "description": "Broker number 1",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.broker.json",
+    "schemaRef": "ref://of.node.broker",
     "address": "broker01",
     "repositoriesLocation": "~/optimalframework/broker_repositories",
     "canRead": [
@@ -224,16 +224,16 @@
     "name": "UI",
     "description": "UI settings for all schemas",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.node.json",
+    "schemaRef": "ref://of.node.node",
     "canRead": ["000000010000010001e64c28"],
     "canWrite": [
       "000000010000010001e64c28",
       "000000010000010001e64d02"
     ],
     "allowedChildTypes": [
-      "ref://of.node.node.json",
-      "ref://of.node.user.json",
-      "ref://of.node.group.json"
+      "ref://of.node.node",
+      "ref://of.node.user",
+      "ref://of.node.group"
     ]
   },
   {
@@ -247,8 +247,8 @@
       "name",
       "schemaRef"
     ],
-    "formSchemaRef": "ref://of.node.node.json",
-    "schemaRef": "ref://of.node.node.json",
+    "formSchemaRef": "ref://of.node.node",
+    "schemaRef": "ref://of.node.node",
     "canRead": ["000000010000010001e64c28"],
     "canWrite": ["000000010000010001e64c28"],
     "allowedChildTypes": []
@@ -259,7 +259,7 @@
     "name": "new_broker",
     "description": "Broker template",
     "createdWhen": "2014-11-13T01:00:00+00:00",
-    "schemaRef": "ref://of.node.broker.json",
+    "schemaRef": "ref://of.node.broker",
     "address": "",
     "templateName": "New broker template",
     "repositoriesLocation": "~/optimalframework/broker_repositories",

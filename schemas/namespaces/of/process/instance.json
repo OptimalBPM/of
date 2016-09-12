@@ -6,13 +6,13 @@
   "version": "0.1",
   "properties": {
     "_id": {
-      "$ref": "ref://of.type.json#/properties/objectId",
+      "$ref": "ref://of.type#/properties/objectId",
       "description": "The object _id of the process, an object id.",
       "propertyId": "e9b714fa-9f9f-4bd0-9500-3638ba2154e2",
       "objectId": "true"
     },
     "parent_id": {
-      "$ref": "ref://of.type.json#/properties/objectId",
+      "$ref": "ref://of.type#/properties/objectId",
       "description": "The object _id of the spawning parent process, an object id.",
       "propertyId": "e9b714fa-9f9f-4bd0-9500-3638ba2154e2",
       "objectId": "true"

@@ -2,7 +2,7 @@
 
 
 ,,
-  "bpm://node_agent.json": [
+  "bpm://node_agent": [
     {
       "key": "name",
       "type": "text",
@@ -143,5 +143,5 @@
     }
   ],
 
-  "ref://of.node.broker.json":
+  "ref://of.node.broker":
 }

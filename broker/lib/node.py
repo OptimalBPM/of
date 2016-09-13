@@ -13,6 +13,7 @@ from of.common.security.groups import aop_has_right, init_groups
 
 from of.broker.lib.schema_mongodb import mbe_object_id
 from of.common.security.permission import filter_by_group
+from of.forms import load_forms_from_directory, of_form_folder, cache as form_cache
 
 
 
@@ -78,6 +79,9 @@ class Node():
             node_rights = [id_right_admin_everything]
 
         init_groups(self.database_access)
+
+        load_forms_from_directory(of_form_folder())
+
 
     def _string_to_object_ids(self, _data):
 
@@ -296,4 +300,4 @@ class Node():
 
     def get_jsf_forms(self, _user):
         print("Request the JSF form database")
-        return self.jsf_objects
+        return form_cache

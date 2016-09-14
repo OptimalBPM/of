@@ -5,6 +5,7 @@ from logging import CRITICAL
 from multiprocessing import Process
 
 import cherrypy
+import json
 from bson.objectid import ObjectId
 from pymongo.mongo_client import MongoClient
 
@@ -138,6 +139,17 @@ def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _o
                     _pid)
 
 
+def error_message_default(_status, _message, _traceback, _version):
+    _json_message = {
+        'status': _status,
+        'version': _version,
+        'message': [_message],
+        'traceback': [_x.strip() for _x in _traceback.split('\n')]
+    }
+    cherrypy.serving.response.headers['Content-Type'] = 'application/json'
+    return json.dumps(_json_message, indent=4, sort_keys=True)
+
+
 def start_broker():
     """
     Starts the broker; Loads settings, connects to database, registers process and starts the web server.
@@ -249,7 +261,6 @@ def start_broker():
         "tools.encode.encoding": "utf-8",
         "tools.decode.on": True,
         "tools.trailing_slash.on": True,
-
         "tools.staticdir.root": os.path.abspath(os.path.dirname(__file__)),
         "server.ssl_module": "builtin",
         # TODO: Remove this when this bug is fixed:
@@ -257,8 +268,8 @@ def start_broker():
         "engine.autoreload.on": False,
         'server.socket_host': '0.0.0.0',
         "server.ssl_certificate": os.path.join(ssl_path(), "optimalframework_test_cert.pem"),
-        "server.ssl_certificate": os.path.join(ssl_path(), "optimalframework_test_cert.pem"),
-        "server.ssl_private_key": os.path.join(ssl_path(), "optimalframework_test_privkey.pem")
+        "server.ssl_private_key": os.path.join(ssl_path(), "optimalframework_test_privkey.pem"),
+        "error_page.default": error_message_default
     })
     write_srvc_dbg("Starting CherryPy, ssl at " + os.path.join(ssl_path(), "optimalframework_test_privkey.pem"))
 

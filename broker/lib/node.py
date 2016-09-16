@@ -170,7 +170,7 @@ class Node():
         """
         Returns a list of child nodes whose _parent_ids match _parent_id
 
-        :param _parent_id: An object with a parent_id property
+        :param _parent_id: A parent Id
         :param _user: A user object
         :return: A list of nodes
 
@@ -179,7 +179,7 @@ class Node():
         # Filter result by canRead groups
         return filter_by_group(
             self.database_access.find(
-                {"conditions": {"parent_id": of_object_id(_parent_id["parent_id"])}, "collection": "node"}),
+                {"conditions": {"parent_id": of_object_id(_parent_id)}, "collection": "node"}),
             "canRead", _user, self.database_access)
 
     @aop_has_right(get_node_rights)

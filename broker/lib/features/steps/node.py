@@ -199,7 +199,7 @@ def step_impl(context):
     :type context behave.runner.Context
 
     """
-    _result = context.node.load_children({"parent_id": "000000010000010001e64c24"}, context.user)
+    _result = context.node.load_children("000000010000010001e64c24", context.user)
     for _curr_select in _result:
         if _curr_select["_id"] == "000000010000010001e64c28" and _curr_select["name"] == "Administrators":
             ok_(True)

@@ -1,5 +1,9 @@
 """
 The constants module holds constants for all the schemas defined in Optimal Framework
+
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
 """
 __author__ = 'Nicklas Borjesson'
 

@@ -1,12 +1,17 @@
 """
-    The permission module handles permissions for nodes.
+The permission module handles permissions for nodes.
+
+Created on Mar 6, 2015
+
+@author: Nicklas Boerjesson
 """
 
 
-from of.broker.lib.schema_mongodb import mbe_object_id
+from of.broker.lib.schema_mongodb import of_object_id
 
 __author__ = 'nibo'
 
+# TODO: As this is group-level operations, they should be in the group-module, not here.
 
 def filter_by_group(_nodes, _permission, _user, _database_access, _error_prefix_if_not_allowed=None,
                     _use_object_id=False):
@@ -31,7 +36,7 @@ def filter_by_group(_nodes, _permission, _user, _database_access, _error_prefix_
         for _curr_group in _groups:
             # ..is among those the node has listed having the requested permission
             if _use_object_id:
-                if mbe_object_id(_curr_group) in _curr_row[_permission]:
+                if of_object_id(_curr_group) in _curr_row[_permission]:
                     _has_permission = True
                     break
             elif _curr_group in _curr_row[_permission]:

@@ -1,8 +1,12 @@
 """
-    The node module provides the node-API for OF. All interaction with the node-collection should happen
-    through the Node-class
+The node module provides the node-API for OF. All interaction with the node-collection should happen
+through the Node-class
 
-    Note: Sphinx does not properly document this module with the decorators, comment them before running sphinx
+Note: Sphinx does not properly document this module with the decorators, comment them before running sphinx
+
+Created on Mar 18, 2016
+
+@author: Nicklas Boerjesson
 """
 
 from bson.objectid import ObjectId
@@ -11,7 +15,7 @@ from of.broker.lib.auth_backend import MongoDBAuthBackend
 from of.common.security.authentication import init_authentication
 from of.common.security.groups import aop_has_right, init_groups
 
-from of.broker.lib.schema_mongodb import mbe_object_id
+from of.broker.lib.schema_mongodb import of_object_id
 from of.common.security.permission import filter_by_group
 from of.forms import load_forms_from_directory, of_form_folder, cache as form_cache
 
@@ -120,7 +124,7 @@ class Node():
         if "_id" in _document:  # It is an existing node, check if user can write to it.
             _old_document_result = filter_by_group(
                 self.database_access.find(
-                    {"conditions": {"_id": mbe_object_id(_document["_id"])}, "collection": "node"}),
+                    {"conditions": {"_id": of_object_id(_document["_id"])}, "collection": "node"}),
                 "canWrite", _user, "Node.save(existing node)")
             if len(_old_document_result) == 1:
                 _old_document = _old_document_result[0]
@@ -131,7 +135,7 @@ class Node():
         elif "parent_id" in _document:  # It is a new node, check if the parent allows user to create it
             filter_by_group(
                 self.database_access.find(
-                    {"conditions": {"_id": mbe_object_id(_document["parent_id"])}, "collection": "node"}),
+                    {"conditions": {"_id": of_object_id(_document["parent_id"])}, "collection": "node"}),
                 "canWrite", _user, "Node.save(new node)")
             _old_document = None
         else:
@@ -175,7 +179,7 @@ class Node():
         # Filter result by canRead groups
         return filter_by_group(
             self.database_access.find(
-                {"conditions": {"parent_id": mbe_object_id(_parent_id["parent_id"])}, "collection": "node"}),
+                {"conditions": {"parent_id": of_object_id(_parent_id["parent_id"])}, "collection": "node"}),
             "canRead", _user, self.database_access)
 
     @aop_has_right(get_node_rights)
@@ -191,7 +195,7 @@ class Node():
 
         # Filter result by canRead groups
         return filter_by_group(self.database_access.find(
-            {"conditions": {"_id": mbe_object_id(_id["_id"])}, "collection": "node"}),
+            {"conditions": {"_id": of_object_id(_id["_id"])}, "collection": "node"}),
             "canRead", _user, self.database_access,
             _error_prefix_if_not_allowed="Node.load_node: Not permissioned to load this node. _id: " + _id["_id"])[0]
 
@@ -207,7 +211,7 @@ class Node():
 
         # Filter result by canRead groups
         return filter_by_group(self.database_access.find(
-            {"conditions": {"parent_id": mbe_object_id(id_templates), "schemaRef": _schema_ref}, "collection": "node"}),
+            {"conditions": {"parent_id": of_object_id(id_templates), "schemaRef": _schema_ref}, "collection": "node"}),
             "canRead", _user, self.database_access)
 
 
@@ -256,7 +260,7 @@ class Node():
             return _result
 
         # Load the current node
-        _node = self.database_access.find({"conditions": {"_id": mbe_object_id(_id["_id"])}, "collection": "node"},
+        _node = self.database_access.find({"conditions": {"_id": of_object_id(_id["_id"])}, "collection": "node"},
                                           _do_not_fix_object_ids=True)[0]
 
         _all_nodes = _recurse_children(_node)
@@ -283,7 +287,7 @@ class Node():
         :return:
 
         """
-        object_id = mbe_object_id(_id["_id"])
+        object_id = of_object_id(_id["_id"])
         # Filter result by canRead
         filter_by_group(self.database_access.find(
             {"conditions": {"_id": object_id}, "collection": "node"}), "canRead",

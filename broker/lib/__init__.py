@@ -1,4 +1,4 @@
 """
-This package implements the Optimal BPM broker API
+The libraries in this package implements the Optimal Framework API
 """
 __author__ = 'Nicklas Borjesson'

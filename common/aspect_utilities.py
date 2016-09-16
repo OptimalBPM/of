@@ -1,4 +1,6 @@
 """
+This module contains functionality to support the Aspect Oriented Programming paradigm in the Optimal Framework
+
 Created on Nov 6, 2012
 
 @author: Nicklas Börjesson

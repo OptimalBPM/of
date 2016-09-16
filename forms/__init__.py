@@ -1,3 +1,11 @@
+"""
+This package holds functionality to load, access and cache JSF forms
+
+Created on Sep 12, 2016
+
+@author: Nicklas Boerjesson
+"""
+
 import os
 import json
 script_dir = os.path.dirname(__file__)
@@ -8,6 +16,12 @@ on_cache_miss = None
 cache = {}
 
 def get_form(_uri, _name):
+    """
+    Load a form from the cache
+    :param _uri: The schemaRef
+    :param _name: The name of the form
+    :return: A JSF form
+    """
     _form = None
     if _uri not in cache:
         if on_cache_miss:
@@ -25,6 +39,10 @@ def get_form(_uri, _name):
 
 
 def of_form_folder():
+    """
+    Get the folder of the forms
+    :return: A string with the folder
+    """
     return os.path.join(script_dir, "namespaces")
 
 def load_forms_from_directory(_form_folder, _destination = None):

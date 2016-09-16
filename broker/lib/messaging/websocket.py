@@ -1,4 +1,10 @@
+"""
+This module holds the BrokerWebSocket class
 
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
+"""
 import time
 
 import cherrypy

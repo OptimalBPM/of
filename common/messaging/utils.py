@@ -1,5 +1,9 @@
 """
 The utils module gathers all utility functions used in messaging
+
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
 """
 
 import os

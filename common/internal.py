@@ -1,4 +1,6 @@
 """
+This module holds internally used utilities
+
 Created on Nov 6, 2012
 
 @author: Nicklas Boerjesson
@@ -31,7 +33,7 @@ def not_implemented(f):
 
 def node_id_with_env(_node_id, _environment_id):
     """
-    Converts a general Optimal BPM node_id strings to a local one by XOR;ing the MongoDB objectId:s.
+    Converts a general Optimal Framework node_id strings to a local one by XOR;ing the MongoDB objectId:s.
     :param _node_id: A node object id
     :param _environment_id: The Optimal BPM environment_id
     :return: The locally usable value

@@ -1,5 +1,10 @@
 """
 This is the central logging facility of the Optimal framework.
+
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
+
 """
 import datetime
 

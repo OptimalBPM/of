@@ -1,8 +1,9 @@
 """
 Contains functionality for reading settings from ini- and json-files
 
-:copyright: Copyright 2010-2014 by Nicklas Boerjesson
-:license: BSD, see LICENSE for details.
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
 """
 
 import configparser

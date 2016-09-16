@@ -1,5 +1,8 @@
 """
 This module implements the OptimalWebSocket class and maintains the monitor global variable.
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
 """
 import os
 import threading

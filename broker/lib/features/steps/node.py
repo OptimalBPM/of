@@ -9,7 +9,7 @@ from nose.tools.trivial import ok_
 
 from of.broker.lib.features.test_resources import test_node
 from of.common.security.groups import RightCheckError
-from of.broker.lib.schema_mongodb import mbe_object_id
+from of.broker.lib.schema_mongodb import of_object_id
 
 script_location = os.path.dirname(__file__)
 
@@ -95,7 +95,7 @@ def step_impl(context):
     :type context behave.runner.Context
 
     """
-    _result = context.node.find({"_id": mbe_object_id(context.curr_id)}, context.user)
+    _result = context.node.find({"_id": of_object_id(context.curr_id)}, context.user)
     if len(_result) == 0:
         ok_(True)
     else:
@@ -111,7 +111,7 @@ def step_impl(context):
     """
 
     try:
-        context.node.find({"_id": mbe_object_id("000000010000010001e64d01")}, context.user)
+        context.node.find({"_id": of_object_id("000000010000010001e64d01")}, context.user)
     except RightCheckError:
         ok_(True)
         return
@@ -128,7 +128,7 @@ def step_impl(context):
     """
 
     _result = context.node.database_access.find(
-        {"conditions": {"node_id": None, "user_id": mbe_object_id("000000010000010001e64d15"),
+        {"conditions": {"node_id": None, "user_id": of_object_id("000000010000010001e64d15"),
                         "category": "right"}, "collection": "log"})
     if len(_result) == 1:
         ok_(True)
@@ -164,8 +164,8 @@ def step_impl(context, event_category, prefix):
     """
 
     _result = context.node.database_access.find(
-        {"conditions": {"node_id": mbe_object_id("000000010000010001e64d01"),
-                        "user_id": mbe_object_id("000000010000010001e64d13"),
+        {"conditions": {"node_id": of_object_id("000000010000010001e64d01"),
+                        "user_id": of_object_id("000000010000010001e64d13"),
                         "category": event_category}, "collection": "log"})
     for _curr_error in _result:
         if _curr_error["data"][0:len(prefix)] == prefix:
@@ -183,7 +183,7 @@ def step_impl(context):
 
     """
     _result = context.node.lookup(
-        {"conditions": {"parent_id": mbe_object_id("000000010000010001e64c24")}, "collection": "node"}, context.user)
+        {"conditions": {"parent_id": of_object_id("000000010000010001e64c24")}, "collection": "node"}, context.user)
     for _curr_select in _result:
         if _curr_select["value"] == "000000010000010001e64c28" and _curr_select["text"] == "Administrators":
             ok_(True)

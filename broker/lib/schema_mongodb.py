@@ -1,6 +1,11 @@
 """
 This module serves as an extension for the JSON schema library.
 It is made in a similar extension-vein as seep (https://github.com/Julian/Seep)
+
+Created on Mar 18, 2016
+
+@author: Nicklas Boerjesson
+
 """
 
 from bson.objectid import ObjectId
@@ -10,7 +15,7 @@ from jsonschema.exceptions import ValidationError
 import jsonschema.validators
 
 
-def mbe_object_id(value):
+def of_object_id(value):
     """
     Converts a string value to a MongoDB object value.
 
@@ -127,7 +132,7 @@ class MongodbValidator():
                     # print("setting property - " + _property)
                     curr_instance = instance[_property]
                     if curr_instance is not None and curr_instance != "":
-                        instance[_property] = mbe_object_id(curr_instance)
+                        instance[_property] = of_object_id(curr_instance)
 
                 elif "type" in subschema and subschema["type"] == "array":
                     if "objectId" in subschema["items"]:
@@ -136,6 +141,6 @@ class MongodbValidator():
                             curr_item = instance[_property][curr_idx]
                             if type(curr_item) is str and curr_item is not None and curr_item != "":
                                 # print("setting array item - " + curr_item)
-                                instance[_property][curr_idx] = mbe_object_id(curr_item)
+                                instance[_property][curr_idx] = of_object_id(curr_item)
 
 

@@ -1,8 +1,9 @@
 """
+This module contains the SchemaTools class
+
 Created on Mar 6, 2015
 
 @author: Nicklas Boerjesson
-@note: The schema tools
 
 """
 import json

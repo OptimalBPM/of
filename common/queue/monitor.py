@@ -1,6 +1,11 @@
 """
 The monitor module implements the Monitor and MonitorThread classes.
+
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
 """
+
 import os
 import traceback
 import threading

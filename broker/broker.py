@@ -1,3 +1,8 @@
+"""
+The broker is the heart of the Optimal Framework. It is the messaging and API hub of the system.
+It can also present a UI for administration and a custom UI if needed.
+"""
+
 import os
 import sys
 import time

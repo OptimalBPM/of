@@ -1,5 +1,9 @@
 """"
 This modules holds the CumulativeDict class.
+
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
 """
 import json
 
@@ -7,7 +11,9 @@ __author__ = "Nicklas Börjesson"
 
 
 class CumulativeDict:
-    """The CumulativeDicts class holds dictionaries indexed by names, adding one
+    """
+    The CumulativeDict class holds dictionaries indexed by names, adding one cumulatively gracefully mix
+    the new with the old
     """
 
     """A dict namespaces, keys are namespaces"""

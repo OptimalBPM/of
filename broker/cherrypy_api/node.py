@@ -1,8 +1,10 @@
 """
-    The CherryPy-module provides a web server plugin for CherryPy.
+The CherryPyNode helper class exposes the Optimal Framework Node web service API
+
+Created on Mar 18, 2016
+
+@author: Nicklas Boerjesson
 """
-
-
 
 import cherrypy
 
@@ -12,23 +14,17 @@ from of.broker.lib.node import Node
 
 __author__ = 'Nicklas Borjesson'
 
-
-
-
 class CherryPyNode(object):
     """
-    The CherryPyNode class is a plugin for CherryPy to expose the MBE node-functionality.
-    Each function maps to counterparts in the node class.
+    The CherryPyNode class is a plugin for CherryPy to expose the Optimal Framework Node API.
+    Each function maps to counterparts in the Node class.
 
     """
-    # A local instance of the MBE Node API
+    # A local instance of the Node-class
     _node = None
 
     def __init__(self, _database_access):
         self._node = Node(_database_access)
-
-
-
 
     @cherrypy.expose
     @cherrypy.tools.json_in()

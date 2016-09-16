@@ -1,5 +1,9 @@
 """
 This module handles the plugin structure of the  the Optimal BPM Admin API
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
+
 """
 import importlib
 import json

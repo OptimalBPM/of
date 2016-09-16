@@ -1,11 +1,25 @@
+"""
+This module contains the MongoDBAuthBackend
+
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
+"""
+
+
 import datetime
 import hashlib
 
-from of.broker.lib.schema_mongodb import mbe_object_id
+from of.broker.lib.schema_mongodb import of_object_id
 from of.common.security.authentication import AuthenticationBackend
 
 
 class MongoDBAuthBackend(AuthenticationBackend):
+    """
+    The MongoDBAuthBackend class implements the AuthenticationBackend, and provides a mongodb-based
+    authentication backend for the Optimal Framework
+    """
+
     # A db_access instance
     db_access = None
 
@@ -15,7 +29,7 @@ class MongoDBAuthBackend(AuthenticationBackend):
 
     def get_session(self, _session_id):
         _session_cond = {
-            "conditions": {"_id": mbe_object_id(_session_id)},
+            "conditions": {"_id": of_object_id(_session_id)},
             "collection": "session"
         }
 
@@ -29,7 +43,7 @@ class MongoDBAuthBackend(AuthenticationBackend):
 
     def get_user(self, _user_id):
         _user_condition = {
-            "conditions": {"_id": mbe_object_id(_user_id), "schemaRef": "ref://of.node.user"},
+            "conditions": {"_id": of_object_id(_user_id), "schemaRef": "ref://of.node.user"},
             "collection": "node"
         }
         _users = list(self.db_access.find(_user_condition))
@@ -78,7 +92,7 @@ class MongoDBAuthBackend(AuthenticationBackend):
     def logout(self, _session_id):
 
         _remove_cond = {
-            "conditions": {"_id": mbe_object_id(_session_id)},
+            "conditions": {"_id": of_object_id(_session_id)},
             "collection": "session"
         }
 

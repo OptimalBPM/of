@@ -1,10 +1,12 @@
 """
 The logging module handles all the logging to database of OF.
-"""
+Created on Mar 18, 2016
 
+@author: Nicklas Boerjesson
+"""
 import datetime
 
-from of.broker.lib.schema_mongodb import mbe_object_id
+from of.broker.lib.schema_mongodb import of_object_id
 
 __author__ = "nibo"
 
@@ -121,9 +123,9 @@ class Logging():
         """
         # TODO: Decide  on how to make user ID reach the logger.
         return {
-            "user_id": mbe_object_id(_user_id),
+            "user_id": of_object_id(_user_id),
             "occurredWhen": _occurred_when,
-            "node_id": mbe_object_id(_node_id)
+            "node_id": of_object_id(_node_id)
         }
 
     def write_error(self, _event):

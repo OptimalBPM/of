@@ -1,6 +1,11 @@
 """
-     The access module contains features providing an abstraction layer over MongoDB.
+The access module contains features providing an abstraction layer over MongoDB.
+
+Created on Mar 18, 2016
+
+@author: Nicklas Boerjesson
 """
+
 
 import copy
 

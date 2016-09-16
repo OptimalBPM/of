@@ -1,6 +1,10 @@
 """
 This module exposes the Optimal BPM Broker API as a web service through a CherryPy module
-Note that most of its initialisation is performed in the startup ../broker.py
+Note that most of its initialisation is performed in the startup script; ../broker.py
+
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
 """
 
 import copy

@@ -1,11 +1,9 @@
 """
-Created on Mar 6, 2015
-
 The groups module contains functionality for checking group level rights.
 
+Created on Mar 6, 2015
+
 @author: Nicklas Boerjesson
-
-
 """
 
 from decorator import getfullargspec
@@ -114,6 +112,8 @@ class Groups():
     The Groups class is the central location for group management in MBE and holds the group cache.
 
     """
+
+    # TODO: Backend specifics should be broken out into an abstract group backend likke the authentication backend
     _groups = {}
 
     def __init__(self, _database_access):

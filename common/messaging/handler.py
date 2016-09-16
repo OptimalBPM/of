@@ -1,5 +1,9 @@
 """
 This module contains the implementation of the WebSocketHandler class
+
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
 """
 import logging
 from asyncore import write

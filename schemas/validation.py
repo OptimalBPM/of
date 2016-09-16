@@ -1,6 +1,11 @@
 """
 This module holds Optimal Framework-specific JSON schema functionality
+
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
 """
+
 import json
 import os
 from urllib.parse import urlparse

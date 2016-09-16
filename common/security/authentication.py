@@ -1,6 +1,11 @@
 """
-The authentication module is responsible for taking log in credentials an establish a session.
-Session data is saved in the Session collection.
+The authentication module is the central authentication facility in the Optimal Framework.
+It is responsible for hadling log in credentials and establish sessions.
+Session data is saved in the authentication backend.
+
+Created on Mar 18, 2016
+
+@author: Nicklas Boerjesson
 """
 from abc import ABCMeta
 
@@ -108,6 +113,10 @@ class AuthenticationError(Exception):
 
 
 class AuthenticationBackend(metaclass=ABCMeta):
+    """
+    The authentication backend is an abstract class that defines what is needed to create an authentication
+    backend for the Optimal Framework
+    """
 
     def get_session(self, session_id):
         raise Exception("AuthenticationBackend.get_session is not implemented!")

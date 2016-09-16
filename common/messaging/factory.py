@@ -1,6 +1,10 @@
 """
 The factory module contains a number of functions that return message structures.
-Use these function instead of building messages manually to follow changes.
+Use these functions instead of building messages manually to follow changes.
+
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
 """
 
 import datetime

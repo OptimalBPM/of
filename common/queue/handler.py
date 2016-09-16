@@ -1,5 +1,9 @@
 """
 The handler module implements the Handler class.
+
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
 """
 
 import os

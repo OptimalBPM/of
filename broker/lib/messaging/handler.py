@@ -1,5 +1,9 @@
 """
 This module holds the BrokerWebSocketHandler class
+
+Created on Jan 22, 2016
+
+@author: Nicklas Boerjesson
 """
 from of.common.logging import write_to_log, EC_COMMUNICATION, SEV_INFO, SEV_DEBUG, EC_NOTIFICATION, SEV_ERROR
 from of.common.messaging.constants import UNACCEPTABLE_DATA, BROKER_SHUTTING_DOWN

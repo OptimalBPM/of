@@ -1,4 +1,4 @@
 """
-The schemas package holds all Optimal Framework json schemas.
+The schemas package holds all Optimal Framework JSON schemas and schema utilites.
 """
 __author__ = 'Nicklas Borjesson'

@@ -1,4 +1,12 @@
-# CherryPy-specific login management
+"""
+CherryPy-specific login and session management
+
+Created on Jun 17, 2016
+
+@author: Nicklas Boerjesson
+"""
+
+
 
 import cherrypy
 from http.cookies import SimpleCookie

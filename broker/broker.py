@@ -59,9 +59,9 @@ Global variables
 
 #: The peer address of the broker
 address = ""
-#: A SchemaTools instance, used across the broker TODO: Is this thread/process safe?(ORG-112)
+#: A SchemaTools instance, used across the broker TODO: Is this thread/process safe?(PROD-146)
 schema_tools = None
-#: A DatabaseAccess instance, used across the broker TODO: Is this thread/process safe?(ORG-112)
+#: A DatabaseAccess instance, used across the broker TODO: Is this thread/process safe?(PROD-146)
 database_access = None
 
 #: The processId of the broker used to identify the process in logging
@@ -88,6 +88,7 @@ log_to_database_severity = None
 x_logger = logging.Logger("default")
 fh = logging.FileHandler('/var/log/of.log')
 x_logger.addHandler(fh)
+
 def write_srvc_dbg(_data):
     global process_id
     write_to_log(_data, _category=EC_SERVICE, _severity=SEV_DEBUG, _process_id=process_id)
@@ -349,7 +350,7 @@ def stop_broker(_reason, _restart=None):
         _exit_status += 1
     time.sleep(1)
 
-    # TODO: Terminate all child processes.(ORG-112)
+    # TODO: Terminate all child processes.(PROD-146)
 
     try:
         database_access.save(log_process_state_message(_changed_by=zero_object_id,
@@ -395,7 +396,7 @@ def stop_broker(_reason, _restart=None):
     else:
         cherrypy.engine.exit()
         return _exit_status
-        # TODO: Add monitoring of processes and killing those not responding, log states to broker. (ORG-112)
+        # TODO: Add monitoring of processes and killing those not responding, log states to broker. (PROD-146)
 
 
 if __name__ == "__main__":

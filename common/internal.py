@@ -51,9 +51,6 @@ def resolve_config_path():
     :return: a qal BPM settings instance
     """
 
-    # TODO: Break out into utils, this exists in broker as well.(ORG-112)
-
-    # TODO: Write settings documentation.(ORG-112)
     if platform.system().lower() in ["linux", "darwin"]:
         # Linux/OSX
         _default_settings_folder = os.path.join(os.path.expanduser("~"), "optimalframework")

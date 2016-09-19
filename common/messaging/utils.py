@@ -82,7 +82,6 @@ def register_at_broker(_address, _type, _server, _username, _password, _log_pref
         "peerType": _type,
         "address": _address
     }
-    # TODO: Credentials should not be outputted here in production.(ORG-112)
     write_dbg_info(_log_prefix + "[" + str(datetime.datetime.utcnow()) + "] Registering at broker API.")
 
     _headers = {'content-type': 'application/json'}

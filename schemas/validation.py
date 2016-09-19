@@ -21,7 +21,7 @@ def general_uri_handler(_uri, _folder):
     :param _uri: The _uri to handle
     :return: The schema
     """
-    # TODO: If there ever was a typical function to memoize, this would be it.(ORG-112)
+
     # Parse the schema file reference
     _netloc = urlparse(_uri).netloc
     # Translate into file name

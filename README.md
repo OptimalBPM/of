@@ -98,9 +98,9 @@ Install the framework:
 * ```sudo pip3 install of``` (of is the Optimal Framework pypi package)
 
 
-The configuration folder optimalbpm of the framework is by default located in the home folder of the user running the system.
+The configuration folder of the framework is by default located in the home folder of the user running the system.
 
-Install the :
+Install a default configuration:
 
 * ```cd ~``` go to your home directory
 * ```git clone https://github.com/OptimalBPM/of-config.git optimalframework```

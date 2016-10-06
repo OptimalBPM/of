@@ -66,7 +66,7 @@ def check_prerequisites():
                                                                                             "https://pip.pypa.io/en/stable/installing/")
 
 
-def install_package(_package_name, _argument = None):
+def install_package(_package_name, _arguments= None):
     """
     Install the packages listed if not present
     :param _package_name: The package to install
@@ -92,10 +92,10 @@ def install_package(_package_name, _argument = None):
 
     if _exists is None:
         print(_package_name + " not installed, installing...")
-        if _argument is None:
+        if _arguments is None:
             pip.main(['install', _package_name])
         else:
-            pip.main(['install', _package_name, _argument])
+            pip.main(['install', _package_name] + _arguments)
         print(_package_name + " installed...")
         return True
     else:
@@ -167,7 +167,8 @@ def main():
         check_prerequisites()
 
         """If not installed, install GIT support"""
-        install_package("dulwich", '--global-option="--pure"')
+        install_package("dulwich", ["--global-option=--pure"])
+
         install_package("of")
         # Dynamically import after GIT support is installed
         from of.tools.setup.lib.setup import Setup

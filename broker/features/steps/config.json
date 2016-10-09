@@ -1,9 +1,9 @@
 {
   "broker": {
     "address": "broker01",
-    "pluginFolder": "../../../../config/plugins",
+    "pluginFolder": "./plugins",
     "database": {
-      "databaseName": "test_broker"
+      "databaseName": "test_of"
     },
     "logging": {
       "severityLevel": "debug",

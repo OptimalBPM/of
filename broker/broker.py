@@ -80,6 +80,9 @@ plugins = None
 # All namespaces
 namespaces = None
 
+# Setting
+_settings = None
+
 # The severity when something is logged to the database
 log_to_database_severity = None
 
@@ -162,7 +165,7 @@ def start_broker():
     """
 
     global process_id, database_access, address, web_socket_plugin, repository_parent_folder, \
-        web_config, schema_tools, namespaces, log_to_database_severity, plugins
+        web_config, schema_tools, namespaces, log_to_database_severity, plugins, settings
 
     process_id = str(ObjectId())
 
@@ -173,7 +176,7 @@ def start_broker():
 
     try:
         _cfg_filename = resolve_config_path()
-        _settings = JSONXPath(_cfg_filename)
+        settings = JSONXPath(_cfg_filename)
 
     except Exception as e:
         if os.name == "nt":
@@ -185,15 +188,15 @@ def start_broker():
         x_logger = logging.FileHandler("/var/log/of.log")
 
     of.common.logging.severity = of.common.logging.severity_identifiers.index(
-        _settings.get("broker/logging/severityLevel", _default="warning"))
+        settings.get("broker/logging/severityLevel", _default="warning"))
 
     log_to_database_severity = of.common.logging.severity_identifiers.index(
-        _settings.get("broker/logging/databaseLevel", _default="warning"))
+        settings.get("broker/logging/databaseLevel", _default="warning"))
 
     write_srvc_dbg("Loaded settings from " + _cfg_filename)
 
     # An address is completely neccessary.
-    address = _settings.get("broker/address", _default=None)
+    address = settings.get("broker/address", _default=None)
     if not address or address == "":
         write_to_log(_data="Broker cannot start, missing [broker] address setting in configuration file.",
                      _category=EC_SERVICE, _severity=SEV_FATAL)
@@ -209,23 +212,24 @@ def start_broker():
 
     write_srvc_dbg("Load plugin data")
     # Find the plugin directory
-    _plugin_dir = _settings.get_path("broker/pluginFolder", _default="plugins")
+    _plugin_dir = settings.get_path("broker/pluginFolder", _default="plugins")
 
     # Load all plugin data
     plugins = CherryPyPlugins(_plugin_dir=_plugin_dir, _schema_tools=schema_tools, _namespaces=namespaces,
-                               _process_id=process_id)
+                               _process_id=process_id,
+                              _no_package_name_override=settings.get("broker/packageNameOverride"))
 
 
     # Plugins may want to load settings or add globals
-    plugins.call_hook("init_broker_scope", _broker_scope=globals(), _settings=_settings)
+    plugins.call_hook("init_broker_scope", _broker_scope=globals(), _settings=settings)
 
     write_srvc_dbg("===Register signal handlers===")
     register_signals(stop_broker)
     plugins.call_hook("before_db_connect", _broker_scope=globals())
     # Connect to the database
-    _host = _settings.get("broker/database/host", _default="127.0.0.1")
-    _user = _settings.get("broker/database/username", _default=None)
-    _password = _settings.get("broker/database/password", _default=None)
+    _host = settings.get("broker/database/host", _default="127.0.0.1")
+    _user = settings.get("broker/database/username", _default=None)
+    _password = settings.get("broker/database/password", _default=None)
     if _user:
         write_srvc_dbg("===Connecting to remote MongoDB backend " + _host + "===")
         # http://api.mongodb.org/python/current/examples/authentication.html
@@ -234,7 +238,7 @@ def start_broker():
         write_srvc_dbg("===Connecting to local MongoDB backend===")
         _client = MongoClient()
 
-    _database_name = _settings.get("broker/database/databaseName", _default="optimalframework")
+    _database_name = settings.get("broker/database/databaseName", _default="optimalframework")
     write_srvc_dbg("Using database name :" + _database_name)
 
     _database = _client[_database_name]

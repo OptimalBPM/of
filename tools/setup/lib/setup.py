@@ -89,6 +89,8 @@ class Setup():
         _log = "Installation starting..."
         self.install_config()
         self.install_plugins()
+
+        # TODO: Fix rights for logging if on linux..
         _log += "Installation finished."
 
         return _log

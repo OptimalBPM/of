@@ -88,19 +88,43 @@ If it is on windows, do not use sudo and change the commands appropriately.
 
 System requirements:
 
-* install mongodb
-* install python3.4 or newer
-* install python3-pip
+* mongodb
+* python3.4 or newer
+* python3-pip if not provided by the python installation
 
 
-Install the framework:
 
-* ```sudo pip3 install of``` (of is the Optimal Framework pypi package)
 
+Install the prerequisites:
+
+##Linuxes:
+
+These versions comes with 3.4 or newer: 
+* Debian Jessie (v8.0)
+* Ubuntu Trusty (v14.04)
+* OpenSuSE 13.2
+* Fedora 22
+* RHEL/Centos(manual install)
+
+### Commands:
+1. ```sudo apt-get install mongodb python3 python3-pip``` (of is the Optimal Framework pypi package)
+2. ```sudo pip3 install of```
+
+## OSX(using brew):
+1. ```brew install mongodb python3```
+2. ```sudo pip3 install of```
+
+## Windows:
+1. Download and install MongoDB https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/
+2. Download and install Python https://www.python.org/downloads/windows/
+3. In the commandline```pip3 install of``
 
 The configuration folder of the framework is by default located in the home folder of the user running the system.
 
-Install a default configuration:
+Download and run the the installer:
+https://github.com/OptimalBPM/of/raw/master/tools/setup/optimalsetup.py
+
+..or manually install a default configuration:
 
 * ```cd ~``` go to your home directory
 * ```git clone https://github.com/OptimalBPM/of-config.git optimalframework```
@@ -113,6 +137,8 @@ Install a default configuration:
 * ```cd ../../```
 * ```sh initdb.sh```  - initialize the database (or python3 initdb.py)
 * ```sh broker.sh```  - run the system (or python3 broker.py)
+
+
 
 The admin interface should now be reachable on:
 https://127.0.0.1:8080/admin/#/process

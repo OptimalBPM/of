@@ -54,7 +54,7 @@ class CherryPyPlugins(object):
         self.no_package_name_override = _no_package_name_override
 
         # Add the parent of plugins to sys path
-        sys.path.append(os.path.join(_plugin_dir, ".."))
+        sys.path.append(os.path.abspath(os.path.join(_plugin_dir, "..")))
         self.refresh_plugins(_plugin_dir)
 
     def validate_uuid(self, _value):
@@ -155,7 +155,7 @@ class CherryPyPlugins(object):
                 # For testing, the plugin is itself loading its code.
                 _module_ref = ".".join([_plugin_name, _hooks_modulename])
             else:
-                _module_ref = ".".join(["plugins.", _plugin_name, _hooks_modulename])
+                _module_ref = ".".join(["plugins", _plugin_name, _hooks_modulename])
 
             try:
                 _module = importlib.import_module(_module_ref)

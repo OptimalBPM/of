@@ -119,7 +119,7 @@ These versions comes with 3.4 or newer:
 ## Windows:
 1. Download and install MongoDB https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/
 2. Download and install Python https://www.python.org/downloads/windows/
-3. From the commandline, prefixed with the python path ```c:\Program Files\Python\pip3 install of``
+3. From the commandline, prefixed with the python path, run pip, like: ```c:\Program34\scripts\pip3.exe install of``
 
 The configuration folder of the framework is by default located in the home folder of the user running the system.
 

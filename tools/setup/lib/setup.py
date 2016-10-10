@@ -16,6 +16,13 @@ Deps: dulwich
 
 """
 import os
+import sys
+import tempfile
+from urllib.error import HTTPError, URLError
+from urllib.request import urlopen
+
+import json
+from distlib.compat import ZipFile
 from dulwich import porcelain
 
 from of.common.dictionaries import set_property_if_in_dict
@@ -65,6 +72,36 @@ class Setup():
         else:
             raise Exception("Error installing the configuration files at \"" + _folder_location + "\", directory already exists.")
 
+    def install_plugin_binaries(self, _folder):
+        try:
+            with open(os.path.join(_folder, "definitions.json"), "r") as f:
+                _settings = json.load(f)
+            try:
+                for _curr_plugin_name, _curr_plugin_value in _settings["plugins"].items():
+                    if "binaries" in _curr_plugin_value:
+                        for _curr_binary in _curr_plugin_value["binaries"]:
+                            _source_file = urlopen(_curr_binary["url"])
+                            _tempfile = tempfile.TemporaryFile(mode='w+b')
+                            sys.stdout.write("Downloading " + _curr_binary["url"] + " (" + str(_source_file.info()['Content-Length']) + " bytes) into temporary area...")
+                            sys.stdout.flush()
+                            _tempfile.write(_source_file.read())
+                            print("..done.")
+                            _target_folder = os.path.join(_folder, _curr_binary["target"])
+                            sys.stdout.write("Extracting all files into " + _target_folder)
+                            sys.stdout.flush()
+                            with ZipFile(_tempfile) as _zipfile:
+                                _zipfile.extractall(path=_target_folder)
+                            _tempfile.close()
+                            print("..done.")
+
+            except HTTPError as e:
+                print("An error occured when downloading a binary (" + _curr_binary["url"] + "): " + str(e))
+            except URLError as e:
+                print("An URL-related error occurred when downloading binary (" + _curr_binary["url"] + "): " + str(e))
+        except Exception as e:
+            print("An error occurred installing binaries in "+ _folder + ":" + str(e))
+
+
     def install_plugins(self):
         # Set plugin location to config location/plugins if not set
         if self.plugins_location is None:
@@ -81,8 +118,10 @@ class Setup():
 
         for _curr_plugin_name, _curr_plugin_info in self.plugins.items():
             # TODO: Add branch..
-            porcelain.clone(source=_curr_plugin_info["url"], target=os.path.join(_plugins_location, _curr_plugin_name), checkout=True)
+            _curr_target = os.path.join(_plugins_location, _curr_plugin_name)
+            porcelain.clone(source=_curr_plugin_info["url"], target=_curr_target, checkout=True)
 
+            self.install_plugin_binaries(_curr_target)
 
     def install(self):
 

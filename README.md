@@ -106,18 +106,20 @@ These versions comes with 3.4 or newer:
 * Fedora 22
 * RHEL/Centos(manual install)
 
-### Commands:
-1. ```sudo apt-get install mongodb python3 python3-pip``` (of is the Optimal Framework pypi package)
-2. ```sudo pip3 install of```
+### Debian/Ubuntu:
+```sudo apt-get install mongodb python3 python3-pip```
 
-## OSX(using brew):
-1. ```brew install mongodb python3```
-2. ```sudo pip3 install of```
+### OSX(using brew):
+```brew install mongodb python3```
+
+### Installing the framework 
+```sudo pip3 install of```
+(of is the pip package name of the Optimal Framework)
 
 ## Windows:
 1. Download and install MongoDB https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/
 2. Download and install Python https://www.python.org/downloads/windows/
-3. In the commandline```pip3 install of``
+3. From the commandline, prefixed with the python path ```c:\Program Files\Python\pip3 install of``
 
 The configuration folder of the framework is by default located in the home folder of the user running the system.
 

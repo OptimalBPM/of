@@ -143,7 +143,7 @@ if os.name == "nt":
                                     data="Raw\0Data".encode("ascii"), sid=my_sid)
 
 
-def severity_to_identifier(_severity, _error):
+def severity_to_identifier(_severity, _error = "invalid severity:"):
     """Returns a matching severity identifiers"""
     if isinstance(_severity, int) and 0 <= _severity < len(severity_identifiers):
         return str(severity_identifiers[_severity])
@@ -151,7 +151,7 @@ def severity_to_identifier(_severity, _error):
         return _error + str(_severity)
 
 
-def severity_to_description(_severity, _error):
+def severity_to_description(_severity, _error = "invalid severity:  "):
     """Returns a matching severity description"""
     if isinstance(_severity, int) and 0 <= _severity < len(severity_descriptions):
         return str(severity_descriptions[_severity])
@@ -159,7 +159,7 @@ def severity_to_description(_severity, _error):
         return _error + str(_severity)
 
 
-def category_to_identifier(_category, _error):
+def category_to_identifier(_category, _error = "invalid category: "):
     """Returns a matching category identifiers"""
     if isinstance(_category, int) and 0 <= _category < len(category_identifiers):
         return str(category_identifiers[_category])
@@ -167,7 +167,7 @@ def category_to_identifier(_category, _error):
         return _error + str(_category)
 
 
-def category_to_description(_category, _error):
+def category_to_description(_category, _error = ""):
     """Returns a matching category description"""
     if isinstance(_category, int) and 0 <= _category < len(category_descriptions):
         return str(category_descriptions[_category])

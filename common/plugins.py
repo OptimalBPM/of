@@ -13,9 +13,6 @@ from uuid import UUID
 import sys
 from urllib.parse import urlparse
 
-from os import urandom
-from pymongo import uri_parser
-
 from of.common.cumulative_dict import CumulativeDict
 from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG, SEV_ERROR, EC_SERVICE, SEV_INFO
 

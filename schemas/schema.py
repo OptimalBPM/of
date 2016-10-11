@@ -151,7 +151,7 @@ class SchemaTools():
             for _root, _dirs, _files in os.walk(_folder):
                 for _file in _files:
                     if _file[-5:].lower() == ".json":
-                        _ref = "ref://" + ".".join(os.path.relpath(_root, _schema_folder).split("/") + [_file[0:-5]])
+                        _ref = "ref://" + ".".join(os.path.relpath(_root, _schema_folder).split(os.path.sep) + [_file[0:-5]])
                         _destination[_ref] = self.load_schema_from_file (os.path.join(_root, _file))
                         if _ref not in _loaded_uris:
                             _loaded_uris.append(_ref)

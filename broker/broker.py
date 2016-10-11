@@ -86,11 +86,11 @@ _settings = None
 # The severity when something is logged to the database
 log_to_database_severity = None
 
-# A unix file handler
-
-x_logger = logging.Logger("default")
-fh = logging.FileHandler('/var/log/of.log')
-x_logger.addHandler(fh)
+# A unix file handler (only instantiated on *x:eses
+x_logger = None
+if os.name != "nt":
+    fh = logging.FileHandler('/var/log/of.log')
+    x_logger.addHandler(fh)
 
 def write_srvc_dbg(_data):
     global process_id
@@ -106,7 +106,7 @@ def log_locally(_data, _category, _severity, _process_id_param, _user_id, _occur
     if _address_param is None:
         _address_param = address
     if os.name == "nt":
-        write_to_event_log(make_textual_log_message(_data, _data, _category, _severity, _process_id_param, _user_id,
+        write_to_event_log(make_textual_log_message(_data, _category, _severity, _process_id_param, _user_id,
                                                     _occurred_when, _address_param, _node_id, _uid, _pid),
                            "Application", _category, _severity)
     else:

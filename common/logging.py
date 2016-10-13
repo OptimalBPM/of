@@ -138,7 +138,9 @@ if os.name == "nt":
             severity_to_identifier(_severity=_severity),
             _data
         ]
-        win32evtlogutil.ReportEvent(_log_name, 1, eventType=_severity,
+
+
+        win32evtlogutil.ReportEvent(_log_name, 1, eventType=eventtype_severity[_severity],
                                     strings = _textual,
                                     data="Raw\0Data".encode("ascii"), sid=my_sid)
 

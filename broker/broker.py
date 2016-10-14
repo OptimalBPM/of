@@ -89,6 +89,7 @@ log_to_database_severity = None
 # A unix file handler (only instantiated on *x:eses
 x_logger = None
 if os.name != "nt":
+    x_logger = logging.Logger("default")
     fh = logging.FileHandler('/var/log/of.log')
     x_logger.addHandler(fh)
 

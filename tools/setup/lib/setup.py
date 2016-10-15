@@ -26,6 +26,7 @@ from distlib.compat import ZipFile
 from dulwich import porcelain
 
 from of.common.dictionaries import set_property_if_in_dict
+from of.common.internal import not_implemented
 
 default_config_repo = "https://github.com/OptimalBPM/of-config.git"
 
@@ -59,6 +60,17 @@ class Setup():
         set_property_if_in_dict(self, "config_repository_url", _setup_definition,
                                 _default_value=default_config_repo)
         set_property_if_in_dict(self, "plugins", _setup_definition)
+
+    @not_implemented
+    def write_settings(self):
+        pass
+    @not_implemented
+    def uninstall_config(self):
+        pass
+
+    @not_implemented
+    def uninstall_plugin(self):
+        pass
 
     def install_config(self):
         # Set folder location at ~/optimalframework if not set
@@ -102,6 +114,13 @@ class Setup():
             print("An error occurred installing binaries in "+ _folder + ":" + str(e))
 
 
+    def install_plugin(self, _plugins_location, _plugin_name, _plugin_info):
+        # TODO: Add branch..
+        _curr_target = os.path.join(_plugins_location, _plugin_name)
+        porcelain.clone(source=_plugin_info["url"], target=_curr_target, checkout=True)
+
+        self.install_plugin_binaries(_curr_target)
+
     def install_plugins(self):
         # Set plugin location to config location/plugins if not set
         if self.plugins_location is None:
@@ -116,12 +135,8 @@ class Setup():
 
 
 
-        for _curr_plugin_name, _curr_plugin_info in self.plugins.items():
-            # TODO: Add branch..
-            _curr_target = os.path.join(_plugins_location, _curr_plugin_name)
-            porcelain.clone(source=_curr_plugin_info["url"], target=_curr_target, checkout=True)
-
-            self.install_plugin_binaries(_curr_target)
+        for _plugin_name, _plugin_info in self.plugins.items():
+            self.install_plugin(_plugins_location, _plugin_name, _plugin_info)
 
     def install(self):
 

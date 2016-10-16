@@ -196,7 +196,7 @@ def main():
             """If the users wants to edit or haven't specified a definition file, start the editor"""
             # Bring up the GUI
             from of.tools.setup.lib.main_tk_setup import SetupMain
-            SetupMain(_merge=_setup, _filename=_definitionfile)
+            SetupMain(_setup=_setup, _setup_filename=_definitionfile)
         else:
             """Otherwise execute the installation"""
             _log =_setup.install()

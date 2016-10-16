@@ -13,16 +13,17 @@ from urllib.parse import unquote
 
 from tkinter.constants import E, W, N, S, LEFT, X, BOTTOM, TOP, Y, BOTH, RIGHT, END
 
-
-
+from of.tools.setup.lib.frame_list import FrameList
+from of.tools.setup.lib.widgets_misc import VerticalScrolledFrame, BaseFrame, TextExtension, Selector, Status_Bar, \
+    make_entry
 
 
 class SetupMain(VerticalScrolledFrame):
     """The main class for the GUI of the application"""
 
-    merge = None
+    config = None
     """This is the merge object of the application, it holds all settings for the merge operation"""
-    filename = None
+    setup_filename = None
     """The name of the file containing the merge definition"""
     fr_src_dataset = None
     """The fram of the source dataset, contains a FrameCustomDataset descendant"""
@@ -35,21 +36,25 @@ class SetupMain(VerticalScrolledFrame):
     curr_mapping_frame = None
     """The currently selected mapping frame"""
 
-    def __init__(self, _merge=None, _filename=None, *args, **kw):
+    def __init__(self, _setup=None, _setup_filename=None, *args, **kw):
 
         self.parent = Tk()
 
         # Init oneself
 
-        super(ReplicatorMain, self).__init__(self.parent, bd=1, relief=SUNKEN, *args, **kw)
+        super(SetupMain, self).__init__(self.parent, bd=1, relief=SUNKEN, *args, **kw)
         self.grid(stick=(E, W, N, S))
 
         self.suppress_errors = None
 
-        self.merge = _merge
-        self.filename = _filename
+        self.config = _setup
+        self.setup_filename = StringVar()
+        self.setup_filename.set(_setup_filename)
 
-        self.fr_src_dataset = None
+        self.install_location = None
+        self.plugin_location = None
+        self.fr_settings = None
+
         self.fr_dest_dataset = None
 
         self.grid()
@@ -57,9 +62,9 @@ class SetupMain(VerticalScrolledFrame):
         self._row_index = 0
         self.init_GUI()
 
-        if _filename is not None and _merge is not None:
+        if _setup_filename is not None and _setup is not None:
             # _merge._load_datasets()
-            self._merge_to_gui()
+            self._config_to_gui()
 
 
         self.parent.columnconfigure(0, weight=1)
@@ -111,71 +116,61 @@ class SetupMain(VerticalScrolledFrame):
         _wdw.e.unhook()
         del (_wdw)
 
+    def test_(self):
+        print("sdffds")
 
-    def on_src_connect(self, *args):
-        """Event handler for when the source connection is set"""
-        self.fr_mapping.src_dal = self.fr_dataset_src.dal
-
-    def on_dest_connect(self, *args):
-        """Event handler for when the destination connection is set"""
-        self.fr_mapping.dest_dal = self.fr_dataset_dest.dal
 
     def init_GUI(self):
         """Init main application GUI"""
         print("Initializing GUI...", end="")
 
-        self.parent.title("Optimal Sync - Move that data - a part of Optimal BPM")
+        self.parent.title("Optimal Framework setup")
         self.interior.notify_task = self.notify_task
         self.interior.notify_messagebox = self.notify_messagebox
 
-        self.fr_top = BPMFrame(self.interior)
+        self.fr_top = BaseFrame(self.interior)
         self.fr_top.pack(side=TOP, fill=BOTH, expand=1)
 
-        self.fr_top_left = BPMFrame(self.fr_top)
+        self.fr_top_left = BaseFrame(self.fr_top)
         self.fr_top_left.pack(side=LEFT, fill=BOTH, expand=1)
 
-        self.fr_rw = BPMFrame(self.fr_top_left)
+        self.fr_rw = BaseFrame(self.fr_top_left)
         self.fr_rw.pack(side=TOP, fill=X)
 
         self.btn_Load_json_json = ttk.Button(self.fr_rw, text="Load", command=self.on_load_json)
         self.btn_Load_json_json.pack(side=LEFT)
         self.btn_Save_json = ttk.Button(self.fr_rw, text="Save", command=self.on_save_json)
         self.btn_Save_json.pack(side=LEFT)
-        self.fr_subnet_sql = BPMFrame(self.fr_rw)
-        self.l_ip = ttk.Label(self.fr_subnet_sql, text="IP(for subnet scan):")
-        self.l_ip.pack(side=LEFT)
-        self.ip_address.set("192.168.0.1")
-        self.e_ip_address = ttk.Entry(self.fr_subnet_sql, textvariable=self.ip_address)
-        self.e_ip_address.pack(side=RIGHT)
-        self.fr_subnet_sql.pack(side=RIGHT)
+        self.fr_setup_filename = BaseFrame(self.fr_rw)
+        self.l_setup_filename = ttk.Label(self.fr_setup_filename, text="Setup file:")
+        self.l_setup_filename.pack(side=LEFT)
+        self.setup_filename.set("")
+        self.e_config_filename = ttk.Entry(self.fr_setup_filename, textvariable=self.setup_filename)
+        self.e_config_filename.pack(side=RIGHT)
 
-        # datasets
+        self.fr_setup_filename.pack(side=RIGHT)
 
-        self.fr_datasets = BPMFrame(self.fr_top_left)
-        self.fr_datasets.pack(side=TOP)
+        # Setting
 
-        self.sel_src_dataset_type = Selector(_master=self.fr_datasets,
-                                             _values=('RDBMS', 'XPath', 'Flatfile', 'Spreadsheet'),
-                                             _caption="Sources dataset type:",
-                                             _onchange=self.on_src_dataset_type_change)
-        self.sel_src_dataset_type.grid(column=0, row=0, sticky=W)
-
-        self.sel_dest_dataset_type = Selector(_master=self.fr_datasets,
-                                              _values=('RDBMS', 'XPath', 'Flatfile', 'Spreadsheet'),
-                                              _caption="Destination dataset type:",
-                                              _onchange=self.on_dest_dataset_type_change)
-        self.sel_dest_dataset_type.grid(column=1, row=0, sticky=W)
-
+        self.fr_settings = BaseFrame(self.fr_top_left)
+        self.fr_settings.pack(side=TOP, fill=BOTH)
+        self.fr_settings.columnconfigure(2, weight=5)
+        self.install_location,self.l_install_location, self.e_install_location,\
+        self.b_install_location = make_entry(self.fr_settings, "Install location:", 0, _button_caption= "..")
+        self.b_install_location.config(command = self.test_)
+        self.plugin_location,self.l_plugin_location, self.e_plugin_location, \
+        self.b_plugin_location = make_entry(self.fr_settings, "Plugin location:", 1, _button_caption= "..")
+        self.b_plugin_location.config(command = self.test_)
 
         # Mappings
 
-        self.fr_mapping_header = BPMFrame(self.fr_top_left)
+        self.fr_mapping_header = BaseFrame(self.fr_top_left)
         self.fr_mapping_header.pack(side=TOP)
 
-        self.l_mapping = ttk.Label(self.fr_mapping_header, text="Mappings:")
+        self.l_mapping = ttk.Label(self.fr_mapping_header, text="Plugins:")
         self.l_mapping.pack(side=TOP)
 
-        self.fr_mapping_header_nav = BPMFrame(self.fr_mapping_header)
+        self.fr_mapping_header_nav = BaseFrame(self.fr_mapping_header)
         self.fr_mapping_header_nav.pack(side=BOTTOM)
 
         self.btn_first = Button(self.fr_mapping_header_nav, text="<<", command=self.on_first)
@@ -202,7 +197,7 @@ class SetupMain(VerticalScrolledFrame):
         self.btn_append_mapping.pack(side=TOP)
 
         # Transformation
-        self.fr_top_right = BPMFrame(self.fr_top)
+        self.fr_top_right = BaseFrame(self.fr_top)
         self.fr_top_right.pack(side=RIGHT, fill=Y)
 
         self.l_transformations = ttk.Label(self.fr_top_right, text="Transformations")
@@ -277,7 +272,7 @@ class SetupMain(VerticalScrolledFrame):
         self.e_previev_detail = ttk.Entry(self.fr_Preview, textvariable=self.preview_detail)
         self.e_previev_detail.pack(side=BOTTOM, fill=X, expand=0)
 
-        self.fr_bottom = BPMFrame(self.interior)
+        self.fr_bottom = BaseFrame(self.interior)
         self.fr_bottom.pack(side=BOTTOM, fill=X)
 
         self.fr_Status_Bar = Status_Bar(self.fr_bottom)
@@ -289,34 +284,34 @@ class SetupMain(VerticalScrolledFrame):
     # This section contains functions handling the entire merge(load/save/GUI)
     # #########################################################################
 
-    def _merge_to_gui(self):
+    def _config_to_gui(self):
         """
         Populate the GUI from the merge class.
         """
         if self.fr_src_dataset is not None:
             self.fr_src_dataset.destroy()
-        _src_type = self.dataset_instance_to_dataset_type(self.merge.source)
+        _src_type = self.dataset_instance_to_dataset_type(self.config.source)
         self.sel_src_dataset_type.set_but_do_not_propagate(_src_type)
-        self.fr_src_dataset = self.dataset_frame_factory(_dataset=self.merge.source, _is_destination=False)
+        self.fr_src_dataset = self.dataset_frame_factory(_dataset=self.config.source, _is_destination=False)
         self.fr_src_dataset.grid(column=0, row=1)
 
         if self.fr_dest_dataset is not None:
             self.fr_dest_dataset.destroy()
 
-        _dest_type = self.dataset_instance_to_dataset_type(self.merge.destination)
+        _dest_type = self.dataset_instance_to_dataset_type(self.config.destination)
         self.sel_dest_dataset_type.set_but_do_not_propagate(_dest_type)
-        self.fr_dest_dataset = self.dataset_frame_factory(_dataset=self.merge.destination, _is_destination=False)
+        self.fr_dest_dataset = self.dataset_frame_factory(_dataset=self.config.destination, _is_destination=False)
         self.fr_dest_dataset.grid(column=1, row=1)
 
         self.mappings_to_gui()
 
-        self.merge_insert.set(bool_to_binary_int(self.merge.insert))
-        self.merge_delete.set(bool_to_binary_int(self.merge.delete))
-        self.merge_update.set(bool_to_binary_int(self.merge.update))
-        if self.merge.post_execute_sql is None:
+        self.merge_insert.set(bool_to_binary_int(self.config.insert))
+        self.merge_delete.set(bool_to_binary_int(self.config.delete))
+        self.merge_update.set(bool_to_binary_int(self.config.update))
+        if self.config.post_execute_sql is None:
             self.post_execute_sql.set("")
         else:
-            self.post_execute_sql.set(self.merge.post_execute_sql)
+            self.post_execute_sql.set(self.config.post_execute_sql)
 
         # Hereafter, update column list when they change
         self.fr_src_dataset.on_columns_change = self.on_dataset_columns_change
@@ -325,33 +320,33 @@ class SetupMain(VerticalScrolledFrame):
     def _gui_to_merge(self):
         """Copy the data from the GUI to the merge object"""
         self.fr_src_dataset.write_to_dataset()
-        self.merge.source = self.fr_src_dataset.dataset
+        self.config.source = self.fr_src_dataset.dataset
         self.fr_dest_dataset.write_to_dataset()
-        self.merge.destination = self.fr_dest_dataset.dataset
+        self.config.destination = self.fr_dest_dataset.dataset
 
         self.gui_to_mappings()
 
-        self.merge.insert = binary_int_to_bool(self.merge_insert.get())
-        self.merge.delete = binary_int_to_bool(self.merge_delete.get())
-        self.merge.update = binary_int_to_bool(self.merge_update.get())
-        self.merge.post_execute_sql = self.post_execute_sql.get()
+        self.config.insert = binary_int_to_bool(self.merge_insert.get())
+        self.config.delete = binary_int_to_bool(self.merge_delete.get())
+        self.config.update = binary_int_to_bool(self.merge_update.get())
+        self.config.post_execute_sql = self.post_execute_sql.get()
 
     def load_json(self, _filename):
         """Load an JSON into the merge object, and populate the GUI"""
         with open(_filename, "r") as _f:
             _json = json.load(_f)
 
-        self.filename = _filename
+        self.setup_filename = _filename
 
         self.notify_task('Loading transformation..', 0)
-        self.merge = Merge(_json=_json, _base_path=os.path.dirname(_filename))
+        self.config = Merge(_json=_json, _base_path=os.path.dirname(_filename))
         try:
-            self.merge._load_datasets()
+            self.config._load_datasets()
         except Exception as e:
             self.notify_messagebox("Error loading data", str(e))
             # Supress the following errors. There is no real errors that matters.
             self.suppress_errors = True
-        self._merge_to_gui()
+        self._config_to_gui()
         self.suppress_errors = None
         self.notify_task('Loading transformation..done', 100)
         self.resize()
@@ -361,13 +356,13 @@ class SetupMain(VerticalScrolledFrame):
         """Triggered when save-button is clicked.
         Displays a save dialog, fetches GUI data into merge, and saves as JSON into the selected file."""
         self.notify_task('Saving..', 0)
-        _filename = filedialog.asksaveasfilename(initialfile= self.filename, defaultextension=".json",
+        _filename = filedialog.asksaveasfilename(initialfile= self.setup_filename, defaultextension=".json",
                                                  filetypes=[('JSON files', '.json'), ('all files', '.*')],
                                                  title="Choose location")
         if _filename:
             self._gui_to_merge()
             self.notify_task('Saving(Generating JS)..', 0)
-            _json = self.merge.as_json()
+            _json = self.config.as_json()
             self.notify_task('Saving(Writing file)..', 50)
             with open (_filename, "w") as _f:
                 json.dump(_json, fp=_f, sort_keys=True, indent=4)
@@ -423,30 +418,30 @@ class SetupMain(VerticalScrolledFrame):
             return
 
         self.notify_task("", 0)
-        if len(self.merge.source.data_table) == 0 or _refresh:
+        if len(self.config.source.data_table) == 0 or _refresh:
             # Update settings
             self._gui_to_merge()
 
             # Update XPath references especially, since it addresses an XML structure, not a dataset.
-            if isinstance(self.merge.source, XpathDataset):
-                self.merge.source.field_xpaths = []
-                self.merge.source.field_names = []
+            if isinstance(self.config.source, XpathDataset):
+                self.config.source.field_xpaths = []
+                self.config.source.field_names = []
                 for _curr_mapping_idx in range(0, len(self.g_mappings.items)):
-                    self.merge.source.field_xpaths.append(
+                    self.config.source.field_xpaths.append(
                         self.g_mappings.items[_curr_mapping_idx].fr_item.src_reference.get())
-                    self.merge.source.field_names.append(
+                    self.config.source.field_names.append(
                         self.g_mappings.items[_curr_mapping_idx].fr_item.src_reference.get())
 
-            self.merge.source.load()
+            self.config.source.load()
         # Reset identity values
         self.reset_substitions_identity()
         # Is there any data?
-        if len(self.merge.source.data_table) > 0:
+        if len(self.config.source.data_table) > 0:
             # Try to retain the approximate position in the table.
             if self._row_index < 0:
                 self._row_index = 0
-            elif self._row_index > len(self.merge.source.data_table) - 1:
-                self._row_index = len(self.merge.source.data_table) - 1
+            elif self._row_index > len(self.config.source.data_table) - 1:
+                self._row_index = len(self.config.source.data_table) - 1
             # Loop through mappings, update data and perform transformations
             # TODO: This certainly doesn't seem to belong here, should be extracted
             for _curr_mapping_idx in range(0, len(self.g_mappings.items)):
@@ -454,15 +449,15 @@ class SetupMain(VerticalScrolledFrame):
                 _curr_frame.hide_error()
                 _src_ref = _curr_frame.src_reference.get()
                 try:
-                    if isinstance(self.merge.source, XpathDataset):
-                        _col_idx = self.merge.source.field_xpaths.index(_src_ref)
+                    if isinstance(self.config.source, XpathDataset):
+                        _col_idx = self.config.source.field_xpaths.index(_src_ref)
                     else:
-                        _col_idx = self.merge.source.field_names.index(_src_ref)
+                        _col_idx = self.config.source.field_names.index(_src_ref)
                 except ValueError:
                     _col_idx = -1
 
                 if _col_idx > -1:
-                    _curr_frame.curr_raw_data = self.merge.source.data_table[self._row_index][_col_idx]
+                    _curr_frame.curr_raw_data = self.config.source.data_table[self._row_index][_col_idx]
                     try:
                         perform_transformations(_input=_curr_frame.curr_raw_data,
                                                 _transformations=_curr_frame.mapping.transformations)
@@ -514,9 +509,9 @@ class SetupMain(VerticalScrolledFrame):
 
     def on_last(self):
         """Triggered when the ">>!-button is pressed."""
-        if len(self.merge.source.data_table) == 0:
-            self.merge.source.load()
-        self._row_index = len(self.merge.source.data_table) - 1
+        if len(self.config.source.data_table) == 0:
+            self.config.source.load()
+        self._row_index = len(self.config.source.data_table) - 1
         self.update_data()
 
     def dataset_instance_to_dataset_type(self, _dataset):
@@ -546,22 +541,22 @@ class SetupMain(VerticalScrolledFrame):
             _dataset_type = self.dataset_instance_to_dataset_type(_dataset)
 
         if _dataset_type == "RDBMS":
-            _tmp = FrameRDBMSDataset(self.fr_datasets, _dataset=_dataset, _relief=SUNKEN,
+            _tmp = FrameRDBMSDataset(self.fr_settings, _dataset=_dataset, _relief=SUNKEN,
                                      _is_destination=_is_destination)
             _tmp.subnet_ip = self.ip_address
         elif _dataset_type == "FLATFILE":
-            _tmp = FrameFlatfileDataset(self.fr_datasets, _dataset=_dataset, _relief=SUNKEN,
+            _tmp = FrameFlatfileDataset(self.fr_settings, _dataset=_dataset, _relief=SUNKEN,
                                         _is_destination=_is_destination)
         elif _dataset_type == "XPATH":
-            _tmp = FrameXPathDataset(self.fr_datasets, _dataset=_dataset, _relief=SUNKEN,
+            _tmp = FrameXPathDataset(self.fr_settings, _dataset=_dataset, _relief=SUNKEN,
                                      _is_destination=_is_destination)
         elif _dataset_type == "SPREADSHEET":
-            _tmp = FrameSpreadsheetDataset(self.fr_datasets, _dataset=_dataset, _relief=SUNKEN,
+            _tmp = FrameSpreadsheetDataset(self.fr_settings, _dataset=_dataset, _relief=SUNKEN,
                                            _is_destination=_is_destination)
         else:
             raise Exception("Internal error, unsupported dataset type: " + str(_dataset_type))
-        if self.filename is not None:
-            _tmp.base_path = os.path.dirname(self.filename)
+        if self.setup_filename is not None:
+            _tmp.base_path = os.path.dirname(self.setup_filename)
         return _tmp
 
 
@@ -573,7 +568,7 @@ class SetupMain(VerticalScrolledFrame):
         if self.fr_src_dataset is not None:
             self.fr_src_dataset.destroy()
         self.fr_src_dataset = self.dataset_frame_factory(_dataset_type=_current_value.upper(), _is_destination=False)
-        self.merge.source = self.fr_src_dataset.dataset
+        self.config.source = self.fr_src_dataset.dataset
         self.fr_src_dataset.grid(column=0, row=1)
 
     def on_dest_dataset_type_change(self, _current_value):
@@ -584,7 +579,7 @@ class SetupMain(VerticalScrolledFrame):
         if self.fr_dest_dataset is not None:
             self.fr_dest_dataset.destroy()
         self.fr_dest_dataset = self.dataset_frame_factory(_dataset_type=_current_value.upper(), _is_destination=True)
-        self.merge.destination = self.fr_dest_dataset.dataset
+        self.config.destination = self.fr_dest_dataset.dataset
         self.fr_dest_dataset.grid(column=1, row=1)
 
     def get_source_references(self, _force=None):
@@ -622,7 +617,7 @@ class SetupMain(VerticalScrolledFrame):
         """Populates the GUI from the mappings list of the merge object"""
 
         self.g_mappings.clear()
-        for _curr_mapping in self.merge.mappings:
+        for _curr_mapping in self.config.mappings:
             _new_item = self.g_mappings.append_item()
             _new_item.make_item(_class=FrameMapping, _mapping=_curr_mapping,
                                 _on_get_source_references=self.get_source_references,
@@ -636,28 +631,28 @@ class SetupMain(VerticalScrolledFrame):
         for _curr_mapping in self.g_mappings.items:
             _curr_mapping.fr_item.gui_to_mapping()
 
-        self.merge._mappings_to_fields(self.merge.source, _use_dest=False)
-        self.merge._mappings_to_fields(self.merge.destination, _use_dest=True)
+        self.config._mappings_to_fields(self.config.source, _use_dest=False)
+        self.config._mappings_to_fields(self.config.destination, _use_dest=True)
 
 
     def mappings_do_on_delete(self, _g_mappings, _item_frame):
         """Triggered if the "del"-button has been clicked"""
-        self.merge.mappings.remove(_item_frame.fr_item.mapping)
+        self.config.mappings.remove(_item_frame.fr_item.mapping)
 
     def mappings_do_on_move_up(self, _g_mappings, _item_frame):
         """Triggered if the up arrow-button has been clicked"""
-        _curr_idx = self.merge.mappings.index(_item_frame.fr_item.mapping)
-        self.merge.mappings.insert(_curr_idx - 1, self.merge.mappings.pop(_curr_idx))
+        _curr_idx = self.config.mappings.index(_item_frame.fr_item.mapping)
+        self.config.mappings.insert(_curr_idx - 1, self.config.mappings.pop(_curr_idx))
 
     def mappings_do_on_move_down(self, _g_mappings, _item_frame):
         """Triggered if the down arrow-button has been clicked"""
-        _curr_idx = self.merge.mappings.index(_item_frame.fr_item.mapping)
-        self.merge.mappings.insert(_curr_idx + 1, self.merge.mappings.pop(_curr_idx))
+        _curr_idx = self.config.mappings.index(_item_frame.fr_item.mapping)
+        self.config.mappings.insert(_curr_idx + 1, self.config.mappings.pop(_curr_idx))
 
     def on_append_mapping(self, *args):
         """Triggered if the "Append mapping"-button has been clicked."""
         _new_mapping = Mapping()
-        self.merge.mappings.append(_new_mapping)
+        self.config.mappings.append(_new_mapping)
         _new_item = self.g_mappings.append_item()
         _new_item.make_item(_class=FrameMapping, _mapping=_new_mapping,
                             _on_get_source_references=self.get_source_references,
@@ -749,7 +744,7 @@ class SetupMain(VerticalScrolledFrame):
                 _new_item.make_item(_class=_frame_class, _transformation=_new_transformation)
 
     def clear_transformation_events(self):
-        for _curr_mapping in self.merge.mappings:
+        for _curr_mapping in self.config.mappings:
             for _curr_transformation in _curr_mapping.transformations:
                 _curr_transformation.on_done = None
 
@@ -764,7 +759,7 @@ class SetupMain(VerticalScrolledFrame):
     def reset_substitions_identity(self):
         """Reset substitions"""
 
-        for _curr_mapping in self.merge.mappings:
+        for _curr_mapping in self.config.mappings:
             _curr_mapping.substitution.set_identity(0)
 
     def on_preview_merge(self, *args):
@@ -778,20 +773,20 @@ class SetupMain(VerticalScrolledFrame):
     def do_merge(self, _commit=False):
         self._gui_to_merge()
         self.update_data(_refresh=True)
-        self.merge.destination_log_level = DATASET_LOGLEVEL_DETAIL
+        self.config.destination_log_level = DATASET_LOGLEVEL_DETAIL
         # Clear GUI events
         self.clear_transformation_events()
-        self.merge.clear_log()
+        self.config.clear_log()
         try:
-            _data_table, _log, _deletes, _inserts, _updates = self.merge.execute(_commit=_commit)
+            _data_table, _log, _deletes, _inserts, _updates = self.config.execute(_commit=_commit)
         except Exception as e:
             self.notify_messagebox("Error while merging", str(e))
             return
 
         # Call columns src/dest field names if they differ
 
-        if len(self.merge.key_fields) > 0:
-            _key_field = self.merge.key_fields[0]
+        if len(self.config.key_fields) > 0:
+            _key_field = self.config.key_fields[0]
         else:
             _key_field = 0
 
@@ -806,7 +801,7 @@ class SetupMain(VerticalScrolledFrame):
 
         # Add deletes
         self.gr_preview.insert(parent="", index="end", iid="obpm_deletes", text="Deletes")
-        if self.merge.delete:
+        if self.config.delete:
             for _curr_row in _deletes:
                 _curr_item_idx = self.gr_preview.insert(parent="obpm_deletes", index="end", iid="",
                                                         text=_curr_row[2][_key_field])
@@ -814,11 +809,11 @@ class SetupMain(VerticalScrolledFrame):
                 self.gr_preview.item(_curr_item_idx, values=[_curr_value])
                 for _curr_column_idx in range(len(_curr_row[2])):
                     _curr_change_item_idx = self.gr_preview.insert(parent=_curr_item_idx, index="end", iid="", text=str(
-                        self.merge.destination.field_names[_curr_column_idx]))
+                        self.config.destination.field_names[_curr_column_idx]))
                     self.gr_preview.item(_curr_change_item_idx, values=[str(_curr_row[2][_curr_column_idx])])
         # Add inserts
         self.gr_preview.insert(parent="", index="end", iid="obpm_inserts", text="Inserts")
-        if self.merge.insert:
+        if self.config.insert:
             for _curr_row in _inserts:
                 _curr_item_idx = self.gr_preview.insert(parent="obpm_inserts", index="end", iid="",
                                                         text=_curr_row[2][_key_field])
@@ -826,11 +821,11 @@ class SetupMain(VerticalScrolledFrame):
                 self.gr_preview.item(_curr_item_idx, values=[_curr_value])
                 for _curr_column_idx in range(len(_curr_row[2])):
                     _curr_change_item_idx = self.gr_preview.insert(parent=_curr_item_idx, index="end", iid="", text=str(
-                        self.merge.destination.field_names[_curr_column_idx]))
+                        self.config.destination.field_names[_curr_column_idx]))
                     self.gr_preview.item(_curr_change_item_idx, values=[str(_curr_row[2][_curr_column_idx])])
         # Add updates
         self.gr_preview.insert(parent="", index="end", iid="obpm_updates", text="Updates")
-        if self.merge.update:
+        if self.config.update:
             for _curr_row in _updates:
                 _curr_item_idx = self.gr_preview.insert(parent="obpm_updates", index="end", iid="",
                                                         text=_curr_row[2][_key_field])
@@ -838,11 +833,11 @@ class SetupMain(VerticalScrolledFrame):
                 for _curr_column_idx in range(len(_curr_row[2])):
                     if _curr_row[2][_curr_column_idx] != _curr_row[3][_curr_column_idx]:
                         _curr_change_item_idx = self.gr_preview.insert(parent=_curr_item_idx, index="end", iid="",
-                                                                       text=str(self.merge.destination.field_names[
+                                                                       text=str(self.config.destination.field_names[
                                                                            _curr_column_idx]))
                         self.gr_preview.item(_curr_change_item_idx, values=[
                             str(_curr_row[3][_curr_column_idx]) + "=>" + str(_curr_row[2][_curr_column_idx])])
-                        _changes.append(str(self.merge.destination.field_names[_curr_column_idx]))
+                        _changes.append(str(self.config.destination.field_names[_curr_column_idx]))
                 _curr_value = ",".join([str(_item) for _item in _changes])
                 self.gr_preview.item(_curr_item_idx, values=[_curr_value])
 
@@ -866,14 +861,14 @@ class SetupMain(VerticalScrolledFrame):
                 self.gr_preview.item(_curr_item_idx, values=[_curr_value])
                 for _curr_column_idx in range(len(_curr_row)):
                     _curr_change_item_idx = self.gr_preview.insert(parent=_curr_item_idx, index="end", iid="", text=str(
-                        self.merge.destination.field_names[_curr_column_idx]))
+                        self.config.destination.field_names[_curr_column_idx]))
                     self.gr_preview.item(_curr_change_item_idx, values=[str(_curr_row[_curr_column_idx])])
         if _commit == True:
             _simulation_expression = "Merge"
         else:
             _simulation_expression = "Simulated merge"
 
-        if not (self.merge.insert or self.merge.delete or self.merge.update):
+        if not (self.config.insert or self.config.delete or self.config.update):
             self.notify_task(
                 _simulation_expression + " done. (Expecting merge results? Neither insert, delete or update is selected)",
                 100)

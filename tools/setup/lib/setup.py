@@ -55,7 +55,7 @@ class Setup():
         pass
 
     def read_settings(self, _setup_definition):
-        set_property_if_in_dict(self,"config_location", _setup_definition)
+        set_property_if_in_dict(self,"install_location", _setup_definition)
         set_property_if_in_dict(self,"plugins_location", _setup_definition)
         set_property_if_in_dict(self, "config_repository_url", _setup_definition,
                                 _default_value=default_config_repo)
@@ -74,10 +74,10 @@ class Setup():
 
     def install_config(self):
         # Set folder location at ~/optimalframework if not set
-        if self.config_location is None:
+        if self.install_location is None:
             _folder_location = os.path.expanduser("~/optimalframework")
         else:
-            _folder_location = os.path.expanduser(self.config_location)
+            _folder_location = os.path.expanduser(self.install_location)
         if not os.path.exists(_folder_location):
             # Clone the config repo
             _repo = porcelain.clone(source= self.config_repository_url, target= _folder_location, checkout=True)
@@ -124,7 +124,7 @@ class Setup():
     def install_plugins(self):
         # Set plugin location to config location/plugins if not set
         if self.plugins_location is None:
-            _plugins_location = os.path.join(os.path.expanduser(self.config_location), "plugins")
+            _plugins_location = os.path.join(os.path.expanduser(self.install_location), "plugins")
         else:
             _plugins_location = os.path.expanduser(self.plugins_location)
             if os.path.exists(_plugins_location):

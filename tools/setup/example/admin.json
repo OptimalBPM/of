@@ -1,5 +1,5 @@
 {
-  "config_location": "~/of/",
+  "install_location": "~/of/",
   "plugins_folder": "~/of/plugins",
   "plugins": {
     "admin": {

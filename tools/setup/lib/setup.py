@@ -32,9 +32,11 @@ default_config_repo = "https://github.com/OptimalBPM/of-config.git"
 
 class Setup():
 
-    """Location of the configuration files"""
-    config_location = None
+    """Location of the setup configuration file"""
+    setup_location = None
 
+    """Location of the setup configuration file"""
+    install_location = None
     """The location or the plugins, if not set plugins are installed into the config_location/plugins-folder"""
     plugins_location = None
 
@@ -50,6 +52,12 @@ class Setup():
         if _setup_definition is not None:
             self.read_settings(_setup_definition)
 
+    def load_install(self, _setup_filename):
+
+        _exp_path = os.path.expanduser(_location)
+        # Does the file exist?
+        if os.path.exists(_exp_path)_
+            with open(_exp_path
 
     def install_plugins(self):
         pass

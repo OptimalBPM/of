@@ -188,7 +188,7 @@ class VerticalScrolledFrame(Frame):
                         yscrollcommand=vscrollbar.set)
         self._canvas = canvas
         canvas.pack(side=LEFT, fill=BOTH, expand=TRUE)
-        vscrollbar.setup(command=canvas.yview)
+        vscrollbar.config(command=canvas.yview)
 
         # reset the view
         canvas.xview_moveto(0)
@@ -204,13 +204,13 @@ class VerticalScrolledFrame(Frame):
         def _configure_interior(event):
             # update the scrollbars to match the size of the inner frame
             size = (interior.winfo_reqwidth(), interior.winfo_reqheight())
-            canvas.setup(scrollregion="0 0 %s %s" % size)
+            canvas.config(scrollregion="0 0 %s %s" % size)
             if interior.winfo_reqwidth() != canvas.winfo_width():
                 # update the canvas's width to fit the inner frame
-                canvas.setup(width=interior.winfo_reqwidth())
+                canvas.config(width=interior.winfo_reqwidth())
             if interior.winfo_reqheight() != canvas.winfo_height():
                 # update the canvas's height to fit the inner frame
-                canvas.setup(height=interior.winfo_reqheight())
+                canvas.config(height=interior.winfo_reqheight())
 
         interior.bind('<Configure>', _configure_interior)
 
@@ -296,7 +296,7 @@ class TextExtension(Frame):
         self._text_widget.pack(side=LEFT, fill=BOTH, expand=1)
 
 
-        self._y_scrollbar.setup(command=self._text_widget.yview)
+        self._y_scrollbar.config(command=self._text_widget.yview)
         self._y_scrollbar.pack(side=RIGHT, fill=Y)
 
         if textvariable is not None:

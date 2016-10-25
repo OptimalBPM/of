@@ -213,10 +213,10 @@ def start_broker():
 
     write_srvc_dbg("Load plugin data")
     # Find the plugin directory
-    _plugin_dir = settings.get_path("broker/pluginFolder", _default="plugins")
+    _plugins_folder = settings.get_path("broker/pluginsFolder", _default="plugins")
 
     # Load all plugin data
-    plugins = CherryPyPlugins(_plugin_dir=_plugin_dir, _schema_tools=schema_tools, _namespaces=namespaces,
+    plugins = CherryPyPlugins(_plugins_folder=_plugins_folder, _schema_tools=schema_tools, _namespaces=namespaces,
                                _process_id=process_id,
                               _no_package_name_override=settings.get("broker/packageNameOverride"))
 

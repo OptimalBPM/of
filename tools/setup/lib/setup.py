@@ -89,7 +89,7 @@ class Setup():
 
     def read_settings(self, _setup_definition):
         set_property_if_in_dict(self,"install_location", _setup_definition, _convert_underscore=True)
-        set_property_if_in_dict(self,"plugins_location", _setup_definition, _convert_underscore=True)
+        set_property_if_in_dict(self,"plugins_folder", _setup_definition, _convert_underscore=True)
         set_property_if_in_dict(self, "install_repository_url", _setup_definition,
                                 _default_value=default_config_repo, _convert_underscore=True)
         set_property_if_in_dict(self, "plugins", _setup_definition,  _convert_underscore=True)

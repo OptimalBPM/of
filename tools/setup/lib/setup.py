@@ -27,6 +27,7 @@ from dulwich import porcelain
 
 from of.common.dictionaries import set_property_if_in_dict
 from of.common.internal import not_implemented
+from of.common.settings import JSONXPath
 
 default_config_repo = "https://github.com/OptimalBPM/of-config.git"
 
@@ -41,33 +42,57 @@ class Setup():
     plugins_location = None
 
     """The URL of the config repository"""
-    config_repository_url = None
-
+    install_repository_url = None
 
     """An dict of the plugins"""
     plugins = None
-
 
     def __init__(self, _setup_definition=None, _filename=None, *args, **kw):
         if _setup_definition is not None:
             self.read_settings(_setup_definition)
 
-    def load_install(self, _setup_filename):
+    def load_install(self, _install_folder):
 
-        _exp_path = os.path.expanduser(_location)
-        # Does the file exist?
-        if os.path.exists(_exp_path)_
-            with open(_exp_path
+        _exp_path = os.path.expanduser(_install_folder)
+        _plugins_folder = None
+
+        # Does the config file exist?
+        if os.path.exists(os.path.join(_exp_path, "config.json")):
+            _config = JSONXPath(os.path.join(_exp_path, "config.json"))
+            _plugins_folder = _config.get_path("broker/pluginsFolder", _default="plugins")
+
+        if _plugins_folder is None:
+            # If there is no config file, try with the default location for the plugins folder
+            _plugins_folder = os.path.join(_exp_path, "plugins")
+
+        self.plugins = []
+
+        # Enumerate plugins
+        if not os.path.exists(_plugins_folder):
+            # TODO: Write warning to status
+            pass
+        else:
+            # Loading
+            _plugin_names = os.listdir(_plugins_folder)
+
+            for _plugin_name in _plugin_names:
+                # Only look att non-hidden and non system directories
+                if os.path.isdir(os.path.join(_plugins_folder, _plugin_name)) and _plugin_name[0:2] != "__" and \
+                    _plugin_name[0] != ".":
+                    _definitions = JSONXPath(os.path.join(_plugins_folder, "definitions.json"))
+                    _description = _definitions.get("plugins/" + _plugin_name + "/description","No description found in plugin definition")
+                    self.plugins.append({"name": _plugin_name, "description": _description})
+
 
     def install_plugins(self):
         pass
 
     def read_settings(self, _setup_definition):
-        set_property_if_in_dict(self,"install_location", _setup_definition)
-        set_property_if_in_dict(self,"plugins_location", _setup_definition)
-        set_property_if_in_dict(self, "config_repository_url", _setup_definition,
-                                _default_value=default_config_repo)
-        set_property_if_in_dict(self, "plugins", _setup_definition)
+        set_property_if_in_dict(self,"install_location", _setup_definition, _convert_underscore=True)
+        set_property_if_in_dict(self,"plugins_location", _setup_definition, _convert_underscore=True)
+        set_property_if_in_dict(self, "install_repository_url", _setup_definition,
+                                _default_value=default_config_repo, _convert_underscore=True)
+        set_property_if_in_dict(self, "plugins", _setup_definition,  _convert_underscore=True)
 
     @not_implemented
     def write_settings(self):
@@ -88,7 +113,7 @@ class Setup():
             _folder_location = os.path.expanduser(self.install_location)
         if not os.path.exists(_folder_location):
             # Clone the config repo
-            _repo = porcelain.clone(source= self.config_repository_url, target= _folder_location, checkout=True)
+            _repo = porcelain.clone(source= self.install_repository_url, target= _folder_location, checkout=True)
         else:
             raise Exception("Error installing the configuration files at \"" + _folder_location + "\", directory already exists.")
 
@@ -140,7 +165,6 @@ class Setup():
                     "Error installing the configuration files at \"" + _plugins_location + "\", directory already exists.")
             else:
                 os.mkdir(_plugins_location)
-
 
 
         for _plugin_name, _plugin_info in self.plugins.items():

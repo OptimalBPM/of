@@ -52,7 +52,7 @@ class SetupMain(VerticalScrolledFrame):
         self.setup_filename.set(_setup_filename)
 
         self.install_location = None
-        self.plugin_location = None
+        self.plugins_location = None
         self.fr_settings = None
 
         self.fr_dest_dataset = None
@@ -64,7 +64,7 @@ class SetupMain(VerticalScrolledFrame):
 
         if _setup_filename is not None and _setup is not None:
             # _merge._load_datasets()
-            self._config_to_gui()
+            self._setup_to_gui()
 
 
         self.parent.columnconfigure(0, weight=1)
@@ -120,12 +120,20 @@ class SetupMain(VerticalScrolledFrame):
     def on_select_plugin_folder(self, *args):
         _plugin_folder = filedialog.askdirectory(title="Choose plugin folder (usually in the ")
         if _plugin_folder is not None:
-            self.plugin_location.set(_plugin_folder)
+            self.plugins_location.set(_plugin_folder)
 
     def on_select_install_folder(self, *args):
-        _install_folder = filedialog.askdirectory(title="Choose install folder (usually in the ")
+        _install_folder = filedialog.askdirectory(title="Choose install folder (usually in the \"~of\"-folder)")
         if _install_folder is not None:
             self.install_location.set(_install_folder)
+
+    def on_select_installation(self, *args):
+        _install_folder = filedialog.askdirectory(title="Select existing installation")
+        if _install_folder is not None:
+            self.install_location.set(_install_folder)
+            self.setup.load_install(_install_folder=_install_folder)
+            self._setup_to_gui()
+
 
     def init_GUI(self):
         """Init main application GUI"""
@@ -144,10 +152,12 @@ class SetupMain(VerticalScrolledFrame):
         self.fr_rw = BaseFrame(self.fr_top_left)
         self.fr_rw.pack(side=TOP, fill=X)
 
-        self.btn_Load_json_json = ttk.Button(self.fr_rw, text="Load", command=self.on_load_json)
-        self.btn_Load_json_json.pack(side=LEFT)
-        self.btn_Save_json = ttk.Button(self.fr_rw, text="Save", command=self.on_save_json)
-        self.btn_Save_json.pack(side=LEFT)
+        self.btn_load_json_json = ttk.Button(self.fr_rw, text="Load", command=self.on_load_json)
+        self.btn_load_json_json.pack(side=LEFT)
+        self.btn_save_json = ttk.Button(self.fr_rw, text="Save", command=self.on_save_json)
+        self.btn_save_json.pack(side=LEFT)
+        self.btn_load_folder = ttk.Button(self.fr_rw, text="Existing", command=self.on_select_installation)
+        self.btn_load_folder.pack(side=LEFT)
         self.fr_setup_filename = BaseFrame(self.fr_rw)
         self.l_setup_filename = ttk.Label(self.fr_setup_filename, text="Setup file:")
         self.l_setup_filename.pack(side=LEFT)
@@ -165,9 +175,12 @@ class SetupMain(VerticalScrolledFrame):
         self.install_location,self.l_install_location, self.e_install_location,\
         self.b_install_location = make_entry(self.fr_settings, "Install location:", 0, _button_caption= "..")
         self.b_install_location.config(command = self.on_select_install_folder)
-        self.plugin_location,self.l_plugin_location, self.e_plugin_location, \
+        self.plugins_location, self.l_plugin_location, self.e_plugin_location, \
         self.b_plugin_location = make_entry(self.fr_settings, "Plugin location:", 1, _button_caption= "..")
         self.b_plugin_location.config(command = self.on_select_plugin_folder)
+        self.install_repository_url,self.l_install_repository_url, \
+        self.e_install_repository_url = make_entry(self.fr_settings, "install location:", 2)
+
 
         # Plugins
 
@@ -270,7 +283,10 @@ class SetupMain(VerticalScrolledFrame):
         Populate the GUI from the setup class.
         """
 
-        self. self.setup.config_location
+        self.install_location.set(self.setup.install_location)
+        self.plugins_location.set(self.setup.plugins_location)
+
+        """
         if self.fr_src_dataset is not None:
             self.fr_src_dataset.destroy()
         _src_type = self.dataset_instance_to_dataset_type(self.setup.source)
@@ -299,6 +315,7 @@ class SetupMain(VerticalScrolledFrame):
         # Hereafter, update column list when they change
         self.fr_src_dataset.on_columns_change = self.on_dataset_columns_change
         self.fr_dest_dataset.on_columns_change = self.on_dataset_columns_change
+        """
 
     def _gui_to_merge(self):
         """Copy the data from the GUI to the merge object"""

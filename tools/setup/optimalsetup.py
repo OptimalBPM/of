@@ -112,7 +112,7 @@ _help_msg = """
 Usage: optimal_setup.py [OPTION]... -d [DEFINITION FILE]... -l [LOG LEVEL]
 Set up and alter the Optimal Framework
 
-This stand-alone tool facilitates setup
+This stand-alone tool facilitates setting up an installation of the framework
 
     -d, --definitionfile    Provide the path to an JSON definition file to describe the setup
     -e,                     Initialize editor
@@ -125,10 +125,6 @@ Always back up your data!
 
 """
 
-
-def init(_definitionfile):
-    """Loads the definition file and extracts settings"""
-    pass
 
 def main():
     """Main program function"""

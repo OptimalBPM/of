@@ -187,8 +187,8 @@ class SetupMain(VerticalScrolledFrame):
         self.fr_plugins_header = BaseFrame(self.fr_top_left)
         self.fr_plugins_header.pack(side=TOP)
 
-        self.l_mapping = ttk.Label(self.fr_plugins_header, text="Plugins:")
-        self.l_mapping.pack(side=TOP)
+        self.l_plugins = ttk.Label(self.fr_plugins_header, text="Plugins:")
+        self.l_plugins.pack(side=TOP)
 
         self.fr_plugins_header_nav = BaseFrame(self.fr_plugins_header)
         self.fr_plugins_header_nav.pack(side=BOTTOM)
@@ -275,8 +275,14 @@ class SetupMain(VerticalScrolledFrame):
         print("done.")
 
     # #########################################################################
-    # This section contains functions handling the entire merge(load/save/GUI)
+    # This section contains functions handling the entire setup(load/save/GUI)
     # #########################################################################
+
+    def refresh_plugins(self):
+        # clear plugin list
+
+        # populate with plugins
+        pass
 
     def _setup_to_gui(self):
         """
@@ -285,7 +291,7 @@ class SetupMain(VerticalScrolledFrame):
 
         self.install_location.set(self.setup.install_location)
         self.plugins_location.set(self.setup.plugins_location)
-
+        self.plugins_to_gui()
         """
         if self.fr_src_dataset is not None:
             self.fr_src_dataset.destroy()
@@ -493,7 +499,7 @@ class SetupMain(VerticalScrolledFrame):
 
     def on_refresh_plugins(self):
         """Triggered when the "Reload data"-button is pressed."""
-        self.update_data(_refresh=True)
+        self.refresh_plugins()
 
 
 

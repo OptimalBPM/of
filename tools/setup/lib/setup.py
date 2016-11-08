@@ -54,32 +54,37 @@ class Setup():
     def load_install(self, _install_folder):
 
         _exp_path = os.path.expanduser(_install_folder)
-        _plugins_folder = None
+        self.plugins_location = None
 
         # Does the config file exist?
         if os.path.exists(os.path.join(_exp_path, "config.json")):
             _config = JSONXPath(os.path.join(_exp_path, "config.json"))
-            _plugins_folder = _config.get_path("broker/pluginsFolder", _default="plugins")
+            self.plugins_location = _config.get_path("broker/pluginsFolder", _default="plugins")
 
-        if _plugins_folder is None:
+        self.install_location = _install_folder
+        
+        
+        if self.plugins_location is None:
             # If there is no config file, try with the default location for the plugins folder
-            _plugins_folder = os.path.join(_exp_path, "plugins")
+            self.plugins_location = os.path.join(_exp_path, "plugins")
 
         self.plugins = []
+        
 
         # Enumerate plugins
-        if not os.path.exists(_plugins_folder):
+        if not os.path.exists(self.plugins_location):
             # TODO: Write warning to status
             pass
         else:
             # Loading
-            _plugin_names = os.listdir(_plugins_folder)
+            _plugin_names = os.listdir(self.plugins_location)
 
             for _plugin_name in _plugin_names:
+                _curr_plugin_folder = os.path.join(self.plugins_location, _plugin_name)
                 # Only look att non-hidden and non system directories
-                if os.path.isdir(os.path.join(_plugins_folder, _plugin_name)) and _plugin_name[0:2] != "__" and \
+                if os.path.isdir(_curr_plugin_folder) and _plugin_name[0:2] != "__" and \
                     _plugin_name[0] != ".":
-                    _definitions = JSONXPath(os.path.join(_plugins_folder, "definitions.json"))
+                    _definitions = JSONXPath(os.path.join(_curr_plugin_folder, "definitions.json"))
                     _description = _definitions.get("plugins/" + _plugin_name + "/description","No description found in plugin definition")
                     self.plugins.append({"name": _plugin_name, "description": _description})
 

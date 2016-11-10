@@ -61,6 +61,7 @@ class Setup():
             _config = JSONXPath(os.path.join(_exp_path, "config.json"))
             self.plugins_location = _config.get_path("broker/pluginsFolder", _default="plugins")
 
+
         self.install_location = _install_folder
         
         

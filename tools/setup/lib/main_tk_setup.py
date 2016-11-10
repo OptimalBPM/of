@@ -14,6 +14,7 @@ from urllib.parse import unquote
 from tkinter.constants import E, W, N, S, LEFT, X, BOTTOM, TOP, Y, BOTH, RIGHT, END
 
 from of.tools.setup.lib.frame_list import FrameList
+from of.tools.setup.lib.frame_plugin import FramePlugin
 from of.tools.setup.lib.widgets_misc import VerticalScrolledFrame, BaseFrame, TextExtension, Selector, Status_Bar, \
     make_entry
 
@@ -278,11 +279,17 @@ class SetupMain(VerticalScrolledFrame):
     # This section contains functions handling the entire setup(load/save/GUI)
     # #########################################################################
 
-    def refresh_plugins(self):
+    def plugins_to_gui(self):
         # clear plugin list
 
         # populate with plugins
-        pass
+        for _curr_plugin in self.setup.plugins:
+            print(_curr_plugin)
+
+        self.g_plugins.clear()
+        for _curr_plugin in self.setup.plugins:
+            _new_item = self.g_plugins.append_item()
+            _new_item.make_item(_class=FramePlugin, _plugin=_curr_plugin)
 
     def _setup_to_gui(self):
         """

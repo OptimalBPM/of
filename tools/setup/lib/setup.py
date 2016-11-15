@@ -33,13 +33,17 @@ default_config_repo = "https://github.com/OptimalBPM/of-config.git"
 
 class Setup():
 
+    """
+    The setup class handles installing and setting up an OF-based system.
+    """
+
     """Location of the setup configuration file"""
     setup_location = None
 
-    """Location of the setup configuration file"""
+    """Location of the installation file"""
     install_location = None
     """The location or the plugins, if not set plugins are installed into the config_location/plugins-folder"""
-    plugins_location = None
+    plugins_folder = None
 
     """The URL of the config repository"""
     install_repository_url = None
@@ -47,47 +51,56 @@ class Setup():
     """An dict of the plugins"""
     plugins = None
 
-    def __init__(self, _setup_definition=None, _filename=None, *args, **kw):
+    def __init__(self, _setup_definition=None, _setup_filename=None, *args, **kw):
+        if _setup_filename is not None:
+            with open(_setup_filename, "r") as f:
+                _setup_definition=json.load(f)
+
         if _setup_definition is not None:
             self.read_settings(_setup_definition)
+
 
     def load_install(self, _install_folder):
 
         _exp_path = os.path.expanduser(_install_folder)
-        self.plugins_location = None
+        self.plugins_folder = None
 
         # Does the config file exist?
         if os.path.exists(os.path.join(_exp_path, "config.json")):
             _config = JSONXPath(os.path.join(_exp_path, "config.json"))
-            self.plugins_location = _config.get_path("broker/pluginsFolder", _default="plugins")
+            self.plugins_folder = _config.get_path("broker/pluginsFolder", _default="plugins")
+
+        # TODO: Fetch remote from git remotes
+        self.install_repository_url = "Fetching remotes from GIT repo not implementet"
+
 
 
         self.install_location = _install_folder
         
         
-        if self.plugins_location is None:
+        if self.plugins_folder is None:
             # If there is no config file, try with the default location for the plugins folder
-            self.plugins_location = os.path.join(_exp_path, "plugins")
+            self.plugins_folder = os.path.join(_exp_path, "plugins")
 
-        self.plugins = []
+        self.plugins = {}
         
 
         # Enumerate plugins
-        if not os.path.exists(self.plugins_location):
+        if not os.path.exists(self.plugins_folder):
             # TODO: Write warning to status
             pass
         else:
             # Loading
-            _plugin_names = os.listdir(self.plugins_location)
+            _plugin_names = os.listdir(self.plugins_folder)
 
             for _plugin_name in _plugin_names:
-                _curr_plugin_folder = os.path.join(self.plugins_location, _plugin_name)
+                _curr_plugin_folder = os.path.join(self.plugins_folder, _plugin_name)
                 # Only look att non-hidden and non system directories
                 if os.path.isdir(_curr_plugin_folder) and _plugin_name[0:2] != "__" and \
                     _plugin_name[0] != ".":
                     _definitions = JSONXPath(os.path.join(_curr_plugin_folder, "definitions.json"))
                     _description = _definitions.get("plugins/" + _plugin_name + "/description","No description found in plugin definition")
-                    self.plugins.append({"name": _plugin_name, "description": _description})
+                    self.plugins[_plugin_name] = {"name": _plugin_name, "description": _description}
 
 
     def install_plugins(self):
@@ -95,7 +108,7 @@ class Setup():
 
     def read_settings(self, _setup_definition):
         set_property_if_in_dict(self,"install_location", _setup_definition, _convert_underscore=True)
-        set_property_if_in_dict(self,"plugins_folder", _setup_definition, _convert_underscore=True)
+        set_property_if_in_dict(self,"plugins_folder", _setup_definition, _convert_underscore=True, _default_value="plugins")
         set_property_if_in_dict(self, "install_repository_url", _setup_definition,
                                 _default_value=default_config_repo, _convert_underscore=True)
         set_property_if_in_dict(self, "plugins", _setup_definition,  _convert_underscore=True)
@@ -162,10 +175,10 @@ class Setup():
 
     def install_plugins(self):
         # Set plugin location to config location/plugins if not set
-        if self.plugins_location is None:
+        if self.plugins_folder is None:
             _plugins_location = os.path.join(os.path.expanduser(self.install_location), "plugins")
         else:
-            _plugins_location = os.path.expanduser(self.plugins_location)
+            _plugins_location = os.path.expanduser(self.plugins_folder)
             if os.path.exists(_plugins_location):
                 raise Exception(
                     "Error installing the configuration files at \"" + _plugins_location + "\", directory already exists.")

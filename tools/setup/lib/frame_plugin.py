@@ -47,7 +47,13 @@ class FramePlugin(FrameCustomItem):
 
     def plugin_to_gui(self):
 
-        self.description.set(str(empty_when_none(self.plugin["description"])))
+        if "description" in self.plugin:
+            self.description.set(str(empty_when_none(self.plugin["description"])))
+        else:
+            if "url" in self.plugin:
+                self.description.set(self.plugin["url"] + " (Not installed)")
+            else:
+                raise Exception("Plugin does not have an URL property!")
 
     def gui_to_plugin(self):
 

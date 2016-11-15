@@ -53,7 +53,8 @@ class SetupMain(VerticalScrolledFrame):
         self.setup_filename.set(_setup_filename)
 
         self.install_location = None
-        self.plugins_location = None
+        self.plugins_folder = None
+        self.install_repository_url = None
         self.fr_settings = None
 
         self.fr_dest_dataset = None
@@ -64,9 +65,7 @@ class SetupMain(VerticalScrolledFrame):
         self.init_GUI()
 
         if _setup_filename is not None and _setup is not None:
-            # _merge._load_datasets()
             self._setup_to_gui()
-
 
         self.parent.columnconfigure(0, weight=1)
         self.parent.rowconfigure(0, weight=1)
@@ -118,10 +117,10 @@ class SetupMain(VerticalScrolledFrame):
         del (_wdw)
 
 
-    def on_select_plugin_folder(self, *args):
+    def on_select_plugins_folder(self, *args):
         _plugin_folder = filedialog.askdirectory(title="Choose plugin folder (usually in the ")
         if _plugin_folder is not None:
-            self.plugins_location.set(_plugin_folder)
+            self.plugins_folder.set(_plugin_folder)
 
     def on_select_install_folder(self, *args):
         _install_folder = filedialog.askdirectory(title="Choose install folder (usually in the \"~of\"-folder)")
@@ -176,11 +175,11 @@ class SetupMain(VerticalScrolledFrame):
         self.install_location,self.l_install_location, self.e_install_location,\
         self.b_install_location = make_entry(self.fr_settings, "Install location:", 0, _button_caption= "..")
         self.b_install_location.config(command = self.on_select_install_folder)
-        self.plugins_location, self.l_plugin_location, self.e_plugin_location, \
-        self.b_plugin_location = make_entry(self.fr_settings, "Plugin location:", 1, _button_caption= "..")
-        self.b_plugin_location.config(command = self.on_select_plugin_folder)
+        self.plugins_folder, self.l_plugin_location, self.e_plugin_location, \
+        self.b_plugins_folder = make_entry(self.fr_settings, "Plugins folder:", 1, _button_caption="..")
+        self.b_plugins_folder.config(command = self.on_select_plugins_folder)
         self.install_repository_url,self.l_install_repository_url, \
-        self.e_install_repository_url = make_entry(self.fr_settings, "install location:", 2)
+        self.e_install_repository_url = make_entry(self.fr_settings, "Repository URL", 2)
 
 
         # Plugins
@@ -281,13 +280,10 @@ class SetupMain(VerticalScrolledFrame):
 
     def plugins_to_gui(self):
         # clear plugin list
+        self.g_plugins.clear()
 
         # populate with plugins
-        for _curr_plugin in self.setup.plugins:
-            print(_curr_plugin)
-
-        self.g_plugins.clear()
-        for _curr_plugin in self.setup.plugins:
+        for _curr_plugin in self.setup.plugins.values():
             _new_item = self.g_plugins.append_item()
             _new_item.make_item(_class=FramePlugin, _plugin=_curr_plugin)
 
@@ -297,7 +293,8 @@ class SetupMain(VerticalScrolledFrame):
         """
 
         self.install_location.set(self.setup.install_location)
-        self.plugins_location.set(self.setup.plugins_location)
+        self.plugins_folder.set(self.setup.plugins_folder)
+        self.install_repository_url.set(self.setup.install_repository_url)
         self.plugins_to_gui()
         """
         if self.fr_src_dataset is not None:

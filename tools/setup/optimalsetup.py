@@ -129,7 +129,7 @@ Always back up your data!
 def main():
     """Main program function"""
     
-    _definitionfile = None
+    _setup_filename = None
     _edit = None
     _log_level = None
     
@@ -150,7 +150,7 @@ def main():
                 _edit = True
 
             elif _opt in ("-d", "--definitionfile"):
-                _definitionfile = _arg
+                _setup_filename = _arg
             elif _opt in ("-l", "--log_level"):
                 _log_level = _arg
             elif _opt == '--help':
@@ -170,13 +170,12 @@ def main():
         from of.tools.setup.lib.setup import Setup
 
 
-        if _definitionfile:
+        if _setup_filename:
             """Load merge"""
-            print(_definitionfile)
+            print(_setup_filename)
 
-
-            with open(_definitionfile, "r") as f:
-                _setup = Setup(_setup_definition=json.load(f))
+            with open(_setup_filename, "r") as f:
+                _setup = Setup(_setup_filename=_setup_filename)
         else:
             """Create empty"""
 
@@ -188,11 +187,12 @@ def main():
         if _log_level:
             _setup.log_level = int(_log_level)
 
-        if _edit or not _definitionfile:
+        if _edit or not _setup_filename:
             """If the users wants to edit or haven't specified a definition file, start the editor"""
             # Bring up the GUI
             from of.tools.setup.lib.main_tk_setup import SetupMain
-            SetupMain(_setup=_setup, _setup_filename=_definitionfile)
+            SetupMain(_setup=_setup, _setup_filename=_setup_filename)
+
         else:
             """Otherwise execute the installation"""
             _log =_setup.install()

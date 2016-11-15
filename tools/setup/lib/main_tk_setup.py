@@ -296,36 +296,7 @@ class SetupMain(VerticalScrolledFrame):
         self.plugins_folder.set(self.setup.plugins_folder)
         self.install_repository_url.set(self.setup.install_repository_url)
         self.plugins_to_gui()
-        """
-        if self.fr_src_dataset is not None:
-            self.fr_src_dataset.destroy()
-        _src_type = self.dataset_instance_to_dataset_type(self.setup.source)
-        self.sel_src_dataset_type.set_but_do_not_propagate(_src_type)
-        self.fr_src_dataset = self.dataset_frame_factory(_dataset=self.setup.source, _is_destination=False)
-        self.fr_src_dataset.grid(column=0, row=1)
 
-        if self.fr_dest_dataset is not None:
-            self.fr_dest_dataset.destroy()
-
-        _dest_type = self.dataset_instance_to_dataset_type(self.setup.destination)
-        self.sel_dest_dataset_type.set_but_do_not_propagate(_dest_type)
-        self.fr_dest_dataset = self.dataset_frame_factory(_dataset=self.setup.destination, _is_destination=False)
-        self.fr_dest_dataset.grid(column=1, row=1)
-
-        self.mappings_to_gui()
-
-        self.merge_insert.set(bool_to_binary_int(self.setup.insert))
-        self.merge_delete.set(bool_to_binary_int(self.setup.delete))
-        self.merge_update.set(bool_to_binary_int(self.setup.update))
-        if self.setup.post_execute_sql is None:
-            self.post_execute_sql.set("")
-        else:
-            self.post_execute_sql.set(self.setup.post_execute_sql)
-
-        # Hereafter, update column list when they change
-        self.fr_src_dataset.on_columns_change = self.on_dataset_columns_change
-        self.fr_dest_dataset.on_columns_change = self.on_dataset_columns_change
-        """
 
     def _gui_to_merge(self):
         """Copy the data from the GUI to the merge object"""
@@ -385,17 +356,12 @@ class SetupMain(VerticalScrolledFrame):
     def on_load_json(self, *args):
         """Triggered when load-button is clicked.
         Displays a load dialog, clears the GUI, populates the merge and uppdates the GUI"""
-        _filename = filedialog.askopenfilename(defaultextension=".json",
+        _setup_filename = filedialog.askopenfilename(defaultextension=".json",
                                                filetypes=[('JSON files', '.json'), ('all files', '.*')],
                                                title="Choose file")
-        if _filename:
-            self.g_transformations.clear()
-            self.g_plugins.clear()
-            self.clear_preview()
-            self.curr_mapping_frame = None
-            self._row_index = 0
-            self.load_json(_filename)
-
+        if _setup_filename is not None:
+            self.setup.load_from_file(_setup_filename=_setup_filename)
+            self._setup_to_gui()
 
     def check_prerequisites_for_reload(self):
         """Can a reload be made using the current settings? If not, display cause in status field"""

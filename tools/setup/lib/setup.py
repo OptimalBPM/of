@@ -52,13 +52,17 @@ class Setup():
     plugins = None
 
     def __init__(self, _setup_definition=None, _setup_filename=None, *args, **kw):
-        if _setup_filename is not None:
-            with open(_setup_filename, "r") as f:
-                _setup_definition=json.load(f)
 
         if _setup_definition is not None:
             self.read_settings(_setup_definition)
+        elif _setup_filename is not None:
+            self.load_from_file(_setup_filename=_setup_filename)
 
+    def load_from_file(self, _setup_filename):
+        with open(_setup_filename, "r") as f:
+           _setup_definition=json.load(f)
+
+        self.read_settings(_setup_definition)
 
     def load_install(self, _install_folder):
 
@@ -71,9 +75,7 @@ class Setup():
             self.plugins_folder = _config.get_path("broker/pluginsFolder", _default="plugins")
 
         # TODO: Fetch remote from git remotes
-        self.install_repository_url = "Fetching remotes from GIT repo not implementet"
-
-
+        self.install_repository_url = "Fetching remotes from GIT repo not implemented"
 
         self.install_location = _install_folder
         

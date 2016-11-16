@@ -132,7 +132,7 @@ class SetupMain(VerticalScrolledFrame):
         if _install_folder is not None:
             self.install_location.set(_install_folder)
             self.setup.load_install(_install_folder=_install_folder)
-            self._setup_to_gui()
+            self.setup_to_gui()
 
 
     def init_GUI(self):
@@ -283,11 +283,11 @@ class SetupMain(VerticalScrolledFrame):
         self.g_plugins.clear()
 
         # populate with plugins
-        for _curr_plugin in self.setup.plugins.values():
+        for _curr_plugin_key, _curr_plugin_value in self.setup.plugins.items():
             _new_item = self.g_plugins.append_item()
-            _new_item.make_item(_class=FramePlugin, _plugin=_curr_plugin)
+            _new_item.make_item(_class=FramePlugin, _name = _curr_plugin_key, _plugin=_curr_plugin_value)
 
-    def _setup_to_gui(self):
+    def setup_to_gui(self):
         """
         Populate the GUI from the setup class.
         """
@@ -298,59 +298,47 @@ class SetupMain(VerticalScrolledFrame):
         self.plugins_to_gui()
 
 
-    def _gui_to_merge(self):
-        """Copy the data from the GUI to the merge object"""
-        self.fr_src_dataset.write_to_dataset()
-        self.setup.source = self.fr_src_dataset.dataset
-        self.fr_dest_dataset.write_to_dataset()
-        self.setup.destination = self.fr_dest_dataset.dataset
-
-        self.gui_to_mappings()
-
-        self.setup.insert = binary_int_to_bool(self.merge_insert.get())
-        self.setup.delete = binary_int_to_bool(self.merge_delete.get())
-        self.setup.update = binary_int_to_bool(self.merge_update.get())
-        self.setup.post_execute_sql = self.post_execute_sql.get()
-
-    def load_json(self, _filename):
-        """Load an JSON into the merge object, and populate the GUI"""
-        with open(_filename, "r") as _f:
-            _json = json.load(_f)
-
-        self.setup_filename = _filename
-
-        self.notify_task('Loading transformation..', 0)
-        self.setup = Merge(_json=_json, _base_path=os.path.dirname(_filename))
-        try:
-            self.setup._load_datasets()
-        except Exception as e:
-            self.notify_messagebox("Error loading data", str(e))
-            # Supress the following errors. There is no real errors that matters.
-            self.suppress_errors = True
-        self._config_to_gui()
-        self.suppress_errors = None
-        self.notify_task('Loading transformation..done', 100)
-        self.resize()
-
-
     def on_save_json(self, *args):
         """Triggered when save-button is clicked.
         Displays a save dialog, fetches GUI data into merge, and saves as JSON into the selected file."""
         self.notify_task('Saving..', 0)
-        _filename = filedialog.asksaveasfilename(initialfile= self.setup_filename, defaultextension=".json",
+        _filename = filedialog.asksaveasfilename(initialdir=os.path.dirname(self.setup_filename.get()),
+                                                 initialfile=os.path.basename(self.setup_filename.get())
+                                                 , defaultextension=".json",
                                                  filetypes=[('JSON files', '.json'), ('all files', '.*')],
                                                  title="Choose location")
         if _filename:
-            self._gui_to_merge()
+            self.gui_to_setup()
             self.notify_task('Saving(Generating JS)..', 0)
-            _json = self.setup.as_json()
+
+            _dict = self.setup.as_dict()
             self.notify_task('Saving(Writing file)..', 50)
             with open (_filename, "w") as _f:
-                json.dump(_json, fp=_f, sort_keys=True, indent=4)
+                json.dump(_dict, fp=_f, sort_keys=True, indent=4)
 
             self.notify_task('Saving..done.', 100)
         else:
             self.notify_task('Saving cancelled.', 0)
+
+
+    def gui_to_plugin(self):
+
+        self.setup.plugins = {}
+
+        # populate with plugins
+        for _curr_plugin in self.g_plugins.items:
+            self.setup.plugins[_curr_plugin.fr_item.name] = _curr_plugin.fr_item.gui_to_plugin()
+
+    def gui_to_setup(self):
+        """
+        Save the the GUI to the setup class.
+        """
+
+        self.setup.install_location = self.install_location.get()
+        self.setup.plugins_folder = self.plugins_folder.get()
+        self.setup.install_repository_url = self.install_repository_url.get()
+        self.gui_to_plugin()
+
 
 
     def on_load_json(self, *args):
@@ -360,8 +348,16 @@ class SetupMain(VerticalScrolledFrame):
                                                filetypes=[('JSON files', '.json'), ('all files', '.*')],
                                                title="Choose file")
         if _setup_filename is not None:
-            self.setup.load_from_file(_setup_filename=_setup_filename)
-            self._setup_to_gui()
+            self.notify_task('Loading setup..', 0)
+            try:
+                self.setup.load_from_file(_setup_filename=_setup_filename)
+                self.setup_filename.set(_setup_filename)
+            except Exception as e:
+                self.notify_messagebox("Error loading data", str(e))
+            self.setup_to_gui()
+
+            self.notify_task('Loading setup..done', 100)
+            self.resize()
 
     def check_prerequisites_for_reload(self):
         """Can a reload be made using the current settings? If not, display cause in status field"""

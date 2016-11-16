@@ -25,21 +25,18 @@ class FramePlugin(FrameCustomItem):
     description = None
     plugins = None
 
-    def __init__(self, _master, _plugin = None):
+    def __init__(self, _master, _name = None, _plugin = None):
         super(FramePlugin, self).__init__(_master)
 
-
+        self.name = _name
         # Add monitored variables.
 
         # Description
         self.description = StringVar()
 
-
         self.init_widgets()
 
         self.plugin = _plugin
-
-
 
         if _plugin is not None:
             self.plugin_to_gui()
@@ -57,7 +54,8 @@ class FramePlugin(FrameCustomItem):
 
     def gui_to_plugin(self):
 
-        self.plugin.description = self.plugin.description.get()
+        self.plugin["description"] = self.description.get()
+        return self.plugin
 
 
     def init_widgets(self):

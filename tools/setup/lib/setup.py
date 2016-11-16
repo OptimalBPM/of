@@ -64,6 +64,12 @@ class Setup():
 
         self.read_settings(_setup_definition)
 
+    def as_dict(self):
+        return {"installLocation": self.install_location,
+                "pluginsFolder": self.plugins_folder,
+                "installRepositoryUrl": self.install_repository_url,
+                "plugins": self.plugins}
+
     def load_install(self, _install_folder):
 
         _exp_path = os.path.expanduser(_install_folder)
@@ -78,14 +84,14 @@ class Setup():
         self.install_repository_url = "Fetching remotes from GIT repo not implemented"
 
         self.install_location = _install_folder
-        
-        
+
+
         if self.plugins_folder is None:
             # If there is no config file, try with the default location for the plugins folder
             self.plugins_folder = os.path.join(_exp_path, "plugins")
 
         self.plugins = {}
-        
+
 
         # Enumerate plugins
         if not os.path.exists(self.plugins_folder):

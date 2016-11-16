@@ -17,6 +17,7 @@ import sys
 
 
 # Version and release information used by Sphinx for documentation and setuptools for package generation.
+from subprocess import CalledProcessError
 
 
 __version__ = '0.9'
@@ -190,6 +191,20 @@ def main():
         if _edit or not _setup_filename:
             """If the users wants to edit or haven't specified a definition file, start the editor"""
             # Bring up the GUI
+            if sys.platform == "linux":
+                try:
+                    import _tkinter
+                except ImportError:
+                    print("On Linux, the python3-tk package has to be installed:")
+                    print("----------------python3-tk installing----------------------------------")
+                    from subprocess import check_call
+                    try:
+                        check_call(["sudo", "apt-get", "install", "python3-tk", "--yes"])
+                        print("----------------python3-tk installed----------------------------------")
+                    except CalledProcessError:
+                        print("Failed to install the python3-tk-package. Please run \"sudo apt-get install python3-tk\" manually.")
+                        exit(1)
+
             from of.tools.setup.lib.main_tk_setup import SetupMain
             SetupMain(_setup=_setup, _setup_filename=_setup_filename)
 

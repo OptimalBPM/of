@@ -219,51 +219,51 @@ class SetupMain(VerticalScrolledFrame):
 
 
         # Merge preview
-        self.fr_Preview = ttk.Frame(self.fr_top_left)
-        self.fr_Preview.pack(side=TOP, fill=BOTH, expand=1)
+        self.fr_install = ttk.Frame(self.fr_top_left)
+        self.fr_install.pack(side=TOP, fill=BOTH, expand=1)
 
-        self.fr_merge_actions = ttk.Frame(self.fr_Preview)
-        self.fr_merge_actions.pack(side=TOP, fill=X)
+        self.fr_install_actions = ttk.Frame(self.fr_install)
+        self.fr_install_actions.pack(side=TOP, fill=X)
 
-        self.btn_execute_preview = Button(self.fr_merge_actions, text="Preview merge", command=self.on_preview_merge)
-        self.btn_execute_preview.pack(side=LEFT)
-        self.btn_execute_preview = Button(self.fr_merge_actions, text="Commit merge", command=self.on_commit_merge)
-        self.btn_execute_preview.pack(side=LEFT)
+        self.btn_install = Button(self.fr_install_actions, text="Install", command=self.on_preview_merge)
+        self.btn_install.pack(side=LEFT)
+        self.btn_uninstall = Button(self.fr_install_actions, text="Uninstall", command=self.on_uninstall)
+        self.btn_uninstall.pack(side=LEFT)
 
         # Update
         self.merge_update = BooleanVar()
-        self.e_merge_update = ttk.Checkbutton(self.fr_merge_actions, variable=self.merge_update)
+        self.e_merge_update = ttk.Checkbutton(self.fr_install_actions, variable=self.merge_update)
         self.e_merge_update.pack(side=RIGHT)
-        self.l_merge_update = ttk.Label(self.fr_merge_actions, text="Update: ")
+        self.l_merge_update = ttk.Label(self.fr_install_actions, text="Update: ")
         self.l_merge_update.pack(side=RIGHT)
 
         # Insert
 
         self.merge_insert = BooleanVar()
-        self.e_merge_insert = ttk.Checkbutton(self.fr_merge_actions, variable=self.merge_insert)
+        self.e_merge_insert = ttk.Checkbutton(self.fr_install_actions, variable=self.merge_insert)
         self.e_merge_insert.pack(side=RIGHT)
-        self.l_merge_insert = ttk.Label(self.fr_merge_actions, text="Insert: ")
+        self.l_merge_insert = ttk.Label(self.fr_install_actions, text="Insert: ")
         self.l_merge_insert.pack(side=RIGHT)
 
         # Delete
         self.merge_delete = BooleanVar()
-        self.e_merge_delete = ttk.Checkbutton(self.fr_merge_actions, variable=self.merge_delete)
+        self.e_merge_delete = ttk.Checkbutton(self.fr_install_actions, variable=self.merge_delete)
         self.e_merge_delete.pack(side=RIGHT)
-        self.l_merge_delete = ttk.Label(self.fr_merge_actions, text="Delete: ")
+        self.l_merge_delete = ttk.Label(self.fr_install_actions, text="Delete: ")
         self.l_merge_delete.pack(side=RIGHT)
 
         # Set post-merge SQL
         self.post_execute_sql = StringVar()
-        self.btn_Post_Merge_SQL = ttk.Button(self.fr_merge_actions, text="Set post-merge SQL",
+        self.btn_Post_Merge_SQL = ttk.Button(self.fr_install_actions, text="Set post-merge SQL",
                                              command=self.on_post_merge_sql)
         self.btn_Post_Merge_SQL.pack(side=RIGHT, padx=30)
 
         # Preview
-        self.gr_preview = ttk.Treeview(self.fr_Preview, columns=('size', 'modified'))
+        self.gr_preview = ttk.Treeview(self.fr_install, columns=('size', 'modified'))
         self.gr_preview.pack(side=TOP, fill=BOTH, expand=1)
         self.gr_preview.bind("<<TreeviewSelect>>", self.on_preview_selected)
         self.preview_detail = StringVar()
-        self.e_previev_detail = ttk.Entry(self.fr_Preview, textvariable=self.preview_detail)
+        self.e_previev_detail = ttk.Entry(self.fr_install, textvariable=self.preview_detail)
         self.e_previev_detail.pack(side=BOTTOM, fill=X, expand=0)
 
         self.fr_bottom = BaseFrame(self.interior)

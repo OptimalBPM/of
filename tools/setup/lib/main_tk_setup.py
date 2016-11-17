@@ -5,13 +5,17 @@ Created on Oct 20, 2013
 """
 import json
 import os
+import sys
+from _thread import start_new_thread
+from contextlib import redirect_stdout, redirect_stderr
+from io import StringIO
 
 from tkinter import Tk, ttk, filedialog, SUNKEN, StringVar, Button, BooleanVar, messagebox, Toplevel, Entry, Text
 from tkinter.messagebox import askquestion, askokcancel, OK
 
 from urllib.parse import unquote
 
-from tkinter.constants import E, W, N, S, LEFT, X, BOTTOM, TOP, Y, BOTH, RIGHT, END
+from tkinter.constants import E, W, N, S, LEFT, X, BOTTOM, TOP, Y, BOTH, RIGHT, END, WORD
 
 from of.tools.setup.lib.frame_list import FrameList
 from of.tools.setup.lib.frame_plugin import FramePlugin
@@ -65,7 +69,7 @@ class SetupMain(VerticalScrolledFrame):
         self.init_GUI()
 
         if _setup_filename is not None and _setup is not None:
-            self._setup_to_gui()
+            self.setup_to_gui()
 
         self.parent.columnconfigure(0, weight=1)
         self.parent.rowconfigure(0, weight=1)
@@ -134,10 +138,33 @@ class SetupMain(VerticalScrolledFrame):
             self.setup.load_install(_install_folder=_install_folder)
             self.setup_to_gui()
 
+    def install_thread_function(self, _name, _whatever):
+        self.setup.install()
+        self.notify_task('Installed.', 0)
+
+    def on_install(self):
+        self.gui_to_setup()
+        self.notify_task('Installing..', 0)
+        start_new_thread(self.install_thread_function, ("Install_thread", None))
+
+
+    def on_uninstall(self):
+        self.gui_to_setup()
+        self.notify_task('Uninstalling..', 0)
+        self.setup.install()
+        self.notify_task('Uninstalled.', 0)
+
+
+    def intercept_log(self, s):
+        self.ta_log.insert("end", s)
+        self.parent.update_idletasks()
+
+        return None
 
     def init_GUI(self):
         """Init main application GUI"""
-        print("Initializing GUI...", end="")
+        print("Initializing GUI...redirectind stdout/stderr to log window..", end="")
+
 
         self.parent.title("Optimal Framework setup")
         self.interior.notify_task = self.notify_task
@@ -218,64 +245,43 @@ class SetupMain(VerticalScrolledFrame):
 
 
 
-        # Merge preview
+        # Install
         self.fr_install = ttk.Frame(self.fr_top_left)
         self.fr_install.pack(side=TOP, fill=BOTH, expand=1)
+
+
 
         self.fr_install_actions = ttk.Frame(self.fr_install)
         self.fr_install_actions.pack(side=TOP, fill=X)
 
-        self.btn_install = Button(self.fr_install_actions, text="Install", command=self.on_preview_merge)
+        self.btn_install = Button(self.fr_install_actions, text="Install", command=self.on_install)
         self.btn_install.pack(side=LEFT)
         self.btn_uninstall = Button(self.fr_install_actions, text="Uninstall", command=self.on_uninstall)
         self.btn_uninstall.pack(side=LEFT)
 
-        # Update
-        self.merge_update = BooleanVar()
-        self.e_merge_update = ttk.Checkbutton(self.fr_install_actions, variable=self.merge_update)
-        self.e_merge_update.pack(side=RIGHT)
-        self.l_merge_update = ttk.Label(self.fr_install_actions, text="Update: ")
-        self.l_merge_update.pack(side=RIGHT)
 
-        # Insert
-
-        self.merge_insert = BooleanVar()
-        self.e_merge_insert = ttk.Checkbutton(self.fr_install_actions, variable=self.merge_insert)
-        self.e_merge_insert.pack(side=RIGHT)
-        self.l_merge_insert = ttk.Label(self.fr_install_actions, text="Insert: ")
-        self.l_merge_insert.pack(side=RIGHT)
-
-        # Delete
-        self.merge_delete = BooleanVar()
-        self.e_merge_delete = ttk.Checkbutton(self.fr_install_actions, variable=self.merge_delete)
-        self.e_merge_delete.pack(side=RIGHT)
-        self.l_merge_delete = ttk.Label(self.fr_install_actions, text="Delete: ")
-        self.l_merge_delete.pack(side=RIGHT)
-
-        # Set post-merge SQL
-        self.post_execute_sql = StringVar()
-        self.btn_Post_Merge_SQL = ttk.Button(self.fr_install_actions, text="Set post-merge SQL",
-                                             command=self.on_post_merge_sql)
-        self.btn_Post_Merge_SQL.pack(side=RIGHT, padx=30)
 
         # Preview
-        self.gr_preview = ttk.Treeview(self.fr_install, columns=('size', 'modified'))
-        self.gr_preview.pack(side=TOP, fill=BOTH, expand=1)
-        self.gr_preview.bind("<<TreeviewSelect>>", self.on_preview_selected)
-        self.preview_detail = StringVar()
-        self.e_previev_detail = ttk.Entry(self.fr_install, textvariable=self.preview_detail)
-        self.e_previev_detail.pack(side=BOTTOM, fill=X, expand=0)
+
+        self.ta_log = Text(self.fr_install, width = 100, height = 7, wrap = WORD)
+        self.ta_log.pack(side=TOP, fill=BOTH, expand=1)
+
+        self.log_out = StringIO()
+        sys.stdout = self.log_out
+        sys.stderr = self.log_out
+        self.log_out._write = self.log_out.write
+        self.log_out.write = self.intercept_log
+
 
         self.fr_bottom = BaseFrame(self.interior)
         self.fr_bottom.pack(side=BOTTOM, fill=X)
 
         self.fr_Status_Bar = Status_Bar(self.fr_bottom)
         self.fr_Status_Bar.pack(fill=X)
-
-        print("done.")
+        self.resize()
 
     # #########################################################################
-    # This section contains functions handling the entire setup(load/save/GUI)
+    # This section contains functions handling thawe entire setup(load/save/GUI)
     # #########################################################################
 
     def plugins_to_gui(self):

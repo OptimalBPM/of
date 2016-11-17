@@ -111,9 +111,6 @@ class Setup():
                     self.plugins[_plugin_name] = {"name": _plugin_name, "description": _description}
 
 
-    def install_plugins(self):
-        pass
-
     def read_settings(self, _setup_definition):
         set_property_if_in_dict(self,"install_location", _setup_definition, _convert_underscore=True)
         set_property_if_in_dict(self,"plugins_folder", _setup_definition, _convert_underscore=True, _default_value="plugins")
@@ -140,7 +137,9 @@ class Setup():
             _folder_location = os.path.expanduser(self.install_location)
         if not os.path.exists(_folder_location):
             # Clone the config repo
+            print("Cloning " + self.install_repository_url + " into " + _folder_location)
             _repo = porcelain.clone(source= self.install_repository_url, target= _folder_location, checkout=True)
+            print("Done.")
         else:
             raise Exception("Error installing the configuration files at \"" + _folder_location + "\", directory already exists.")
 
@@ -177,7 +176,9 @@ class Setup():
     def install_plugin(self, _plugins_location, _plugin_name, _plugin_info):
         # TODO: Add branch..
         _curr_target = os.path.join(_plugins_location, _plugin_name)
+        print("Cloning "+ _plugin_info["url"] + " into " + _curr_target)
         porcelain.clone(source=_plugin_info["url"], target=_curr_target, checkout=True)
+        print("Done.")
 
         self.install_plugin_binaries(_curr_target)
 
@@ -187,10 +188,7 @@ class Setup():
             _plugins_location = os.path.join(os.path.expanduser(self.install_location), "plugins")
         else:
             _plugins_location = os.path.expanduser(self.plugins_folder)
-            if os.path.exists(_plugins_location):
-                raise Exception(
-                    "Error installing the configuration files at \"" + _plugins_location + "\", directory already exists.")
-            else:
+            if not os.path.exists(_plugins_location):
                 os.mkdir(_plugins_location)
 
 

@@ -119,14 +119,15 @@ class Setup():
         set_property_if_in_dict(self, "plugins", _setup_definition,  _convert_underscore=True)
 
     @not_implemented
-    def write_settings(self):
-        pass
-    @not_implemented
     def uninstall_config(self):
         pass
 
     @not_implemented
     def uninstall_plugin(self):
+        pass
+
+    @not_implemented
+    def uninstall(self):
         pass
 
     def install_config(self):
@@ -135,7 +136,13 @@ class Setup():
             _folder_location = os.path.expanduser("~/optimalframework")
         else:
             _folder_location = os.path.expanduser(self.install_location)
+
+
         if not os.path.exists(_folder_location):
+            print("\nInstalling configuration and startup scripts at:\n" +_folder_location)
+            print("-----------------------------------------------------")
+
+
             # Clone the config repo
             print("Cloning " + self.install_repository_url + " into " + _folder_location)
             _repo = porcelain.clone(source= self.install_repository_url, target= _folder_location, checkout=True)
@@ -150,6 +157,8 @@ class Setup():
             try:
                 for _curr_plugin_name, _curr_plugin_value in _settings["plugins"].items():
                     if "binaries" in _curr_plugin_value:
+                        print("\nInstalling and expanding compressed content...")
+                        print("----------------------------------------------")
                         for _curr_binary in _curr_plugin_value["binaries"]:
                             _source_file = urlopen(_curr_binary["url"])
                             _tempfile = tempfile.TemporaryFile(mode='w+b')
@@ -191,17 +200,14 @@ class Setup():
             if not os.path.exists(_plugins_location):
                 os.mkdir(_plugins_location)
 
-
+        print("\nInstall plugins at: \n" + _plugins_location)
         for _plugin_name, _plugin_info in self.plugins.items():
             self.install_plugin(_plugins_location, _plugin_name, _plugin_info)
 
     def install(self):
 
-        _log = "Installation starting..."
         self.install_config()
         self.install_plugins()
 
         # TODO: Fix rights for logging if on linux..
-        _log += "Installation finished."
-
-        return _log
+        print("\nSetup is complete, system is installed.")

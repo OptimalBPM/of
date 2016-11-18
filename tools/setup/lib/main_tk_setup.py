@@ -67,15 +67,18 @@ class SetupMain(VerticalScrolledFrame):
         self.ip_address = StringVar()
         self._row_index = 0
         self.init_GUI()
-
+        self.notify_task('GUI initiated.', 0)
         if _setup_filename is not None and _setup is not None:
+            self.notify_task('Loading setup file.', 0)
             self.setup_to_gui()
+            self.notify_task('Setup file loaded.', 100)
 
         self.parent.columnconfigure(0, weight=1)
         self.parent.rowconfigure(0, weight=1)
         self.resize()
-
+        self.notify_task('Running. Welcome to the Optimal Framework setup application!', 100)
         self.parent.mainloop()
+
 
     def resize(self):
         """
@@ -83,7 +86,10 @@ class SetupMain(VerticalScrolledFrame):
         """
         self._canvas.update_idletasks()
         self.fr_top_right.update_idletasks()
-        self._canvas.config(width=self.interior.winfo_reqwidth() + 1, height=self.interior.winfo_reqheight())
+
+        self._canvas.config(width=self.interior.winfo_reqwidth() + 1, height=self.interior.winfo_reqheight()+1)
+
+        self.fr_bottom.update_idletasks()
 
     def on_dataset_columns_change(self, *args):
         # Columns have changed; force reload columns from structure
@@ -95,7 +101,7 @@ class SetupMain(VerticalScrolledFrame):
 
     def notify_task(self, _task, _progress):
         """Override as this is the top widget"""
-        self.fr_Status_Bar.update_task(_task, _progress)
+        self.fr_status_bar.update_task(_task, _progress)
 
     def notify_messagebox(self, _title, _message, _kind=None):
         """Override as this is the top class, default is error."""
@@ -123,24 +129,25 @@ class SetupMain(VerticalScrolledFrame):
 
     def on_select_plugins_folder(self, *args):
         _plugin_folder = filedialog.askdirectory(title="Choose plugin folder (usually in the ")
-        if _plugin_folder is not None:
+        if _plugin_folder is not None or _plugin_folder != "":
             self.plugins_folder.set(_plugin_folder)
 
     def on_select_install_folder(self, *args):
         _install_folder = filedialog.askdirectory(title="Choose install folder (usually in the \"~of\"-folder)")
-        if _install_folder is not None:
+        if _install_folder is not None or _install_folder != "":
             self.install_location.set(_install_folder)
 
     def on_select_installation(self, *args):
         _install_folder = filedialog.askdirectory(title="Select existing installation")
-        if _install_folder is not None:
+        if _install_folder is not None or _install_folder != "":
             self.install_location.set(_install_folder)
             self.setup.load_install(_install_folder=_install_folder)
             self.setup_to_gui()
 
     def install_thread_function(self, _name, _whatever):
         self.setup.install()
-        self.notify_task('Installed.', 0)
+
+        self.notify_task('Installed.', 100)
 
     def on_install(self):
         self.gui_to_setup()
@@ -151,12 +158,13 @@ class SetupMain(VerticalScrolledFrame):
     def on_uninstall(self):
         self.gui_to_setup()
         self.notify_task('Uninstalling..', 0)
-        self.setup.install()
-        self.notify_task('Uninstalled.', 0)
+        self.setup.uninstall()
+        self.notify_task('Uninstalled.', 100)
 
 
     def intercept_log(self, s):
         self.ta_log.insert("end", s)
+        self.ta_log.see(END)
         self.parent.update_idletasks()
 
         return None
@@ -225,13 +233,11 @@ class SetupMain(VerticalScrolledFrame):
         self.btn_reload = Button(self.fr_plugins_header_nav, text="Refresh", command=self.on_refresh_plugins)
         self.btn_reload.pack(side=LEFT)
 
-        self.g_plugins = FrameList(self.fr_top_left, _detail_key_text="Plugins >>", bd=1, relief=SUNKEN)
+        self.g_plugins = FrameList(self.fr_top_left, _detail_key_text="Details >>", bd=1, relief=SUNKEN)
         self.g_plugins.pack(side=TOP, fill=X)
         #self.g_plugins.on_delete = self.plugins_do_on_delete
         #self.g_plugins.on_detail = self.plugins_do_on_detail
 
-        self.btn_append_mapping = Button(self.fr_top_left, text="Append mapping", command=self.on_append_mapping)
-        self.btn_append_mapping.pack(side=TOP)
 
         # Plugin details
         self.fr_top_right = BaseFrame(self.fr_top)
@@ -241,7 +247,8 @@ class SetupMain(VerticalScrolledFrame):
         self.l_plugin.pack(side=TOP)
         self.fr_plugin = BaseFrame(self.fr_top_right, bd=1, relief=SUNKEN)
         self.fr_plugin.pack(side=TOP, fill=BOTH, expand=1)
-        self.plugin_url = make_entry(self.fr_plugin, "Repository URL(http):", 0)
+        self.plugin_url,self.l_plugin_url, \
+        self.e_plugin_url = make_entry(self.fr_plugin, "Repository URL(http):", 0)
 
 
 
@@ -256,7 +263,7 @@ class SetupMain(VerticalScrolledFrame):
 
         self.btn_install = Button(self.fr_install_actions, text="Install", command=self.on_install)
         self.btn_install.pack(side=LEFT)
-        self.btn_uninstall = Button(self.fr_install_actions, text="Uninstall", command=self.on_uninstall)
+        self.btn_uninstall = Button(self.fr_install_actions, text="Uninstall (not implemented)", command=self.on_uninstall)
         self.btn_uninstall.pack(side=LEFT)
 
 
@@ -274,20 +281,26 @@ class SetupMain(VerticalScrolledFrame):
 
 
         self.fr_bottom = BaseFrame(self.interior)
-        self.fr_bottom.pack(side=BOTTOM, fill=X)
+        self.fr_bottom.pack(side=BOTTOM, fill=BOTH)
+        self.fr_bottom.config(height=30)
 
-        self.fr_Status_Bar = Status_Bar(self.fr_bottom)
-        self.fr_Status_Bar.pack(fill=X)
+        self.fr_status_bar = Status_Bar(self.fr_bottom)
+        self.fr_status_bar.pack(fill=BOTH)
+        self.fr_status_bar.config(height=30)
+
         self.resize()
 
     # #########################################################################
     # This section contains functions handling thawe entire setup(load/save/GUI)
     # #########################################################################
 
+    def on_plugin_detail(self, _framelist, _item):
+        self.plugin_url.set(_item.fr_item.plugin["url"])
+
     def plugins_to_gui(self):
         # clear plugin list
         self.g_plugins.clear()
-
+        self.g_plugins.on_detail = self.on_plugin_detail
         # populate with plugins
         for _curr_plugin_key, _curr_plugin_value in self.setup.plugins.items():
             _new_item = self.g_plugins.append_item()
@@ -365,108 +378,7 @@ class SetupMain(VerticalScrolledFrame):
             self.notify_task('Loading setup..done', 100)
             self.resize()
 
-    def check_prerequisites_for_reload(self):
-        """Can a reload be made using the current settings? If not, display cause in status field"""
 
-        if self.fr_src_dataset is None:
-            self.notify_task("Cannot reload: Source dataset must be specified.", 0)
-            return False
-        elif self.fr_dest_dataset is None:
-            self.notify_task("Cannot reload: Destination dataset must be specified.", 0)
-            return False
-        _tmp = self.fr_src_dataset.check_reload()
-        if _tmp:
-            self.notify_task("Cannot reload source: " + _tmp, 0)
-            return False
-        _tmp = self.fr_dest_dataset.check_reload()
-        if _tmp:
-            self.notify_task("Cannot reload destination: " + _tmp, 0)
-            return False
-        else:
-            return True
-
-
-    def update_data(self, _refresh=None):
-        """
-        Reload all data into the GUI
-        :param _refresh: Force reload of datasets
-        :return:
-        """
-
-        if self.check_prerequisites_for_reload() is False:
-            return
-
-        self.notify_task("", 0)
-        if len(self.setup.source.data_table) == 0 or _refresh:
-            # Update settings
-            self._gui_to_merge()
-
-            # Update XPath references especially, since it addresses an XML structure, not a dataset.
-            if isinstance(self.setup.source, XpathDataset):
-                self.setup.source.field_xpaths = []
-                self.setup.source.field_names = []
-                for _curr_mapping_idx in range(0, len(self.g_plugins.items)):
-                    self.setup.source.field_xpaths.append(
-                        self.g_plugins.items[_curr_mapping_idx].fr_item.src_reference.get())
-                    self.setup.source.field_names.append(
-                        self.g_plugins.items[_curr_mapping_idx].fr_item.src_reference.get())
-
-            self.setup.source.load()
-        # Reset identity values
-        self.reset_substitions_identity()
-        # Is there any data?
-        if len(self.setup.source.data_table) > 0:
-            # Try to retain the approximate position in the table.
-            if self._row_index < 0:
-                self._row_index = 0
-            elif self._row_index > len(self.setup.source.data_table) - 1:
-                self._row_index = len(self.setup.source.data_table) - 1
-            # Loop through mappings, update data and perform transformations
-            # TODO: This certainly doesn't seem to belong here, should be extracted
-            for _curr_mapping_idx in range(0, len(self.g_plugins.items)):
-                _curr_frame = self.g_plugins.items[_curr_mapping_idx].fr_item
-                _curr_frame.hide_error()
-                _src_ref = _curr_frame.src_reference.get()
-                try:
-                    if isinstance(self.setup.source, XpathDataset):
-                        _col_idx = self.setup.source.field_xpaths.index(_src_ref)
-                    else:
-                        _col_idx = self.setup.source.field_names.index(_src_ref)
-                except ValueError:
-                    _col_idx = -1
-
-                if _col_idx > -1:
-                    _curr_frame.curr_raw_data = self.setup.source.data_table[self._row_index][_col_idx]
-                    try:
-                        perform_transformations(_input=_curr_frame.curr_raw_data,
-                                                _transformations=_curr_frame.mapping.transformations)
-                    except Exception as e:
-                        self.notify_task(
-                            'Error in one of the transformations, mapping: ' + _src_ref + " error: " + str(e), 0)
-
-                    _curr_frame.curr_data.set(str(_curr_frame.curr_raw_data))
-
-                else:
-                    _curr_frame.show_error(_msg="No mapping")
-                    _curr_frame.curr_data.set("")
-
-                    try:
-                        _curr_frame.curr_raw_data = perform_transformations(_input=None,
-                                                                            _transformations=
-                                                                            _curr_frame.mapping.transformations)
-                    except Exception as e:
-                        self.notify_task(
-                            'Error in one of the transformations, mapping: ' + _curr_frame.dest_reference.get() +
-                            " error: " + str(e), 0)
-
-                    _curr_frame.curr_data.set(str(_curr_frame.curr_raw_data))
-
-                self.g_plugins.items[_curr_mapping_idx].fr_item.reload_references()
-
-
-    # #########################################################
-    # The following events deals with navigating the active dataset
-    ##########################################################
 
 
     def on_refresh_plugins(self):
@@ -475,352 +387,4 @@ class SetupMain(VerticalScrolledFrame):
 
 
 
-    def dataset_frame_factory(self, _dataset=None, _dataset_type=None, _is_destination=False):
-        """
-        This is a factory function for creating matching frames(visual property editors) for the dataset classes.
-        :param _dataset: The dataset, if existing.
-        :param _dataset_type: The dataset type string representation ("RDBMS", and so on)
-        """
-        if _dataset:
-            _dataset_type = self.dataset_instance_to_dataset_type(_dataset)
 
-        if _dataset_type == "RDBMS":
-            _tmp = FrameRDBMSDataset(self.fr_settings, _dataset=_dataset, _relief=SUNKEN,
-                                     _is_destination=_is_destination)
-            _tmp.subnet_ip = self.ip_address
-        elif _dataset_type == "FLATFILE":
-            _tmp = FrameFlatfileDataset(self.fr_settings, _dataset=_dataset, _relief=SUNKEN,
-                                        _is_destination=_is_destination)
-        elif _dataset_type == "XPATH":
-            _tmp = FrameXPathDataset(self.fr_settings, _dataset=_dataset, _relief=SUNKEN,
-                                     _is_destination=_is_destination)
-        elif _dataset_type == "SPREADSHEET":
-            _tmp = FrameSpreadsheetDataset(self.fr_settings, _dataset=_dataset, _relief=SUNKEN,
-                                           _is_destination=_is_destination)
-        else:
-            raise Exception("Internal error, unsupported dataset type: " + str(_dataset_type))
-        if self.setup_filename is not None:
-            _tmp.base_path = os.path.dirname(self.setup_filename)
-        return _tmp
-
-
-    def on_src_dataset_type_change(self, _current_value):
-        """
-        Triggered when a user selects a different dataset type for the source dataset
-        :param _current_value: A string describing what dataset type has been selected.
-        """
-        if self.fr_src_dataset is not None:
-            self.fr_src_dataset.destroy()
-        self.fr_src_dataset = self.dataset_frame_factory(_dataset_type=_current_value.upper(), _is_destination=False)
-        self.setup.source = self.fr_src_dataset.dataset
-        self.fr_src_dataset.grid(column=0, row=1)
-
-    def on_dest_dataset_type_change(self, _current_value):
-        """
-        Triggered when a user selects a different dataset type for the destination dataset
-        :param _current_value: A string describing what dataset type has been selected.
-        """
-        if self.fr_dest_dataset is not None:
-            self.fr_dest_dataset.destroy()
-        self.fr_dest_dataset = self.dataset_frame_factory(_dataset_type=_current_value.upper(), _is_destination=True)
-        self.setup.destination = self.fr_dest_dataset.dataset
-        self.fr_dest_dataset.grid(column=1, row=1)
-
-    def get_source_references(self, _force=None):
-        """
-        Returns the possible field references from the source dataset
-        :param _force: If True, forces a reload of the underlying dataset.
-        """
-        if self.fr_src_dataset is not None:
-            try:
-                return self.fr_src_dataset.get_possible_references(_force)
-            except Exception as e:
-                self.notify_messagebox(_title="Failed refreshing source references", _message="Error: " + str(e),
-                                       _kind="warning")
-                return []
-
-
-    def get_destination_references(self, _force=None):
-        """
-        Returns the possible field references from the destination dataset
-        :param _force: If True, forces a reload of the underlying dataset.
-        """
-        if self.fr_dest_dataset is not None:
-            try:
-                return self.fr_dest_dataset.get_possible_references(_force)
-            except Exception as e:
-                self.notify_messagebox(_title="Failed refreshing destination references", _message="Error: " + str(e),
-                                       _kind="warning")
-                return []
-
-
-    ##########################################################
-    # This section contains functions handling field mappings
-    ##########################################################
-    def mappings_to_gui(self):
-        """Populates the GUI from the mappings list of the merge object"""
-
-        self.g_plugins.clear()
-        for _curr_mapping in self.setup.mappings:
-            _new_item = self.g_plugins.append_item()
-            _new_item.make_item(_class=FrameMapping, _mapping=_curr_mapping,
-                                _on_get_source_references=self.get_source_references,
-                                _on_get_destination_references=self.get_destination_references)
-
-
-    def gui_to_mappings(self):
-        """Gathers data from GUI into the mappings list of the merge object"""
-
-        self.gui_to_transformations()
-        for _curr_mapping in self.g_plugins.items:
-            _curr_mapping.fr_item.gui_to_mapping()
-
-        self.setup._mappings_to_fields(self.setup.source, _use_dest=False)
-        self.setup._mappings_to_fields(self.setup.destination, _use_dest=True)
-
-
-    def mappings_do_on_delete(self, _g_plugins, _item_frame):
-        """Triggered if the "del"-button has been clicked"""
-        self.setup.mappings.remove(_item_frame.fr_item.mapping)
-
-    def mappings_do_on_move_up(self, _g_plugins, _item_frame):
-        """Triggered if the up arrow-button has been clicked"""
-        _curr_idx = self.setup.mappings.index(_item_frame.fr_item.mapping)
-        self.setup.mappings.insert(_curr_idx - 1, self.setup.mappings.pop(_curr_idx))
-
-    def mappings_do_on_move_down(self, _g_plugins, _item_frame):
-        """Triggered if the down arrow-button has been clicked"""
-        _curr_idx = self.setup.mappings.index(_item_frame.fr_item.mapping)
-        self.setup.mappings.insert(_curr_idx + 1, self.setup.mappings.pop(_curr_idx))
-
-    def on_append_mapping(self, *args):
-        """Triggered if the "Append mapping"-button has been clicked."""
-        _new_mapping = Mapping()
-        self.setup.mappings.append(_new_mapping)
-        _new_item = self.g_plugins.append_item()
-        _new_item.make_item(_class=FrameMapping, _mapping=_new_mapping,
-                            _on_get_source_references=self.get_source_references,
-                            _on_get_destination_references=self.get_destination_references)
-
-
-    def mappings_do_on_detail(self, _g_plugins, _item_frame):
-        self.notify_task("", 0)
-        if self.curr_mapping_frame:
-            self.gui_to_transformations()
-        self.g_transformations.clear()
-        for _curr_transformation in _item_frame.fr_item.mapping.transformations:
-
-            _frame_class = self._transformation_frame_class_lookup(_curr_transformation)
-            if _frame_class:
-                _new_item = self.g_transformations.append_item()
-                _new_item.make_item(_class=_frame_class, _transformation=_curr_transformation)
-        _item_frame['background'] = "dark grey"
-
-        try:
-            if _item_frame.fr_item.curr_raw_data is not None:
-                perform_transformations(_input=_item_frame.fr_item.curr_raw_data,
-                                        _transformations=_item_frame.fr_item.mapping.transformations)
-        except Exception as e:
-            self.notify_task(
-                'Error in one of the transformations, mapping: ' + _item_frame.fr_item.mapping.src_reference + " error: " + str(
-                    e), 0)
-
-        if self.curr_mapping_frame:
-            try:
-                self.curr_mapping_frame['background'] = self['background']
-            except Exception as e:
-                raise Exception("Error setting background to: " + self['background'] + ":" + str(e))
-        self.curr_mapping_frame = _item_frame
-
-    ##########################################################
-    # This section contains functions handling transformations
-    ##########################################################
-    def gui_to_transformations(self):
-        """Gathers data from GUI into the transformation objects"""
-
-        for _curr_transformation in self.g_transformations.items:
-            _curr_transformation.fr_item.gui_to_transformation()
-
-
-    def _transformation_frame_class_lookup(self, _transformation=None, _type=None):
-        if _type is None:
-            _type, _desc = transformation_to_type(_transformation)
-
-        if _type == "Cast":
-            return FrameTransformationCast
-        if _type == "Trim":
-            return FrameTransformationTrim
-        if _type == "If empty":
-            return FrameTransformationIfEmpty
-        if _type == "Replace":
-            return FrameTransformationReplace
-        if _type == "Replace regex":
-            return FrameTransformationReplaceRegex
-        else:
-            return None
-            #raise Exception("Internal error, unsupported transformation type: " + str(_transformation_type))
-
-    def transformations_do_on_delete(self, _g_transformations, _item_frame):
-        self.curr_mapping_frame.fr_item.mapping.transformations.remove(_item_frame.fr_item.transformation)
-
-    def transformations_do_on_move_up(self, _g_transformations, _item_frame):
-        _curr_transformations = self.curr_mapping_frame.fr_item.mapping.transformations
-        _curr_idx = _curr_transformations.index(_item_frame.fr_item.transformation)
-        _curr_transformations.insert(_curr_idx - 1,
-                                     _curr_transformations.pop(
-                                         _curr_idx))
-
-    def transformations_do_on_move_down(self, _g_transformations, _item_frame):
-        _curr_transformations = self.curr_mapping_frame.fr_item.mapping.transformations
-        _curr_idx = _curr_transformations.index(_item_frame.fr_item.transformation)
-        _curr_transformations.insert(_curr_idx + 1,
-                                     _curr_transformations.pop(
-                                         _curr_idx))
-
-    def on_append_transformation(self, *args):
-        if self.curr_mapping_frame is not None:
-            _new_transformation = type_to_transformation(self.sel_transformation_append_type.get())(
-                _substitution=self.curr_mapping_frame.fr_item.mapping.substitution)
-            self.curr_mapping_frame.fr_item.mapping.transformations.append(_new_transformation)
-            _frame_class = self._transformation_frame_class_lookup(_new_transformation)
-            if _frame_class:
-                _new_item = self.g_transformations.append_item()
-                _new_item.make_item(_class=_frame_class, _transformation=_new_transformation)
-
-    def clear_transformation_events(self):
-        for _curr_mapping in self.setup.mappings:
-            for _curr_transformation in _curr_mapping.transformations:
-                _curr_transformation.on_done = None
-
-    ############################################################
-    # This section contains functions handling the merge preview
-    ############################################################
-
-    def clear_preview(self):
-        for _curr_item in self.gr_preview.get_children():
-            self.gr_preview.delete(_curr_item)
-
-    def reset_substitions_identity(self):
-        """Reset substitions"""
-
-        for _curr_mapping in self.setup.mappings:
-            _curr_mapping.substitution.set_identity(0)
-
-    def on_preview_merge(self, *args):
-        self.do_merge(_commit=False)
-
-    def on_commit_merge(self, *args):
-        if askokcancel(title="Warning: committing merge", message="This will commit actual changes to the destination, "
-                                                                  "do you want to proceed?") is True:
-            self.do_merge(_commit=True)
-
-    def do_merge(self, _commit=False):
-        self._gui_to_merge()
-        self.update_data(_refresh=True)
-        self.setup.destination_log_level = DATASET_LOGLEVEL_DETAIL
-        # Clear GUI events
-        self.clear_transformation_events()
-        self.setup.clear_log()
-        try:
-            _data_table, _log, _deletes, _inserts, _updates = self.setup.execute(_commit=_commit)
-        except Exception as e:
-            self.notify_messagebox("Error while merging", str(e))
-            return
-
-        # Call columns src/dest field names if they differ
-
-        if len(self.setup.key_fields) > 0:
-            _key_field = self.setup.key_fields[0]
-        else:
-            _key_field = 0
-
-        self.clear_preview()
-
-        self.gr_preview["columns"] = ["Change_Data"]
-        self.gr_preview.column("Change_Data", width=500)
-
-        self.gr_preview.heading("Change_Data", text="Change/Data")
-
-        # Add a main for each action
-
-        # Add deletes
-        self.gr_preview.insert(parent="", index="end", iid="obpm_deletes", text="Deletes")
-        if self.setup.delete:
-            for _curr_row in _deletes:
-                _curr_item_idx = self.gr_preview.insert(parent="obpm_deletes", index="end", iid="",
-                                                        text=_curr_row[2][_key_field])
-                _curr_value = ",".join([str(_item) for _item in _curr_row[2]])
-                self.gr_preview.item(_curr_item_idx, values=[_curr_value])
-                for _curr_column_idx in range(len(_curr_row[2])):
-                    _curr_change_item_idx = self.gr_preview.insert(parent=_curr_item_idx, index="end", iid="", text=str(
-                        self.setup.destination.field_names[_curr_column_idx]))
-                    self.gr_preview.item(_curr_change_item_idx, values=[str(_curr_row[2][_curr_column_idx])])
-        # Add inserts
-        self.gr_preview.insert(parent="", index="end", iid="obpm_inserts", text="Inserts")
-        if self.setup.insert:
-            for _curr_row in _inserts:
-                _curr_item_idx = self.gr_preview.insert(parent="obpm_inserts", index="end", iid="",
-                                                        text=_curr_row[2][_key_field])
-                _curr_value = ",".join([str(_item) for _item in _curr_row[2]])
-                self.gr_preview.item(_curr_item_idx, values=[_curr_value])
-                for _curr_column_idx in range(len(_curr_row[2])):
-                    _curr_change_item_idx = self.gr_preview.insert(parent=_curr_item_idx, index="end", iid="", text=str(
-                        self.setup.destination.field_names[_curr_column_idx]))
-                    self.gr_preview.item(_curr_change_item_idx, values=[str(_curr_row[2][_curr_column_idx])])
-        # Add updates
-        self.gr_preview.insert(parent="", index="end", iid="obpm_updates", text="Updates")
-        if self.setup.update:
-            for _curr_row in _updates:
-                _curr_item_idx = self.gr_preview.insert(parent="obpm_updates", index="end", iid="",
-                                                        text=_curr_row[2][_key_field])
-                _changes = []
-                for _curr_column_idx in range(len(_curr_row[2])):
-                    if _curr_row[2][_curr_column_idx] != _curr_row[3][_curr_column_idx]:
-                        _curr_change_item_idx = self.gr_preview.insert(parent=_curr_item_idx, index="end", iid="",
-                                                                       text=str(self.setup.destination.field_names[
-                                                                           _curr_column_idx]))
-                        self.gr_preview.item(_curr_change_item_idx, values=[
-                            str(_curr_row[3][_curr_column_idx]) + "=>" + str(_curr_row[2][_curr_column_idx])])
-                        _changes.append(str(self.setup.destination.field_names[_curr_column_idx]))
-                _curr_value = ",".join([str(_item) for _item in _changes])
-                self.gr_preview.item(_curr_item_idx, values=[_curr_value])
-
-        # Add log
-        self.gr_preview.insert(parent="", index="end", iid="obpm_log", text="Log")
-        if _log is not None:
-            for _curr_row in _log:
-                _log_fields = _curr_row.split(";")
-                _curr_item_idx = self.gr_preview.insert(parent="obpm_log", index="end", iid="", text=_log_fields[0])
-                _curr_value = ",".join([unquote(str(_item)) for _item in _log_fields[1:]])
-                self.gr_preview.item(_curr_item_idx, values=[_curr_value])
-
-        # Add data table
-
-        self.gr_preview.insert(parent="", index="end", iid="obpm_data_table", text="Result")
-        if _data_table is not None:
-            for _curr_row in _data_table:
-                _curr_item_idx = self.gr_preview.insert(parent="obpm_data_table", index="end", iid="",
-                                                        text=_curr_row[_key_field])
-                _curr_value = ",".join([str(_item) for _item in _curr_row])
-                self.gr_preview.item(_curr_item_idx, values=[_curr_value])
-                for _curr_column_idx in range(len(_curr_row)):
-                    _curr_change_item_idx = self.gr_preview.insert(parent=_curr_item_idx, index="end", iid="", text=str(
-                        self.setup.destination.field_names[_curr_column_idx]))
-                    self.gr_preview.item(_curr_change_item_idx, values=[str(_curr_row[_curr_column_idx])])
-        if _commit == True:
-            _simulation_expression = "Merge"
-        else:
-            _simulation_expression = "Simulated merge"
-
-        if not (self.setup.insert or self.setup.delete or self.setup.update):
-            self.notify_task(
-                _simulation_expression + " done. (Expecting merge results? Neither insert, delete or update is selected)",
-                100)
-        else:
-            self.notify_task(_simulation_expression + " done.", 100)
-
-    def on_preview_selected(self, *args):
-        _selection = self.gr_preview.selection()
-        if len(_selection) > 0:
-            _item = self.gr_preview.item(_selection[0])
-            self.preview_detail.set(str(",".join([str(_item) for _item in _item["values"]])))

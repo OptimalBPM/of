@@ -69,9 +69,11 @@ class JSONXPath(object):
         _parts = _xpath.split("/")
         _curr_node = self.data
         for _curr_part in _parts:
+            print("is " + str(_curr_part) + " in " + str(_curr_node))
             if _curr_part in _curr_node:
                 _curr_node = _curr_node[_curr_part]
             else:
+                print("no")
                 return False
         return _curr_node
 
@@ -87,6 +89,7 @@ class JSONXPath(object):
     def get(self, _xpath, _default=None):
         """Get a certain option"""
         _node = self.find(_xpath)
+        print(str(_xpath) +" dd:"+str(_node))
         if _node is not None:
             return _node
         else:

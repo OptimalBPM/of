@@ -85,8 +85,9 @@ There will be a repository with an example plugin shortly, meanwhile, look at [O
 
 ## API
 
-The general API is documented in the wiki [https://github.com/OptimalBPM/of/wiki/API]
-Also browse the source tree, there are readme:s for all modules.
+The general API is documented in the [wiki](https://github.com/OptimalBPM/of/wiki/API).
+
+Also, try and visually browse the github source tree, there are README:s for most packages.
 
 # Installing
 

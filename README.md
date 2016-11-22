@@ -3,7 +3,9 @@
 The Optimal Framework is the equivalent of a CMS for systems development. 
 One could call it a Function Management System. An FMS.
 
-It is a modern, and running, plugin-based, multi-user system, and it differs from many other frameworks because it comes with a runnable server as-is.
+The fastest route to building a system is to start of halfway there.
+
+It is a modern, and running, plugin-based, multi-user system, and it differs from many other frameworks because it is a runnable server as-is.
 The goal is to create something that not only provides the framework for solving, but actually has already implemented the most common problems in systems programming.
 Adding functionality to the Python backend is just to add classes and properties to the system, it is a highly intuitive approach.
 

@@ -160,7 +160,7 @@ def error_message_default(_status, _message, _traceback, _version):
     return json.dumps(_json_message, indent=4, sort_keys=True)
 
 
-def start_broker():
+def start_broker(_cfg_filename = None):
     """
     Starts the broker; Loads settings, connects to database, registers process and starts the web server.
     """
@@ -176,7 +176,9 @@ def start_broker():
     write_srvc_dbg("=====Starting broker=============================")
 
     try:
-        _cfg_filename = resolve_config_path()
+        if _cfg_filename is None:
+            _cfg_filename = resolve_config_path()
+
         settings = JSONXPath(_cfg_filename)
 
     except Exception as e:

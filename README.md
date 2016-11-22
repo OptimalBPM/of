@@ -54,11 +54,11 @@ A typical implementation would be someone moving a traditional desktop client-ba
 * Logging, auditing (categories, severities, local, remote)
 * Administrative User interface 
 * Dependency-aware plug-in framework
+* Installer
 
 Upcoming:
 
 * Locking
-* Installers
 
 More features, commercial and non-commercial, ranging from  to actual extensive commercial systems like Optimal BPM and will be available through a plug-in ecosystem.
 
@@ -88,15 +88,15 @@ The general API is documented in the wiki [https://github.com/OptimalBPM/of/wiki
 # Installing
 
 Installation is done using an installation program, optimalsetup. 
-This is usefult, because it can download an instruction of what to install.
+This is useful, because it can download an instruction of what to install.
 So applications using the framework will only need to provide a JSON-file to make an installation.
 
-These are the system requirements:
+These are the prerequisites:
 
 * MongoDB
 * Python3.4 or newer.
 
-Install the prerequisites:
+``To install them:`
 
 ##Linuxes:
 

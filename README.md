@@ -1,7 +1,5 @@
 # Optimal Framework
 
-***THIS SOFTWARE IS STILL UNRELEASED. IT IS IN ITS FINAL PHASES OF DEVELOPMENT AND NOT YET RECOMMENDED FOR PRODUCTION, ONLY RESEARCH!***
-
 The Optimal Framework is the equivalent of a CMS for systems development. 
 One could call it a Function Management System. An FMS.
 
@@ -29,8 +27,15 @@ A typical implementation would be someone moving a traditional desktop client-ba
   - [Examples](#examples)
   - [API](#api)
   - [Installing](#installing)
+    - [Debian/Ubuntu:](#debianubuntu)
+    - [OSX(using brew):](#osxusing-brew)
+  - [Windows:](#windows)
+    - [MongoDB](#mongodb)
+    - [Python](#python)
+  - [Installing the framework/system/application](#installing-the-frameworksystemapplication)
+  - [Running](#running)
   - [Developers](#developers)
-  - [Source](#source)
+  - [Source structure](#source-structure)
 - [History](#history)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -70,7 +75,7 @@ Outside the Github community, there will be commercial grade support packages av
 # Documentation
 
 ## Concepts
-There are three major concepts in the Optimal Framework: [broker, nodes, plugins and schemas](https://github.com/OptimalBPM/of/wiki/Concepts).
+There are four major concepts in the Optimal Framework: [broker, nodes, plugins and schemas](https://github.com/OptimalBPM/of/wiki/Concepts).
 
 ## Examples
 
@@ -78,28 +83,24 @@ There will be a repository with an example plugin shortly, meanwhile, look at [O
 
 ## API
 
-Currently, there is no real API documentation, however the code is pretty well commented. 
+The general API is documented in the wiki [https://github.com/OptimalBPM/of/wiki/API]
 
 ## Installing
 
-Installation is currently a little bit cumbersome, will become scripted later.    
-But this is how it is done on unix flavors.   
-If it is on windows, do not use sudo and change the commands appropriately.
+Installation is done using an installation program, optimalsetup. 
+This is usefult, because it can download an instruction of what to install.
+So applications using the framework will only need to provide a JSON-file to make an installation.
 
-System requirements:
+These are the system requirements:
 
-* mongodb
-* python3.4 or newer
-* python3-pip if not provided by the python installation
-
-
-
+* MongoDB
+* Python3.4 or newer.
 
 Install the prerequisites:
 
 ##Linuxes:
 
-These versions comes with 3.4 or newer: 
+These versions comes with Python 3.4 or newer: 
 * Debian Jessie (v8.0)
 * Ubuntu Trusty (v14.04)
 * OpenSuSE 13.2
@@ -109,43 +110,45 @@ These versions comes with 3.4 or newer:
 ### Debian/Ubuntu:
 ```sudo apt-get install mongodb python3 python3-pip```
 
+_Pip is for some reason not included in some distributions_
 ### OSX(using brew):
 ```brew install mongodb python3```
 
-### Installing the framework 
-```sudo pip3 install of```
-(of is the pip package name of the Optimal Framework)
 
 ## Windows:
-1. Download and install MongoDB https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/
-2. Download and install Python https://www.python.org/downloads/windows/
-3. From the commandline, prefixed with the python path, run pip, like: ```c:\Program34\scripts\pip3.exe install of``
+### MongoDB
+Download and install https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/
 
-The configuration folder of the framework is by default located in the home folder of the user running the system.
+### Python
+Download and install Python https://www.python.org/downloads/windows/
+_Remember to click "add to path", or you will have to write the full path to the Python executable_
 
-Download and run the the installer:
+
+## Installing the framework/system/application
+
+Download the installer:
 https://github.com/OptimalBPM/of/raw/master/tools/setup/optimalsetup.py
 
-..or manually install a default configuration:
+The installer uses setup files to define what to install, it also installs the pip of-package and its dependencies.
+It should be run with administrative/sudo priviliges, because when run, the installer makes sure that its dependencies are installed.
+The dependencies are distlib, dulwich and on windows win32api. On some debian distributions python3-tk needs to be installed, and if so it does.
 
-* ```cd ~``` go to your home directory
-* ```git clone https://github.com/OptimalBPM/of-config.git optimalframework```
-* ```cd optimalframework```
-* ```cd plugins```
-* ```git clone https://github.com/OptimalBPM/of-admin admin``` - install the admin interface plugin
-* ```cd admin/ui```
-* ```npm install```   (add --production if you want to install without dev stuff, may need sudo)
-* ```node_modules/jspm/jspm.js install```  (installs the web dependencies, may need sudo)
-* ```cd ../../```
-* ```sh initdb.sh```  - initialize the database (or python3 initdb.py)
-* ```sh broker.sh```  - run the system (or python3 broker.py)
+But to just install the basic installation of the Optimal Framework, run the setup with the `--default_of_install` option:
+`python optimalsetup.py --default_of_install' simply installs a bare installation of the framework in the "of" folder of the users' home folder.
 
+## Running
 
+In the install folder, the scripts for starting the initializing the database and the broker is located, .sh- and .bat-files for the respective platforms.
+* initdb - initiates the database
+* broker - starts the broker.
 
-The admin interface should now be reachable on:
+So first, run the initdb script, and then the broker script. The admin interface should now be reachable on:
 https://127.0.0.1:8080/admin/#/process
 
+Login using with the root user and then use "root" as the password. You are now logged in.
+
 Which is sort of the point. You now have a running system that already have all these features from the get go.  
+
 Now just add your own functionality in a [plugin](https://github.com/OptimalBPM/of/wiki/Concepts#plugins) that you simply add next to the admin interface plugin.
 If there is a folder there, and a definitions.json-file, it is a plugin and will be loaded by the framework.
 
@@ -161,10 +164,9 @@ OF strictly follows semantic versioning.
 The structure of the Optimal Framework source:
 
 * /broker - The Optimal Framework broker
-* /broker/ui - The ui of the broker, by default just a holding page, easily replaced by plugins. 
 * /common - Libraries used by the broker and those interacting with it
 * /schemas - The JSON schemas, and functionality to resolve the of:// scheme
-
+* /forms - JSF forms used by any user interfaces.
 
 
 # History

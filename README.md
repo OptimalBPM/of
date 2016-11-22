@@ -85,7 +85,7 @@ There will be a repository with an example plugin shortly, meanwhile, look at [O
 
 The general API is documented in the wiki [https://github.com/OptimalBPM/of/wiki/API]
 
-## Installing
+# Installing
 
 Installation is done using an installation program, optimalsetup. 
 This is usefult, because it can download an instruction of what to install.
@@ -136,7 +136,7 @@ The dependencies are distlib, dulwich and on windows win32api. On some debian di
 But to just install the basic installation of the Optimal Framework, run the setup with the `--default_of_install` option:
 `python optimalsetup.py --default_of_install' simply installs a bare installation of the framework in the "of" folder of the users' home folder.
 
-## Running
+# Running
 
 In the install folder, the scripts for starting the initializing the database and the broker is located, .sh- and .bat-files for the respective platforms.
 * initdb - initiates the database
@@ -153,13 +153,13 @@ Now just add your own functionality in a [plugin](https://github.com/OptimalBPM/
 If there is a folder there, and a definitions.json-file, it is a plugin and will be loaded by the framework.
 
 
-## Developers
+# Developers
 For those wanting to contribute to OF itself, feel free to make pull requests.  
 However, please try and not include too much in each, and work against the development branch unless it is a brief and non-breaking bug fix.
 
 OF strictly follows semantic versioning.
 
-## Source structure
+# Source structure
 
 The structure of the Optimal Framework source:
 

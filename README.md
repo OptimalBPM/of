@@ -100,7 +100,7 @@ These are the prerequisites:
 * MongoDB
 * Python3.4 or newer.
 
-``To install them:`
+``To install them...``
 
 ##Linuxes:
 

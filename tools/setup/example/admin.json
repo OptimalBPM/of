@@ -1,6 +1,6 @@
 {
   "installLocation": "~/of/",
-  "pluginsFolder": "~/of/plugins",
+  "pluginsFolder": "plugins",
   "plugins": {
     "admin": {
       "url": "https://github.com/OptimalBPM/of-admin.git",

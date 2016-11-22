@@ -203,10 +203,14 @@ class Setup():
         # Set plugin location to config location/plugins if not set
         if self.plugins_folder is None:
             _plugins_location = os.path.join(os.path.expanduser(self.install_location), "plugins")
+
+        elif not os.path.isabs(self.plugins_folder):
+            _plugins_location = os.path.join(os.path.expanduser(self.install_location), self.plugins_folder)
         else:
             _plugins_location = os.path.expanduser(self.plugins_folder)
-            if not os.path.exists(_plugins_location):
-                os.mkdir(_plugins_location)
+
+        if not os.path.exists(_plugins_location):
+            os.mkdir(_plugins_location)
 
         print("\nInstall plugins at: \n" + _plugins_location)
         for _plugin_name, _plugin_info in self.plugins.items():

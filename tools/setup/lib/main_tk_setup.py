@@ -65,10 +65,10 @@ class SetupMain(VerticalScrolledFrame):
         self._row_index = 0
         self.init_GUI()
         self.notify_task('GUI initiated.', 0)
-        if _setup_filename is not None and _setup is not None:
-            self.notify_task('Loading setup file.', 0)
+        if _setup is not None:
+            self.notify_task('Loading setup..', 0)
             self.setup_to_gui()
-            self.notify_task('Setup file loaded.', 100)
+            self.notify_task('Setup loaded.', 100)
 
         self.parent.columnconfigure(0, weight=1)
         self.parent.rowconfigure(0, weight=1)

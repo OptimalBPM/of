@@ -14,11 +14,8 @@
 
 import sys
 
-
-
 # Version and release information used by Sphinx for documentation and setuptools for package generation.
 from subprocess import CalledProcessError
-
 
 __version__ = '0.9'
 __release__ = '0.9.0'
@@ -30,10 +27,8 @@ import getopt
 
 major, minor, micro, releaselevel, serial = sys.version_info
 
+
 def check_prerequisites():
-
-
-
     if major == 2:
         raise Exception("\nERROR RUNNING INSTALLATION:\n"
                         "You are running the setup with Python " + str(major) + "." + str(minor) + "." + str(
@@ -67,7 +62,7 @@ def check_prerequisites():
                                                                                             "https://pip.pypa.io/en/stable/installing/")
 
 
-def install_package(_package_name, _arguments= None):
+def install_package(_package_name, _arguments=None):
     """
     Install the packages listed if not present
     :param _package_name: The package to install
@@ -75,7 +70,6 @@ def install_package(_package_name, _arguments= None):
     :return:
     """
     _installed = []
-
 
     import pip
 
@@ -106,9 +100,6 @@ def install_package(_package_name, _arguments= None):
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 
-
-
-
 _help_msg = """
 Usage: optimal_setup.py [OPTION]... -d [DEFINITION FILE]... -l [LOG LEVEL]
 Set up and alter the Optimal Framework
@@ -118,6 +109,7 @@ This stand-alone tool facilitates setting up an installation of the framework
     -d, --definitionfile    Provide the path to an JSON definition file to describe the setup
     -e,                     Initialize editor
     -l, --log_level         Log level
+    --default_of_install     Make a default Optimal Framework installation with the admin interface
     
     --help     display this help and exit
     --version  output version information and exit
@@ -129,18 +121,19 @@ Always back up your data!
 
 def main():
     """Main program function"""
-    
+
     _setup_filename = None
     _edit = None
     _log_level = None
-    
+    _default_of_install = None
+
     """Parse arguments"""
     try:
         _opts = None
         _args = None
-        _opts, _args = getopt.getopt(sys.argv[1:],"ed:l:",["help","version","definitionfile=*.json", "log_level="])
+        _opts, _args = getopt.getopt(sys.argv[1:], "ed:l:", ["help", "version", "default_of_install", "definitionfile=*.json", "log_level="])
     except getopt.GetoptError as err:
-        print (str(err)+ "\n" +_help_msg + "\n Arguments: " + str(_args))
+        print(str(err) + "\n" + _help_msg + "\n Arguments: " + str(_args))
         sys.exit(2)
 
     if _opts:
@@ -160,6 +153,8 @@ def main():
             elif _opt == '--version':
                 print(__version__)
                 sys.exit()
+            elif _opt == "--default_of_install":
+                _default_of_install = True
 
         check_prerequisites()
 
@@ -173,21 +168,27 @@ def main():
         if sys.platform == "windows":
             install_package("win32api")
 
-        if _setup_filename:
-            """Load merge"""
-            print(_setup_filename)
+        if _default_of_install:
+            print("Selecting the default installation")
+            _setup = Setup(_default_of_install=_default_of_install)
+        elif _setup_filename:
+            """Load setup"""
+            print("Load setup file: " + _setup_filename)
 
             with open(_setup_filename, "r") as f:
                 _setup = Setup(_setup_filename=_setup_filename)
+
         else:
             """Create empty"""
             _setup = Setup()
 
-
         if _log_level:
             _setup.log_level = int(_log_level)
 
-        if _edit or not _setup_filename:
+        if not _edit and _default_of_install:
+            # Handle headless default install case here for clarity
+            _log = _setup.install()
+        elif _edit or not _setup_filename:
             """If the users wants to edit or haven't specified a definition file, start the editor"""
             # Bring up the GUI
             if sys.platform == "linux":
@@ -201,7 +202,8 @@ def main():
                         check_call(["sudo", "apt-get", "install", "python3-tk", "--yes"])
                         print("----------------python3-tk installed----------------------------------")
                     except CalledProcessError:
-                        print("Failed to install the python3-tk-package. Please run \"sudo apt-get install python3-tk\" manually.")
+                        print(
+                            "Failed to install the python3-tk-package. Please run \"sudo apt-get install python3-tk\" manually.")
                         exit(1)
 
             from of.tools.setup.lib.main_tk_setup import SetupMain
@@ -209,8 +211,9 @@ def main():
 
         else:
             """Otherwise execute the installation"""
-            _log =_setup.install()
-            print(str(_log))
+            _log = _setup.install()
+
+        print(str(_log))
     else:
         print("Error: No options provided.\n" + _help_msg)
 

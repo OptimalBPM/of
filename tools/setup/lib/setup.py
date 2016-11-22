@@ -31,6 +31,17 @@ from of.common.settings import JSONXPath
 
 default_config_repo = "https://github.com/OptimalBPM/of-config.git"
 
+default_of_install = {
+  "installLocation": "~/of/",
+  "pluginsFolder": "plugins",
+  "plugins": {
+    "admin": {
+      "url": "https://github.com/OptimalBPM/of-admin.git",
+      "branch": "main"
+    }
+  }
+}
+
 class Setup():
 
     """
@@ -51,9 +62,11 @@ class Setup():
     """An dict of the plugins"""
     plugins = None
 
-    def __init__(self, _setup_definition=None, _setup_filename=None, *args, **kw):
+    def __init__(self, _setup_definition=None, _setup_filename=None, _default_of_install=False, *args, **kw):
 
-        if _setup_definition is not None:
+        if _default_of_install:
+            self.read_settings(default_of_install)
+        elif _setup_definition is not None:
             self.read_settings(_setup_definition)
         elif _setup_filename is not None:
             self.load_from_file(_setup_filename=_setup_filename)

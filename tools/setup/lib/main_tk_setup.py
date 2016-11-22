@@ -7,13 +7,10 @@ import json
 import os
 import sys
 from _thread import start_new_thread
-from contextlib import redirect_stdout, redirect_stderr
+
 from io import StringIO
 
 from tkinter import Tk, ttk, filedialog, SUNKEN, StringVar, Button, BooleanVar, messagebox, Toplevel, Entry, Text
-from tkinter.messagebox import askquestion, askokcancel, OK
-
-from urllib.parse import unquote
 
 from tkinter.constants import E, W, N, S, LEFT, X, BOTTOM, TOP, Y, BOTH, RIGHT, END, WORD
 

@@ -165,8 +165,8 @@ def main():
 
         """If not installed, install GIT support"""
         install_package("dulwich", ["--global-option=--pure"])
-
-        install_package("of")
+        install_package("distlib")
+        install_package("of", "--upgrade")
         # Dynamically import after GIT support is installed
         from of.tools.setup.lib.setup import Setup
 
@@ -179,10 +179,7 @@ def main():
                 _setup = Setup(_setup_filename=_setup_filename)
         else:
             """Create empty"""
-
             _setup = Setup()
-
-
 
 
         if _log_level:

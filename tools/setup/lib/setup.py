@@ -146,6 +146,9 @@ class Setup():
             # Clone the config repo
             print("Cloning " + self.install_repository_url + " into " + _folder_location)
             _repo = porcelain.clone(source= self.install_repository_url, target= _folder_location, checkout=True)
+            _config = _repo.get_config()
+            _config.set(('remote "origin"'.encode('ascii'),), "url".encode('ascii'), self.install_repository_url.encode('ascii'))
+            _config.write_to_path()
             print("Done.")
         else:
             raise Exception("Error installing the configuration files at \"" + _folder_location + "\", directory already exists.")
@@ -186,7 +189,12 @@ class Setup():
         # TODO: Add branch..
         _curr_target = os.path.join(_plugins_location, _plugin_name)
         print("Cloning "+ _plugin_info["url"] + " into " + _curr_target)
-        porcelain.clone(source=_plugin_info["url"], target=_curr_target, checkout=True)
+        _repo = porcelain.clone(source=_plugin_info["url"], target=_curr_target, checkout=True)
+        _config = _repo.get_config()
+        _config.set(('remote "origin"'.encode('ascii'),), "url".encode('ascii'),
+                    _plugin_info["url"].encode('ascii'))
+        _config.write_to_path()
+
         print("Done.")
 
         self.install_plugin_binaries(_curr_target)

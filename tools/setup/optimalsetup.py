@@ -170,6 +170,8 @@ def main():
         # Dynamically import after GIT support is installed
         from of.tools.setup.lib.setup import Setup
 
+        if sys.platform == "windows":
+            install_package("win32api")
 
         if _setup_filename:
             """Load merge"""

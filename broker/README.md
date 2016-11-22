@@ -3,7 +3,7 @@
 The broker is a nerve center of the Optimal Framework, it: 
 * is a messaging hub 
 * provides a mount point for services provided by the plugins 
-* presents a replacable web based UI
+* presents a replaceable web based UI
 * provides an API for the database backend
 * provides authentication, permissions and rights 
 * does the logging of the system

@@ -295,13 +295,14 @@ class SetupMain(VerticalScrolledFrame):
         self.plugin_url.set(_item.fr_item.plugin["url"])
 
     def plugins_to_gui(self):
-        # clear plugin list
-        self.g_plugins.clear()
-        self.g_plugins.on_detail = self.on_plugin_detail
-        # populate with plugins
-        for _curr_plugin_key, _curr_plugin_value in self.setup.plugins.items():
-            _new_item = self.g_plugins.append_item()
-            _new_item.make_item(_class=FramePlugin, _name = _curr_plugin_key, _plugin=_curr_plugin_value)
+        if hasattr(self.setup, "plugins") and self.setup.plugins is not None:
+            # clear plugin list
+            self.g_plugins.clear()
+            self.g_plugins.on_detail = self.on_plugin_detail
+            # populate with plugins
+            for _curr_plugin_key, _curr_plugin_value in self.setup.plugins.items():
+                _new_item = self.g_plugins.append_item()
+                _new_item.make_item(_class=FramePlugin, _name = _curr_plugin_key, _plugin=_curr_plugin_value)
 
     def setup_to_gui(self):
         """

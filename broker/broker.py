@@ -93,6 +93,7 @@ if os.name != "nt":
     fh = logging.FileHandler('/var/log/of.log')
     x_logger.addHandler(fh)
 
+
 def write_srvc_dbg(_data):
     global process_id
     write_to_log(_data, _category=EC_SERVICE, _severity=SEV_DEBUG, _process_id=process_id)
@@ -112,17 +113,18 @@ def log_locally(_data, _category, _severity, _process_id_param, _user_id, _occur
                            "Application", _category, _severity)
     else:
         _message = make_sparse_log_message(_data, _category, _severity, _process_id_param, _user_id, _occurred_when,
-                                _address_param, _node_id, _uid,
-                                _pid)
+                                           _address_param, _node_id, _uid,
+                                           _pid)
         try:
             x_logger.log(msg=_message, level=CRITICAL)
         except Exception as e:
 
             print(
-                make_sparse_log_message("FAILED TO WRITE TO FILE, PRINTING ERROR: "+ str(e) + _message, EC_SERVICE, SEV_ERROR, _process_id_param, _user_id, _occurred_when,
+                make_sparse_log_message("FAILED TO WRITE TO FILE, PRINTING ERROR: " + str(e) + _message, EC_SERVICE,
+                                        SEV_ERROR, _process_id_param, _user_id, _occurred_when,
                                         _address_param, _node_id, _uid,
                                         _pid))
-        # TODO: Add support for /var/log/message
+            # TODO: Add support for /var/log/message
 
 
 def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _occurred_when, _address_param, _node_id,
@@ -149,18 +151,18 @@ def log_to_database(_data, _category, _severity, _process_id_param, _user_id, _o
                     _pid)
 
 
-def error_message_default(_status, _message, _traceback, _version):
+def error_message_default(status, message, traceback, version):
     _json_message = {
-        'status': _status,
-        'version': _version,
-        'message': [_message],
-        'traceback': [_x.strip() for _x in _traceback.split('\n')]
+        'status': status,
+        'version': version,
+        'message': [message],
+        'traceback': [_x.strip() for _x in traceback.split('\n')]
     }
     cherrypy.serving.response.headers['Content-Type'] = 'application/json'
     return json.dumps(_json_message, indent=4, sort_keys=True)
 
 
-def start_broker(_cfg_filename = None):
+def start_broker(_cfg_filename=None):
     """
     Starts the broker; Loads settings, connects to database, registers process and starts the web server.
     """
@@ -169,7 +171,6 @@ def start_broker(_cfg_filename = None):
         web_config, schema_tools, namespaces, log_to_database_severity, plugins, settings
 
     process_id = str(ObjectId())
-
 
     of.common.logging.callback = log_locally
 
@@ -219,9 +220,8 @@ def start_broker(_cfg_filename = None):
 
     # Load all plugin data
     plugins = CherryPyPlugins(_plugins_folder=_plugins_folder, _schema_tools=schema_tools, _namespaces=namespaces,
-                               _process_id=process_id,
+                              _process_id=process_id,
                               _no_package_name_override=settings.get("broker/packageNameOverride"))
-
 
     # Plugins may want to load settings or add globals
     plugins.call_hook("init_broker_scope", _broker_scope=globals(), _settings=settings)
@@ -323,7 +323,7 @@ def start_broker(_cfg_filename = None):
 
     web_root.plugins = plugins
     # Generate the static content, initialisation
-    plugins.call_hook("init_web", _broker_scope = globals())
+    plugins.call_hook("init_web", _broker_scope=globals())
 
     _web_config_debug = "Broker configured. Starting web server. Web config:\n"
     for _curr_key, _curr_config in web_config.items():
@@ -364,7 +364,7 @@ def stop_broker(_reason, _restart=None):
                                                        _state="killed",
                                                        _process_id=process_id,
                                                        _reason="Broker was terminated, reason: \"" +
-                                                                _reason + "\", shutting down gracefully"),
+                                                               _reason + "\", shutting down gracefully"),
                              _user=None)
 
     except Exception as e:

@@ -194,6 +194,8 @@ class Setup():
                 print("An error occured when downloading a binary (" + _curr_binary["url"] + "): " + str(e))
             except URLError as e:
                 print("An URL-related error occurred when downloading binary (" + _curr_binary["url"] + "): " + str(e))
+        except FileNotFoundError:
+            print("No definition file found, ignoring installing plugin binaries in " + _folder)
         except Exception as e:
             print("An error occurred installing binaries in "+ _folder + ":" + str(e))
 

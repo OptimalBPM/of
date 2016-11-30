@@ -276,8 +276,6 @@ def start_broker(_cfg_filename=None):
         "tools.trailing_slash.on": True,
         "tools.staticdir.root": os.path.abspath(os.path.dirname(__file__)),
         "server.ssl_module": "builtin",
-        # TODO: Remove this when this bug is fixed:
-        # https://bitbucket.org/cherrypy/cherrypy/issue/1341/autoreloader-also-fails-if-six-is-present
         "engine.autoreload.on": False,
         'server.socket_host': '0.0.0.0',
         "server.ssl_certificate": os.path.join(ssl_path(), "optimalframework_test_cert.pem"),

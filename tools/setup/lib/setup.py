@@ -144,7 +144,7 @@ class Setup():
         pass
 
     def install_config(self):
-        # Set folder location at ~/optimalframework if not set
+        # Set folder location at ~/of if not set
         if self.install_location is None:
             _folder_location = os.path.expanduser("~/of")
         else:

@@ -12,7 +12,7 @@ from pymongo.mongo_client import MongoClient
 
 from of.broker.lib.access import DatabaseAccess
 
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 def get_empty_db_da(_database_name, _json_schema_folders=None, _uri_handlers = None):

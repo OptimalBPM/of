@@ -19,7 +19,7 @@ from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
 __author__ = "Nicklas Borjesson"
 
 # The directory of the current file
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Add relative optimal bpm path to be able to load the modules of this repository properly
 sys.path.append(os.path.join(script_dir, "../../"))

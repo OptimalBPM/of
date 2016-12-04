@@ -8,7 +8,7 @@ Created on Sep 12, 2016
 
 import os
 import json
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 on_cache_miss = None

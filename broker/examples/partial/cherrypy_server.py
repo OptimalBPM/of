@@ -12,7 +12,7 @@ __author__ = 'Nicklas Boerjesson'
 import os
 
 # Add MBE path
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 import cherrypy

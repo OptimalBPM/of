@@ -8,7 +8,7 @@ from bson.objectid import ObjectId
 
 from of.common.plugins import CherryPyPlugins
 
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 # Add relative optimal framework path to be able to load the modules of this repository properly
 sys.path.append(os.path.join(script_dir, "../../../"))
 

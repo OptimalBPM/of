@@ -18,7 +18,7 @@ import win32service
 import win32serviceutil
 
 # The directory of the current file
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Add relative optimal bpm path
 sys.path.append(os.path.join(script_dir, "../../"))

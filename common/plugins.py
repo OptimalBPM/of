@@ -140,6 +140,7 @@ class CherryPyPlugins(object):
             write_to_log(
                 "Setting " + _plugin_name + " as Failed. No dependent plugins will be loaded.",
                 _category=EC_SERVICE, _severity=SEV_INFO)
+            print("An error occurred importing " + _plugin_name + ":" + str(e))
             print("Setting " + _plugin_name + " as Failed. No dependent plugins will be loaded.")
             _plugin_data = {"failed": True, "description": _plugin_name + "(failed)"}
             return _plugin_data

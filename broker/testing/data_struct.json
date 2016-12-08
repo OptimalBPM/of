@@ -207,7 +207,7 @@
     "createdWhen": "2014-11-13T01:00:00+00:00",
     "schemaRef": "ref://of.node.broker",
     "address": "broker01",
-    "repositoriesLocation": "~/optimalframework/broker_repositories",
+    "repositoriesLocation": "~/of/broker_repositories",
     "canRead": [
       "000000010000010001e64c28",
       "000000010000010001e64d02"
@@ -262,7 +262,7 @@
     "schemaRef": "ref://of.node.broker",
     "address": "",
     "templateName": "New broker template",
-    "repositoriesLocation": "~/optimalframework/broker_repositories",
+    "repositoriesLocation": "~/of/broker_repositories",
     "canRead": [
       "000000010000010001e64c28",
       "000000010000010001e64d02"

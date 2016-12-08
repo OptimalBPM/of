@@ -72,7 +72,7 @@ class JSONXPath(object):
             if _curr_part in _curr_node:
                 _curr_node = _curr_node[_curr_part]
             else:
-                return False
+                return None
         return _curr_node
 
 

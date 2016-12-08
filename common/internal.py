@@ -53,10 +53,10 @@ def resolve_config_path():
 
     if platform.system().lower() in ["linux", "darwin"]:
         # Linux/OSX
-        _default_settings_folder = os.path.join(os.path.expanduser("~"), "optimalframework")
+        _default_settings_folder = os.path.join(os.path.expanduser("~"), "of")
     elif platform.system().lower() == "windows":
         # Windows
-        _default_settings_folder = os.path.join(os.getenv("USERPROFILE"), "optimalframework")
+        _default_settings_folder = os.path.join(os.getenv("USERPROFILE"), "of")
     else:
         raise Exception("Unsupported platform: " + platform.system().lower())
 

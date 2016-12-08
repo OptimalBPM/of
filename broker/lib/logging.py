@@ -142,7 +142,7 @@ class Logging():
 
         """
         _event["writtenWhen"] = str(datetime.datetime.utcnow())
-        self._log_collection.save(_event)
+        self._log_collection.insert_one(_event)
 
     def log_security(self, _category, _message, _user_id, _node_id):
         """

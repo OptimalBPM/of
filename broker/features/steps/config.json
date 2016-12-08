@@ -1,7 +1,7 @@
 {
   "broker": {
     "address": "broker01",
-    "pluginFolder": "./plugins",
+    "pluginsFolder": "./plugins",
     "database": {
       "databaseName": "test_of"
     },

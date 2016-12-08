@@ -42,7 +42,7 @@ class CherryPyPlugins(object):
     This is usually used for testing when the plugin tests are loading the broker."""
     no_package_name_override = None
 
-    def __init__(self, _plugin_dir, _schema_tools, _namespaces, _process_id, _no_package_name_override=None):
+    def __init__(self, _plugins_folder, _schema_tools, _namespaces, _process_id, _no_package_name_override=None):
         # TODO: Create a dicts schema
         self.schema_tools = _schema_tools
         self.last_refresh_time = -31
@@ -51,8 +51,8 @@ class CherryPyPlugins(object):
         self.no_package_name_override = _no_package_name_override
 
         # Add the parent of plugins to sys path
-        sys.path.append(os.path.abspath(os.path.join(_plugin_dir, "..")))
-        self.refresh_plugins(_plugin_dir)
+        sys.path.append(os.path.abspath(os.path.join(_plugins_folder, "..")))
+        self.refresh_plugins(_plugins_folder)
 
     def validate_uuid(self, _value):
         try:
@@ -140,6 +140,7 @@ class CherryPyPlugins(object):
             write_to_log(
                 "Setting " + _plugin_name + " as Failed. No dependent plugins will be loaded.",
                 _category=EC_SERVICE, _severity=SEV_INFO)
+            print("An error occurred importing " + _plugin_name + ":" + str(e))
             print("Setting " + _plugin_name + " as Failed. No dependent plugins will be loaded.")
             _plugin_data = {"failed": True, "description": _plugin_name + "(failed)"}
             return _plugin_data
@@ -172,7 +173,7 @@ class CherryPyPlugins(object):
 
         return _plugin_data
 
-    def refresh_plugins(self, _plugins_dir):
+    def refresh_plugins(self, _plugins_folder):
         # If < 30 seconds since last refresh (or some other principle)
         _curr_time = time.time()
         if self.last_refresh_time - _curr_time > 30:
@@ -183,21 +184,21 @@ class CherryPyPlugins(object):
 
         # Find plugins directory
 
-        if not os.path.exists(_plugins_dir):
-            raise Exception("Plugin initialisation failed, no plugin directory where expected(" + _plugins_dir + ")")
+        if not os.path.exists(_plugins_folder):
+            raise Exception("Plugin initialisation failed, no plugin directory where expected(" + _plugins_folder + ")")
 
         # Manually add the optimal framework ("of") namespace
         self.namespaces["of"]["schemas"] = [_curr_ref for _curr_ref in self.schema_tools.json_schema_objects.keys()]
         self.schema_tools.resolver.handlers = {"ref": self.uri_handler}
 
         # Loop plugins
-        _plugin_names = os.listdir(_plugins_dir)
+        _plugin_names = os.listdir(_plugins_folder)
         self.plugins = CumulativeDict()
         for _plugin_name in _plugin_names:
             # Only look att non-hidden and non system directories
-            if os.path.isdir(os.path.join(_plugins_dir, _plugin_name)) and _plugin_name[0:2] != "__" and _plugin_name[
+            if os.path.isdir(os.path.join(_plugins_folder, _plugin_name)) and _plugin_name[0:2] != "__" and _plugin_name[
                 0] != ".":
-                self.load_plugin(_plugins_dir, _plugin_name)
+                self.load_plugin(_plugins_folder, _plugin_name)
                 self.write_debug_info("Loaded plugin " + _plugin_name)
 
         self.write_debug_info("Schemas in " + str(", ").join(

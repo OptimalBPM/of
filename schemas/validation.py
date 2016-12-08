@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 
 __author__ = 'Nicklas Borjesson'
 
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 def general_uri_handler(_uri, _folder):

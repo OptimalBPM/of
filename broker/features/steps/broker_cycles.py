@@ -13,7 +13,7 @@ from of.common.messaging.utils import call_api, register_at_broker
 use_step_matcher("re")
 
 _log_prefix = "Tester - Broker Cycles :"
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 

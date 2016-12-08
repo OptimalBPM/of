@@ -19,7 +19,7 @@ id_user_testagent = "000000010000010001e64c32"
 
 id_right_admin_nodes = "000000010000010001e64d01"
 
-script_dir = os.path.dirname(__file__)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 def before_feature(context, feature):
     """

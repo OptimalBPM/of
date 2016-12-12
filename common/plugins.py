@@ -51,6 +51,7 @@ class CherryPyPlugins(object):
         self.no_package_name_override = _no_package_name_override
 
         # Add the parent of plugins to sys path
+
         sys.path.append(os.path.abspath(os.path.join(_plugins_folder, "..")))
         self.refresh_plugins(_plugins_folder)
 

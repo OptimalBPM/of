@@ -45,10 +45,10 @@ def node_id_with_env(_node_id, _environment_id):
 def resolve_config_path():
     """
     Load settings from settings file, first environment variable OPTIMAL_BPM_CFG, then default locations:
-    * Windows - %APPDATA%\optimalframework
-    * Linux/OSX - ~/optimalframework
+    * Windows - %APPDATA%\of
+    * Linux/OSX - ~/of
 
-    :return: a qal BPM settings instance
+    :return: a usable config path
     """
 
     if platform.system().lower() in ["linux", "darwin"]:

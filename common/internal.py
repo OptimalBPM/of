@@ -84,7 +84,7 @@ def signal_handler_unix(_signal, _frame):
 
         stop_handler(_reason)
 
-def signal_handler_windows():
+def signal_handler_windows(*args):
     write_to_log("Windows signal handler called", _category=EC_SERVICE, _severity=SEV_INFO)
     stop_handler('The process has been terminated, shutting down..')
 

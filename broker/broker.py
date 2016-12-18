@@ -330,6 +330,9 @@ def start_broker(_cfg_filename=None):
         else:
             _web_config_debug += "Path: " + _curr_key + " - no static dir"
 
+    # Do things one want to do after all plugins have done their thing to the web config.
+    plugins.call_hook("post_web_init", _broker_scope=globals())
+
     write_to_log(_web_config_debug, _category=EC_SERVICE, _severity=SEV_INFO)
     plugins.call_hook("pre_webserver_start", web_config=web_config, globals=globals())
     cherrypy.quickstart(web_root, "/", web_config)

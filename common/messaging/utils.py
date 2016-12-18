@@ -13,7 +13,7 @@ import datetime
 import json
 import logging
 
-
+from of import __release__, __copyright__
 
 import requests
 import sys
@@ -54,15 +54,18 @@ def get_environment_data():
 
     return {
         "hostname": socket.gethostname(),
-        "implementation": {
-            "language": "python",
-            "version": python_versions(),
-            "modules": sys_modules(),
+        "Optimal Framework": {
+            "Version": __release__,
+            "Copyright": __copyright__
         },
-        "platform": platform.system(),
-        "processor": platform.processor(),
-        "systemPid": os.getpid(),
-        "user": get_current_login(),
+        "Python": {
+            "Version": python_versions(),
+            "Modules": sys_modules(),
+        },
+        "Platform": platform.system(),
+        "Processor": platform.processor(),
+        "SystemPid": os.getpid(),
+        "User": get_current_login(),
     }
 
 def write_dbg_info(_data):

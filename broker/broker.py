@@ -338,6 +338,8 @@ def start_broker(_cfg_filename=None):
 
     write_to_log(_web_config_debug, _category=EC_SERVICE, _severity=SEV_INFO)
     plugins.call_hook("pre_webserver_start", web_config=web_config, globals=globals())
+
+    cherrypy.log.screen = False
     cherrypy.quickstart(web_root, "/", web_config)
 
 

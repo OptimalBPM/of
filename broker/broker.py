@@ -80,6 +80,9 @@ plugins = None
 # All namespaces
 namespaces = None
 
+# Application name
+application_name = None
+
 # Setting
 _settings = None
 

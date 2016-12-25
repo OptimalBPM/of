@@ -42,6 +42,7 @@ class CherryPyBroker(object):
     #: Plugin management
     plugins = None
 
+
     #: A reference to a Nodes instance
     node = None
 
@@ -58,6 +59,7 @@ class CherryPyBroker(object):
         self.peers = {}
         self.process_id = _process_id
         self.address = _address
+
 
         self.node = CherryPyNode(_database_access=_database_access)
 
@@ -107,7 +109,7 @@ class CherryPyBroker(object):
 
             # Load the matching node for the address
             _condition = {"schemaRef": peer_type_to_schema_id(_peer_type), "address": _address}
-            _settings = sanitize_node(self.node._node.find(_condition, kwargs["_user"]))
+            _settings = sanitize_node(self.node._node.find(_condition, kwargs["_user"]))[0]
             _session_id = kwargs["_session_id"]
             self.write_debug_info("New _session_id : " + str(_session_id))
 

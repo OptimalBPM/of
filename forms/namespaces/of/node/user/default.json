@@ -119,7 +119,7 @@
                 "startEmpty": true,
                 "options": {
                   "multiple": "true",
-                  "callback": "this.nodeManager.tree.lookupChildNodeTypes"
+                  "callback": "$ctrl.tree.lookupChildNodeTypes"
                 }
               }
             ]

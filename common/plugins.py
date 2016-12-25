@@ -15,6 +15,7 @@ from urllib.parse import urlparse
 
 from of.common.cumulative_dict import CumulativeDict
 from of.common.logging import write_to_log, EC_NOTIFICATION, SEV_DEBUG, SEV_ERROR, EC_SERVICE, SEV_INFO
+from of.forms import load_forms_from_directory
 
 __author__ = 'Nicklas Borjesson'
 
@@ -135,6 +136,15 @@ class CherryPyPlugins(object):
 
             else:
                 self.write_debug_info("No schema folder, not loading schemas.")
+
+            # Load forms from /forms
+            _forms_dir = os.path.join(_dirname, "forms", "namespaces")
+            if os.path.exists(_forms_dir):
+                _refs = load_forms_from_directory(_forms_dir)
+
+            else:
+                self.write_debug_info("No forms folder, not loading forms.")
+
         except Exception as e:
             write_to_log("An error occurred importing " + _plugin_name + ":" + str(e),
                          _category=EC_SERVICE, _severity=SEV_ERROR)

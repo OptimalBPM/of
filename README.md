@@ -1,6 +1,6 @@
 # Optimal Framework
 
-The Optimal Framework is the equivalent of a CMS for systems development. 
+The Optimal Framework is the equivalent of a Content Management System for systems development.
 One could call it a Function Management System. An FMS.
 
 The fastest route to building a system is to start out halfway there.
@@ -9,12 +9,12 @@ It is a modern, plugin-based, multi-user system, and it differs from many other 
 The goal is to create something that not only provides the framework for solving, but actually has already implemented the most common problems in systems programming.
 Adding functionality to the Python backend is just to add classes and properties to the system, it is a highly intuitive approach.
 
-There is also an optional [administrative UI-plugin](https://github.com/OptimalBPM/of-admin), written in typescript and angular and easily extensible.
+There is also an optional [administrative UI-plugin](https://github.com/OptimalBPM/of-admin), written in Typescript and Angular and easily extensible.
 If one want to add an application UI, any client-side framework that can work against the backend will work.
 
-Behind the backend reside a MongoDB database, which covers a surprising range of usage scenarios, but there are no problems with additionally using an RDBMS backend.
+Behind the backend resides a MongoDB database, which covers a surprising range of usage scenarios, but there are no problems with additionally using an RDBMS backend.
 
-A typical implementation would be someone moving a traditional desktop client-based system to web based clients or apps.
+A typical usage scenario would be someone moving a traditional desktop client-based system to web based clients or apps.
 
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -29,6 +29,7 @@ A typical implementation would be someone moving a traditional desktop client-ba
   - [Examples](#examples)
   - [API](#api)
 - [Installing](#installing)
+  - [Linuxes:](#linuxes)
     - [Debian/Ubuntu:](#debianubuntu)
     - [OSX(using brew):](#osxusing-brew)
   - [Windows:](#windows)
@@ -102,7 +103,7 @@ These are the prerequisites:
 
 ``To install them...``
 
-##Linuxes:
+## Linuxes:
 
 These versions comes with Python 3.4 or newer: 
 * Debian Jessie (v8.0)
